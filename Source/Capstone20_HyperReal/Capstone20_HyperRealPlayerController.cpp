@@ -95,6 +95,7 @@ void ACapstone20_HyperRealPlayerController::OnSetDestinationTriggered()
 	{
 		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
 		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
+		UE_LOG(LogTemp, Warning, TEXT("Pawn Find, %s"));
 	}
 }
 
