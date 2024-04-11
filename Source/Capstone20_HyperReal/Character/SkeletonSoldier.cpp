@@ -51,23 +51,23 @@ void ASkeletonSoldier::Tick(float DeltaTime)
 
 void ASkeletonSoldier::Attack()
 {
-	if (m_bOnAttack)
-		return;
-
-	// 하고 공격 모션
-	if (m_arrAttackMontage.Num() == 0)
-	{	
-		AttackEnd();
-		return;
-	}
-
-	if (!m_pAnim->Montage_IsPlaying(m_arrAttackMontage[m_iAttackMontageIndex]))
+	if (!m_bOnAttack)
 	{
-		// 몽타주 초기화
-		m_pAnim->Montage_SetPosition(m_arrAttackMontage[m_iAttackMontageIndex], 0.f);
-		m_pAnim->Montage_Play(m_arrAttackMontage[m_iAttackMontageIndex]);
+		// 하고 공격 모션
+		if (m_arrAttackMontage.Num() == 0)
+		{
+			AttackEnd();
+			return;
+		}
 
-		m_iAttackMontageIndex = (m_iAttackMontageIndex + 1) % m_arrAttackMontage.Num();
+		if (!m_pAnim->Montage_IsPlaying(m_arrAttackMontage[m_iAttackMontageIndex]))
+		{
+			// 몽타주 초기화
+			m_pAnim->Montage_SetPosition(m_arrAttackMontage[m_iAttackMontageIndex], 0.f);
+			m_pAnim->Montage_Play(m_arrAttackMontage[m_iAttackMontageIndex]);
+
+			m_iAttackMontageIndex = (m_iAttackMontageIndex + 1) % m_arrAttackMontage.Num();
+		}
 	}
 
 	Super::Attack();

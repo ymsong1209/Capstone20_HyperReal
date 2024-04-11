@@ -85,6 +85,13 @@ void AClickMoveController::OnClickMoveTriggered()
 
 void AClickMoveController::OnClickMoveReleased()
 {
+	// Move towards mouse pointer or touch
+	APlayerCharacter* ControlledPawn = Cast<APlayerCharacter>(GetPawn());
+
+
+	if (ControlledPawn->OnAttack())
+		return;
+
 	// If it was a short press
 	if (FollowTime <= ShortPressThreshold)
 	{

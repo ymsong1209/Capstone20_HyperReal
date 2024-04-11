@@ -21,12 +21,8 @@ void UPlayerAnimInstance::AnimNotify_AttackCombo()
 
 	if (IsValid(pPlayer))
 	{
-		if (pPlayer->OnAttack())
-		{
-			pPlayer->SetAttack(false);
-			UCharacterMovementComponent* pMovement = pPlayer->GetCharacterMovement();
-			pMovement->Activate();
-		}
+		//if (pPlayer->IsComboDectected())
+		//	pPlayer->SetAttack(false);
 	}
 }
 
@@ -36,6 +32,9 @@ void UPlayerAnimInstance::AnimNotify_AttackEnd()
 
 	if (IsValid(pPlayer))
 	{
-		pPlayer->AttackEnd();
+		if (pPlayer->IsComboDectected())
+			pPlayer->SetAttack(false);
+		else
+			pPlayer->AttackEnd();
 	}
 }

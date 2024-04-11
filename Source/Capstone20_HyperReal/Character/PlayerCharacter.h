@@ -42,9 +42,13 @@ protected:
 	class UPlayerAnimInstance* m_pAnim;
 	bool m_bOnAttack;
 
+	bool m_bComboDetected;
+
 public:
 	bool OnAttack() const { return m_bOnAttack; };
 	void SetAttack(bool _bAttack) { m_bOnAttack = _bAttack; }
+
+	bool IsComboDectected() { return m_bComboDetected; }
 
 protected:
 	// Called when the game starts or when spawned

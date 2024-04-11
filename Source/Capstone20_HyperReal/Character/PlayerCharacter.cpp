@@ -26,7 +26,8 @@ APlayerCharacter::APlayerCharacter()	:
 	AttackAction(nullptr),
 	m_pAnim(nullptr),
 	m_iAttackMontageIndex(0),
-	m_bOnAttack(false)
+	m_bOnAttack(false),
+	m_bComboDetected(false)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -106,6 +107,14 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::Attack()
 {
+	if (m_bOnAttack)
+	{
+		if (!m_bComboDetected)
+			m_bComboDetected = true;
+
+		return;
+	}
+
 	m_bOnAttack = true;
 
 	// 마우스 방향으로 회전
@@ -127,12 +136,11 @@ void APlayerCharacter::Attack()
 		SetActorRotation(vDir.Rotation());
 	}
 
-	// 움직임 제거(공격이 끝나면 풀어야함)
 	GetCharacterMovement()->StopMovementImmediately();
 }
 
 void APlayerCharacter::AttackEnd()
 {
 	m_iAttackMontageIndex = 0;
-	UCharacterMovementComponent* pMovement = GetCharacterMovement();
+	m_bComboDetected = false;
 }
