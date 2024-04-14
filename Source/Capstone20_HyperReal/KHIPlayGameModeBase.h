@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UI/InGameUserWidget.h"
 #include "GameFramework/GameModeBase.h"
 #include "KHIPlayGameModeBase.generated.h"
 
@@ -20,6 +21,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason);
+
+private:
+	TSubclassOf<UInGameUserWidget>	mInGameWidgetClass;
+	UInGameUserWidget* mInGameWidget;
 
 public:
 	// Called every frame

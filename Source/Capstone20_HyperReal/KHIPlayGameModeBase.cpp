@@ -23,6 +23,11 @@ AKHIPlayGameModeBase::AKHIPlayGameModeBase()
 	{
 		PlayerControllerClass = PlayerControllerBPClass.Class;
 	}
+	static ConstructorHelpers::FClassFinder<UInGameUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_KHIContent/UI/UI_InGame.UI_InGame_C'"));
+	if (WidgetClass.Succeeded())
+	{
+		mInGameWidgetClass = WidgetClass.Class;
+	}
 }
 
 void AKHIPlayGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
@@ -35,6 +40,16 @@ void AKHIPlayGameModeBase::BeginPlay()
 	Super::BeginPlay();
 	APlayerController* controller = GetWorld()->GetFirstPlayerController();
 	controller->bShowMouseCursor = true;
+
+	if (mInGameWidgetClass)
+	{
+		mInGameWidget = CreateWidget<UInGameUserWidget>(GetWorld(), mInGameWidgetClass);
+
+		if (mInGameWidget)
+			mInGameWidget->AddToViewport();
+
+		// RemoveFromViewport : 뷰포트에서 제거
+	}
 
 	FInputModeGameAndUI mode;
 	controller->SetInputMode(mode);
