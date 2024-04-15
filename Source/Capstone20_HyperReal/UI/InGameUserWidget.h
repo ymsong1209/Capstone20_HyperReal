@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "InGameUserWidget.generated.h"
 
+
 /**
  * 
  */
@@ -23,6 +24,9 @@ protected:
 	virtual void NativeDestruct();
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
+private:
+	class UImage* skillicon;
+	class UMaterialInstanceDynamic* MatInst;
 public:
 	UCharacterHUDWidget* GetCharacterHUD()	const
 	{

@@ -2,7 +2,8 @@
 
 
 #include "InGameUserWidget.h"
-
+#include "Components/Image.h"
+#include "Materials/MaterialInstanceDynamic.h"
 void UInGameUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -12,6 +13,11 @@ void UInGameUserWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	mCharacterHUD = Cast<UCharacterHUDWidget>(GetWidgetFromName(TEXT("UI_CharacterHUD")));
+	skillicon = Cast<UImage>(GetWidgetFromName(TEXT("skillicon1")));
+	//if (skillicon)
+	//{
+	//	skillicon->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"),0.2f);
+	//}
 }
 
 void UInGameUserWidget::NativeConstruct()
