@@ -11,7 +11,7 @@ void UInGameUserWidget::NativeOnInitialized()
 void UInGameUserWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	mCharacterHUD = Cast<UCharacterHUDWidget>(GetWidgetFromName(TEXT("CharacterHUDWidget")));
+	mCharacterHUD = Cast<UCharacterHUDWidget>(GetWidgetFromName(TEXT("UI_CharacterHUD")));
 }
 
 void UInGameUserWidget::NativeConstruct()

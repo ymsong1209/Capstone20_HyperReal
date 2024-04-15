@@ -10,8 +10,8 @@
 /**
  * 
  */
-UCLASS(minimalapi)
-class AKHIPlayGameModeBase : public AGameModeBase
+UCLASS()
+class CAPSTONE20_HYPERREAL_API AKHIPlayGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 public:
@@ -29,4 +29,8 @@ private:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+public:
+	UInGameUserWidget* GetInGameWidget() {
+		return mInGameWidget;
+	}
 };

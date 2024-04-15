@@ -19,7 +19,9 @@ class CAPSTONE20_HYPERREAL_API ASkeletonSoldier : public APlayerCharacter
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	UStaticMeshComponent* RWeapon;
-
+private:
+	float rate;
+	class AKHIPlayGameModeBase* GameMode;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

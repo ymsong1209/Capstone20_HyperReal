@@ -5,7 +5,8 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Components/CapsuleComponent.h"
 #include "SoldierAnimInstance.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "../KHIPlayGameModeBase.h"
 ASkeletonSoldier::ASkeletonSoldier()	:
 	RWeapon(nullptr)
 {
@@ -36,17 +37,33 @@ ASkeletonSoldier::ASkeletonSoldier()	:
 		RWeapon->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
 		RWeapon->SetupAttachment(GetMesh(), WeaponSocket);
 	}
+	
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ASkeletonSoldier::BeginPlay()
 {
 	Super::BeginPlay();
+	GameMode = GetWorld()->GetAuthGameMode<AKHIPlayGameModeBase>();
+	if (GameMode)
+	{
+		GameMode->GetInGameWidget()->SetHP(0,10);
+	}
+	int a = 0;
 }
 
 void ASkeletonSoldier::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	rate += DeltaTime * 0.6f;
+	if (rate >= 1.f)
+		rate = 0;
+	
+	if (GameMode)
+	{
+		GameMode->GetInGameWidget()->GetCharacterHUD()->SetHPPercent(rate);
+	}
+	
 }
 
 void ASkeletonSoldier::Attack()
