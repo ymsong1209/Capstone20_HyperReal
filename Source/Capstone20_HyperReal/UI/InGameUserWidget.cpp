@@ -33,7 +33,10 @@ void UInGameUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	if (skillicon && skillicon->GetDynamicMaterial()) {
 		UE_LOG(LogTemp, Display, TEXT("dynamiccalled"));
-		skillicon->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), 0.4f);
+		rate += InDeltaTime * 0.6f;
+		if (rate >= 1.f)
+			rate = 0;
+		skillicon->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("skillicon does not have a dynamic material"));
@@ -42,5 +45,12 @@ void UInGameUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 void UInGameUserWidget::SetHP(int32 HP, int32 HPMax)
 {
 	mCharacterHUD->SetHPPercent(HP / (float)HPMax);
+}
 
+void UInGameUserWidget::Skill1CoolTime(float frate)
+{
+	if (skillicon && skillicon->GetDynamicMaterial()) 
+	{
+		skillicon->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), frate);
+	}
 }

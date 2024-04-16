@@ -27,6 +27,7 @@ protected:
 private:
 	class UImage* skillicon;
 	class UMaterialInstanceDynamic* MatInst;
+	float rate;
 public:
 	UCharacterHUDWidget* GetCharacterHUD()	const
 	{
@@ -34,5 +35,5 @@ public:
 	}
 public:
 	void SetHP(int32 HP, int32 HPMax);
-	
+	void Skill1CoolTime(float frate);
 };
