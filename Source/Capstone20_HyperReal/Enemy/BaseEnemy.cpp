@@ -2,6 +2,8 @@
 
 
 #include "BaseEnemy.h"
+//#include "Enemy_BaseWeapon.h"
+
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -16,6 +18,9 @@ void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	/*Weapon = GetWorld()->SpawnActor<AEnemy_BaseWeapon>(EnemyWeaponClass);
+	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("Weapon_R"));
+	Weapon->SetOwner(this);*/
 }
 
 // Called every frame
@@ -25,10 +30,6 @@ void ABaseEnemy::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
-void ABaseEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ABaseEnemy::AttackMelee()
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
-

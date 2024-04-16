@@ -6,10 +6,33 @@
 #include "GameFramework/Character.h"
 #include "BaseEnemy.generated.h"
 
+//class AEnemy_BaseWeapon;
+
 UCLASS()
 class CAPSTONE20_HYPERREAL_API ABaseEnemy : public ACharacter
 {
 	GENERATED_BODY()
+private:
+	UPROPERTY()
+	bool CanAttack;
+
+	//UPROPERTY(EditDefaultsOnly)
+	//TSubclassOf<AEnemy_BaseWeapon> EnemyWeaponClass;
+
+	//UPROPERTY(VisibleAnywhere)
+	//AEnemy_BaseWeapon* Weapon;
+
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void SetCanAttack(bool _attack) {
+		CanAttack = _attack;
+	}
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	bool GetCanAttack() const { return CanAttack; }
+
+	void AttackMelee();
 
 public:
 	// Sets default values for this character's properties
@@ -23,7 +46,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 };
