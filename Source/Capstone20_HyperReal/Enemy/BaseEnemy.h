@@ -35,6 +35,10 @@ public:
 	void AttackMelee();
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void SpawnFinished();
+
+public:
 	// Sets default values for this character's properties
 	ABaseEnemy();
 

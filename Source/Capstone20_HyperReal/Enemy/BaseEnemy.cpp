@@ -3,7 +3,7 @@
 
 #include "BaseEnemy.h"
 #include "Enemy_BaseWeapon.h"
-
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -11,6 +11,10 @@ ABaseEnemy::ABaseEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Monster"));
+	GetMesh()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
+	GetMesh()->bReceivesDecals = false;
 }
 
 // Called when the game starts or when spawned
@@ -45,4 +49,16 @@ void ABaseEnemy::Tick(float DeltaTime)
 
 void ABaseEnemy::AttackMelee()
 {
+	UE_LOG(LogTemp, Display, TEXT("AttackMelee Called"));
+}
+
+void ABaseEnemy::SpawnFinished()
+{
+	if (Weapon) {
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("weapon_r_sword"));
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Weapon Not Spawned"));
+	}
+
 }
