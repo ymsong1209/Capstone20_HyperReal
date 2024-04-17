@@ -2,7 +2,7 @@
 
 
 #include "BaseEnemy.h"
-
+#include "Enemy_BaseWeapon.h"
 
 
 // Sets default values
@@ -18,9 +18,22 @@ void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	/*Weapon = GetWorld()->SpawnActor<AEnemy_BaseWeapon>(EnemyWeaponClass);
-	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("Weapon_R"));
-	Weapon->SetOwner(this);*/
+	// Spawn parameters 설정
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this; // 이 액터를 오너로 설정
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	//Weapon = GetWorld()->SpawnActor<AEnemy_BaseWeapon>(EnemyWeaponClass);
+	Weapon = GetWorld()->SpawnActor<AEnemy_BaseWeapon>(EnemyWeaponClass, FVector(0.0f, 0.0f, 0.0f), FRotator::ZeroRotator, SpawnParams);
+	if (Weapon) {
+		UE_LOG(LogTemp, Display, TEXT("Weapon Spawned"));
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("sheath"));
+		Weapon->SetOwner(this);
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Weapon Not Spawned"));
+	}
+
 }
 
 // Called every frame

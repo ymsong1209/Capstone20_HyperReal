@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "BaseEnemy.generated.h"
 
-//class AEnemy_BaseWeapon;
+class AEnemy_BaseWeapon;
 
 UCLASS()
 class CAPSTONE20_HYPERREAL_API ABaseEnemy : public ACharacter
@@ -16,11 +16,11 @@ private:
 	UPROPERTY()
 	bool CanAttack;
 
-	//UPROPERTY(EditDefaultsOnly)
-	//TSubclassOf<AEnemy_BaseWeapon> EnemyWeaponClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AEnemy_BaseWeapon> EnemyWeaponClass;
 
-	//UPROPERTY(VisibleAnywhere)
-	//AEnemy_BaseWeapon* Weapon;
+	UPROPERTY(VisibleAnywhere)
+	AEnemy_BaseWeapon* Weapon;
 
 
 public:
