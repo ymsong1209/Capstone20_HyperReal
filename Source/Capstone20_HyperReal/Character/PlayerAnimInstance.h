@@ -18,6 +18,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	float m_fSpeed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	bool m_bOnAttack;
+
+public:
+	virtual void NativeUpdateAnimation(float DeltaSeconds);
+
 public:
 	UFUNCTION()
 	virtual void AnimNotify_Attack();

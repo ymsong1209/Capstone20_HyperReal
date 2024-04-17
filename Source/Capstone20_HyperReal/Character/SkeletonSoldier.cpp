@@ -4,54 +4,141 @@
 #include "SkeletonSoldier.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/CapsuleComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "TimerManager.h"
+
 #include "SoldierAnimInstance.h"
+#include "ClickMoveController.h"
+#include "LongSword.h"
 
 ASkeletonSoldier::ASkeletonSoldier()	:
-	RWeapon(nullptr)
+	//RWeapon(nullptr),
+	m_fChargeStartTime(0.f),
+	m_ChargingMontage(nullptr),
+	m_ChargeAttackMontage(nullptr),
+	m_WhirlWindMontage(nullptr),
+	m_fChargingTick(0.75f),
+	m_fWhilrwindDuration(4.f),
+	m_fWhildWindSpeed(1000.f),
+	m_iChargeAttackCount(0)
 {
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(30.f, 86.0f);
 
-	// �޽� �ε�
+	// 코드로 캐릭터 메쉬 세팅
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MesshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/ToonSkeletonSoldier/Characters/Meshes/SKM_ToonSkeleton_Soldier_Amethyst.SKM_ToonSkeleton_Soldier_Amethyst'"));
 	if (MesshAsset.Succeeded())
 		GetMesh()->SetSkeletalMesh(MesshAsset.Object);
 
-	// �ִϸ��̼� �������Ʈ ����
+	// 코드로 애니메이션 블루프린트 세팅
 	static ConstructorHelpers::FClassFinder<USoldierAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SJWContent/Character/AB_SkeletonSoldier.AB_SkeletonSoldier_C'"));
 	if (AnimClass.Succeeded())
 		GetMesh()->SetAnimInstanceClass(AnimClass.Class);
 
-	// ��Ĺ�� ����
-	FName WeaponSocket(TEXT("Weapon_R"));
-	if (GetMesh()->DoesSocketExist(WeaponSocket))
+	// 차징 애니메이션 수동 세팅
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AnimCharing(TEXT("/Script/Engine.AnimMontage'/Game/A_SJWContent/Character/Animation/AM_SoldierCharging.AM_SoldierCharging'"));
+	if (AnimCharing.Succeeded())
 	{
-		RWeapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RWEAPON"));
-
-		// ����Ʈ ���� �ε�
-		static ConstructorHelpers::FObjectFinder<UStaticMesh> WeaponAsset(TEXT("/Game/ToonSkeletonSoldier/Weapons/Meshes/SM_ShortSword"));
-		if (WeaponAsset.Succeeded())
-			RWeapon->SetStaticMesh(WeaponAsset.Object);
-
-		RWeapon->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
-		RWeapon->SetupAttachment(GetMesh(), WeaponSocket);
+		m_ChargingMontage = AnimCharing.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AnimChargeAttack(TEXT("/Script/Engine.AnimMontage'/Game/A_SJWContent/Character/Animation/AM_SoldierChargeAttack.AM_SoldierChargeAttack'"));
+	if (AnimChargeAttack.Succeeded())
+	{
+		m_ChargeAttackMontage = AnimChargeAttack.Object;
+	}
+
+	// 훨윈드 애니메이션 수동 세팅
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AnimWhirlwind(TEXT("/Script/Engine.AnimMontage'/Game/A_SJWContent/Character/Animation/AB_SoldierWhirlwind.AB_SoldierWhirlwind'"));
+	if (AnimWhirlwind.Succeeded())
+	{
+		m_WhirlWindMontage = AnimWhirlwind.Object;
+	}
+
+	// 입력 매핑 수동 설정
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputA(TEXT("/Script/EnhancedInput.InputAction'/Game/A_SJWContent/Input/Action/IA_SkillA.IA_SkillA'"));
+	if (InputA.Succeeded())
+	{
+		SkillAAction = InputA.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputS(TEXT("/Script/EnhancedInput.InputAction'/Game/A_SJWContent/Input/Action/IA_SkillS.IA_SkillS'"));
+	if (InputS.Succeeded())
+	{
+		SkillSAction = InputS.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputD(TEXT("/Script/EnhancedInput.InputAction'/Game/A_SJWContent/Input/Action/IA_SkillD.IA_SkillD'"));
+	if (InputD.Succeeded())
+	{
+		SkillDAction = InputD.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputF(TEXT("/Script/EnhancedInput.InputAction'/Game/A_SJWContent/Input/Action/IA_SkillF.IA_SkillF'"));
+	if (InputF.Succeeded())
+	{
+		SkillFAction = InputF.Object;
+	}
+
+	m_fAttackImpulse = 1200.f;
 }
 
 void ASkeletonSoldier::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// 디폴트 무기 액터 생성
+	FName WeaponSocket(TEXT("Weapon_R"));
+	m_pRWeapon = GetWorld()->SpawnActor<ALongSword>(FVector::ZeroVector, FRotator::ZeroRotator);
+
+	if (IsValid(m_pRWeapon))
+	{
+		m_pRWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
+		m_pRWeapon->SetActorRelativeLocation(FVector(0.f, 0.f, -30.f));
+		m_pRWeapon->SetActorRelativeRotation(FRotator(0.f, 90.f, 0.f));
+		m_pRWeapon->SetActorRelativeScale3D(FVector(2.f, 2.f, 3.f));
+	}
+
 }
 
 void ASkeletonSoldier::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 훨윈드 사용중 회전
+	if (m_eUsingSkill == EPlayerSkill::SkillA)
+	{
+		FRotator fCurRot = FRotator(0.f, 0.f, 0.f);
+		SetActorRotation(fCurRot);
+	}
+}
+
+void ASkeletonSoldier::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	UEnhancedInputComponent* pInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+
+	if (IsValid(pInput))
+	{
+		// D 버튼에 차지 공격 바인딩
+		pInput->BindAction(SkillDAction, ETriggerEvent::Started, this, &ASkeletonSoldier::ChargeStart);
+		pInput->BindAction(SkillDAction, ETriggerEvent::Triggered, this, &ASkeletonSoldier::Charging);
+		pInput->BindAction(SkillDAction, ETriggerEvent::Completed, this, &ASkeletonSoldier::ChargeAttack);
+
+		// A 버튼에 휠윈드 공격 바인딩
+		pInput->BindAction(SkillAAction, ETriggerEvent::Started, this, &ASkeletonSoldier::Whirlwind);
+	}
 }
 
 void ASkeletonSoldier::Attack()
 {
-	if (!m_bOnAttack)
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None))
 	{
 		// 하고 공격 모션
 		if (m_arrAttackMontage.Num() == 0)
@@ -71,4 +158,107 @@ void ASkeletonSoldier::Attack()
 	}
 
 	Super::Attack();
+}
+
+void ASkeletonSoldier::ChargeStart()
+{
+	if (m_eUsingSkill != EPlayerSkill::None)
+		return;
+
+	GetCharacterMovement()->StopMovementImmediately();
+
+	m_fChargeStartTime = GetWorld()->GetTimeSeconds();
+	m_eUsingSkill = EPlayerSkill::SkillD;
+
+	if (!m_pAnim->Montage_IsPlaying(m_ChargingMontage))
+	{
+		m_pAnim->Montage_SetPosition(m_ChargingMontage, 0.f);
+		m_pAnim->Montage_Play(m_ChargingMontage);
+		m_iChargeAttackCount = 0;
+	}
+}
+
+void ASkeletonSoldier::Charging()
+{
+	if (m_eUsingSkill != EPlayerSkill::SkillD)
+		return;
+
+	// 마우스 방향으로 차징중 회전
+	FHitResult Hit;
+	bool bHitSuccessful = false;
+
+	AClickMoveController* pController = Cast<AClickMoveController>(GetController());
+
+	if (IsValid(pController))
+	{
+		bHitSuccessful = pController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+		FVector CachedDestination;
+
+		// If we hit a surface, cache the location
+		if (bHitSuccessful)
+			CachedDestination = Hit.Location;
+
+		FVector vDir = (CachedDestination - GetActorLocation()).GetSafeNormal();
+		SetActorRotation(vDir.Rotation());
+	}
+
+	// 차징 시간 체크하여 최대치를 넘기면 바로 공격실행
+	float fElapsedTime = GetWorld()->GetTimeSeconds() - m_fChargeStartTime;
+	if (fElapsedTime >= (m_fChargingTick * 3.f))
+		ChargeAttack();
+}
+
+void ASkeletonSoldier::ChargeAttack()
+{
+	if (m_eUsingSkill != EPlayerSkill::SkillD)
+		return;
+
+	float fElapsedTime = GetWorld()->GetTimeSeconds() - m_fChargeStartTime;
+
+	m_iChargeAttackCount = FMath::FloorToInt32(fElapsedTime / m_fChargingTick) + 1;
+
+	if (!m_pAnim->Montage_IsPlaying(m_ChargeAttackMontage))
+	{
+		m_pAnim->Montage_SetPosition(m_ChargeAttackMontage, 0.f);
+		m_pAnim->Montage_Play(m_ChargeAttackMontage);
+	}
+
+	m_fChargeStartTime = 0.f;
+	m_eUsingSkill = EPlayerSkill::None;
+}
+
+void ASkeletonSoldier::Whirlwind()
+{
+	// 아무 스킬도 안쓰고 있었으면 휠윈드 실행
+	if (m_eUsingSkill == EPlayerSkill::None)
+	{
+		m_eUsingSkill = EPlayerSkill::SkillA;
+
+		if (!m_pAnim->Montage_IsPlaying(m_WhirlWindMontage))
+		{
+			m_pAnim->Montage_SetPosition(m_WhirlWindMontage, 0.f);
+			m_pAnim->Montage_Play(m_WhirlWindMontage);
+
+			// 타이머 설정해서 몇초후 훨윈드 자동 종료	
+			GetWorldTimerManager().SetTimer(m_hWhirlwindHandle, this, &ASkeletonSoldier::WhirlwindEnd, m_fWhilrwindDuration, false);
+		}
+
+		if (m_pRWeapon)
+			m_pRWeapon->StartTrail();
+	}
+	// 휠윈드를 쓰는 중이었으면 휠윈드 종료
+	else if(m_eUsingSkill == EPlayerSkill::SkillA)
+	{
+		WhirlwindEnd();
+	}
+}
+
+void ASkeletonSoldier::WhirlwindEnd()
+{
+	m_eUsingSkill = EPlayerSkill::None;
+	m_pAnim->Montage_Stop(0.f);
+	GetWorldTimerManager().ClearTimer(m_hWhirlwindHandle);
+
+	if (m_pRWeapon)
+		m_pRWeapon->EndTrail();
 }

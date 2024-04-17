@@ -11,6 +11,15 @@ class UInputMappingContext;
 class UInputAction;
 class FActionInputInstance;
 
+enum class EPlayerSkill
+{
+	SkillA,
+	SkillS,
+	SkillD,
+	SkillF,
+	None
+};
+
 UCLASS()
 class CAPSTONE20_HYPERREAL_API APlayerCharacter : public ACharacter
 {
@@ -28,8 +37,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	UInputMappingContext* DefaultMappingContext;
 
+	// 액션 바인딩
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	UInputAction* AttackAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	UInputAction* SkillAAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	UInputAction* SkillSAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	UInputAction* SkillDAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	UInputAction* SkillFAction;
 
 	// 공격 애니메이션 몽타주 저장
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
@@ -38,17 +60,24 @@ public:
 	// 재생 시킬 애니메이션 인덱스
 	int32 m_iAttackMontageIndex;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
+	float m_fAttackImpulse;
+
 protected:
 	class UPlayerAnimInstance* m_pAnim;
 	bool m_bOnAttack;
 
 	bool m_bComboDetected;
 
+	EPlayerSkill m_eUsingSkill;
+
 public:
 	bool OnAttack() const { return m_bOnAttack; };
 	void SetAttack(bool _bAttack) { m_bOnAttack = _bAttack; }
 
 	bool IsComboDectected() { return m_bComboDetected; }
+
+	EPlayerSkill GetUsingSkill() { return m_eUsingSkill; }
 
 protected:
 	// Called when the game starts or when spawned
@@ -73,4 +102,5 @@ private:
 public:
 	virtual void Attack();
 	virtual void AttackEnd();
+	virtual void AttackReset();
 };

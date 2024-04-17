@@ -76,7 +76,7 @@ void AClickMoveController::OnClickMoveTriggered()
 	// Move towards mouse pointer or touch
 	APlayerCharacter* ControlledPawn = Cast<APlayerCharacter>(GetPawn());
 	
-	if (ControlledPawn != nullptr && !ControlledPawn->OnAttack())
+	if (ControlledPawn != nullptr && !ControlledPawn->OnAttack() && (ControlledPawn->GetUsingSkill() == EPlayerSkill::None))
 	{
 		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
 		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
@@ -88,8 +88,7 @@ void AClickMoveController::OnClickMoveReleased()
 	// Move towards mouse pointer or touch
 	APlayerCharacter* ControlledPawn = Cast<APlayerCharacter>(GetPawn());
 
-
-	if (ControlledPawn->OnAttack())
+	if (ControlledPawn->OnAttack() || (ControlledPawn->GetUsingSkill() != EPlayerSkill::None))
 		return;
 
 	// If it was a short press

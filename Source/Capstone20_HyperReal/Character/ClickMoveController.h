@@ -45,11 +45,11 @@ protected:
 	virtual void BeginPlay();
 
 	/** Input handlers for SetDestination action. */
-	void OnInputStarted();
-	void OnClickMoveTriggered();
-	void OnClickMoveReleased();
+	virtual void OnInputStarted();
+	virtual void OnClickMoveTriggered();
+	virtual void OnClickMoveReleased();
 
-private:
+protected:
 	FVector CachedDestination;
 
 	float FollowTime; // For how long it has been pressed

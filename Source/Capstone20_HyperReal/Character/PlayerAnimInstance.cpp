@@ -4,10 +4,26 @@
 #include "PlayerAnimInstance.h"
 #include "PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "PlayerCharacter.h"
 
 UPlayerAnimInstance::UPlayerAnimInstance()	:
 	m_fSpeed(0.f)
 {
+}
+
+void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+{
+	Super::NativeUpdateAnimation(DeltaSeconds);
+
+	APlayerCharacter* pPlayer = Cast<APlayerCharacter>(TryGetPawnOwner());
+
+	if (IsValid(pPlayer))
+	{
+		UCharacterMovementComponent* pMovement = pPlayer->GetCharacterMovement();
+		m_fSpeed = pMovement->Velocity.Size();
+
+		m_bOnAttack = pPlayer->OnAttack();
+	}
 }
 
 void UPlayerAnimInstance::AnimNotify_Attack()
@@ -33,7 +49,7 @@ void UPlayerAnimInstance::AnimNotify_AttackEnd()
 	if (IsValid(pPlayer))
 	{
 		if (pPlayer->IsComboDectected())
-			pPlayer->SetAttack(false);
+			pPlayer->AttackReset();
 		else
 			pPlayer->AttackEnd();
 	}

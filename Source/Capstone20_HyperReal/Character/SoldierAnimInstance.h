@@ -17,7 +17,27 @@ class CAPSTONE20_HYPERREAL_API USoldierAnimInstance : public UPlayerAnimInstance
 public:
 	USoldierAnimInstance();
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	bool m_bOnWhirlwind;
+
 public:
 	virtual void NativeInitializeAnimation();
-	virtual void NativeUpdateAnimation(float DeltaSeconds);
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+private:
+	int32 m_iChargeAttackCount;
+
+public:
+	UFUNCTION()
+	virtual void AnimNotify_ChargeAttack();
+
+	UFUNCTION()
+	virtual void AnimNotify_ChargeAttackEnd();
+
+	UFUNCTION()
+	virtual void AnimNotify_TrailStart();
+
+	UFUNCTION()
+	virtual void AnimNotify_TrailEnd();
 };

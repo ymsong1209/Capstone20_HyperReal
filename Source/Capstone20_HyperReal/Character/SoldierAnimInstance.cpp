@@ -2,10 +2,15 @@
 
 
 #include "SoldierAnimInstance.h"
-#include "PlayerCharacter.h"
+#include "SkeletonSoldier.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-USoldierAnimInstance::USoldierAnimInstance()
+#include "SkeletonSoldier.h"
+#include "Weapon.h"
+
+USoldierAnimInstance::USoldierAnimInstance()	:
+	m_iChargeAttackCount(0),
+	m_bOnWhirlwind(false)
 {
 }
 
@@ -18,11 +23,52 @@ void USoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	APlayerCharacter* pPlayer = Cast<APlayerCharacter>(TryGetPawnOwner());
+	ASkeletonSoldier* pPlayer = Cast<ASkeletonSoldier>(TryGetPawnOwner());
 
 	if (IsValid(pPlayer))
 	{
-		UCharacterMovementComponent* pMovement = pPlayer->GetCharacterMovement();
-		m_fSpeed = pMovement->Velocity.Size();
+		m_bOnWhirlwind = (pPlayer->GetUsingSkill() == EPlayerSkill::SkillA);
+	}
+}
+
+void USoldierAnimInstance::AnimNotify_ChargeAttack()
+{
+	UE_LOG(LogTemp, Log, TEXT("Charge Attack"));
+}
+
+void USoldierAnimInstance::AnimNotify_ChargeAttackEnd()
+{
+	ASkeletonSoldier* pSoldier = Cast<ASkeletonSoldier>(TryGetPawnOwner());
+
+	if (++m_iChargeAttackCount >= pSoldier->GetChargeAttackCount())
+	{
+		Montage_Stop(0.1f);
+		m_iChargeAttackCount = 0;
+	}
+}
+
+void USoldierAnimInstance::AnimNotify_TrailStart()
+{
+	ASkeletonSoldier* pPlayer = Cast<ASkeletonSoldier>(TryGetPawnOwner());
+
+	if (IsValid(pPlayer))
+	{
+		AWeapon* pWeapon = pPlayer->GetRWeapon();
+
+		if (IsValid(pWeapon))
+			pWeapon->StartTrail();
+	}
+}
+
+void USoldierAnimInstance::AnimNotify_TrailEnd()
+{
+	ASkeletonSoldier* pPlayer = Cast<ASkeletonSoldier>(TryGetPawnOwner());
+
+	if (IsValid(pPlayer))
+	{
+		AWeapon* pWeapon = pPlayer->GetRWeapon();
+
+		if (IsValid(pWeapon))
+			pWeapon->EndTrail();
 	}
 }
