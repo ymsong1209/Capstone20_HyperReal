@@ -6,7 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "SoldierAnimInstance.h"
 
-ASkeletonSoldier::ASkeletonSoldier()	:
+ASkeletonSoldier::ASkeletonSoldier() :
 	RWeapon(nullptr)
 {
 	// Set size for player capsule
@@ -56,7 +56,7 @@ void ASkeletonSoldier::Attack()
 
 	// 하고 공격 모션
 	if (m_arrAttackMontage.Num() == 0)
-	{	
+	{
 		AttackEnd();
 		return;
 	}
