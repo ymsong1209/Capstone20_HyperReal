@@ -4,6 +4,8 @@
 #include "BaseEnemy.h"
 #include "Enemy_BaseWeapon.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -50,6 +52,22 @@ void ABaseEnemy::Tick(float DeltaTime)
 void ABaseEnemy::AttackMelee()
 {
 	UE_LOG(LogTemp, Display, TEXT("AttackMelee Called"));
+
+	FVector Start = GetActorLocation() + GetActorForwardVector() * 50.f;
+	FVector End = GetActorLocation() + GetActorForwardVector() * 250.f;
+
+	FCollisionQueryParams params(NAME_None, false, this);
+
+	TArray<FHitResult> HitArray;
+	bool Hit =  GetWorld()->SweepMultiByChannel(HitArray, Start, End, FQuat::Identity, 
+		ECollisionChannel::ECC_GameTraceChannel3, FCollisionShape::MakeSphere(50.f), params);
+
+	if (Hit) {
+		FColor drawcolor = Hit ? FColor::Red : FColor::Green;
+
+		DrawDebugCapsule(GetWorld(), (Start + End) / 2.f, 150.f, 50.f,
+				FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), drawcolor, false, 0.5f);
+	}
 }
 
 void ABaseEnemy::SpawnFinished()
