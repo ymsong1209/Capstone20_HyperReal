@@ -13,7 +13,7 @@ UCLASS()
 class CAPSTONE20_HYPERREAL_API ASkeletonSoldier : public APlayerCharacter
 {
 	GENERATED_BODY()
-	
+
 	ASkeletonSoldier();
 
 public:
