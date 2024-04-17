@@ -18,15 +18,16 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 
-#include "ClickMoveController.h"
-
 // Sets default values
 APlayerCharacter::APlayerCharacter()	:
 	DefaultMappingContext(nullptr),
 	AttackAction(nullptr),
 	m_pAnim(nullptr),
 	m_iAttackMontageIndex(0),
-	m_bOnAttack(false)
+	m_bOnAttack(false),
+	m_bComboDetected(false),
+	m_eUsingSkill(EPlayerSkill::None),
+	m_fAttackImpulse(0.f)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -45,13 +46,12 @@ APlayerCharacter::APlayerCharacter()	:
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
-
 	// Create a camera boom...
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
-	CameraBoom->TargetArmLength = 800.f;
-	CameraBoom->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
+	CameraBoom->TargetArmLength = 600.f;
+	CameraBoom->SetRelativeRotation(FRotator(-70.f, 0.f, 0.f));
 	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
 
 	// Create a camera...
@@ -100,13 +100,25 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	if (IsValid(pInput))
 	{
-		pInput->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
+		// 우클릭을 기본 공격에 바인딩 추후 triggerd 로 바꾸는게 좀더 자연스러울듯함
+		pInput->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacter::Attack);
+
+		// 스킬은 직업 마다 다를 수 있으므로 재정의해서 구현
 	}
 }
 
 void APlayerCharacter::Attack()
 {
+	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None))
+	{
+		if (!m_bComboDetected)
+			m_bComboDetected = true;
+
+		return;
+	}
+
 	m_bOnAttack = true;
+	m_bComboDetected = false;
 
 	// 마우스 방향으로 회전
 	FHitResult Hit;
@@ -127,12 +139,18 @@ void APlayerCharacter::Attack()
 		SetActorRotation(vDir.Rotation());
 	}
 
-	// 움직임 제거(공격이 끝나면 풀어야함)
 	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->AddImpulse(GetActorForwardVector() * m_fAttackImpulse, true);
 }
 
 void APlayerCharacter::AttackEnd()
 {
 	m_iAttackMontageIndex = 0;
-	UCharacterMovementComponent* pMovement = GetCharacterMovement();
+	AttackReset();
+}
+
+void APlayerCharacter::AttackReset()
+{
+	m_bOnAttack = false;
+	m_bComboDetected = false;
 }
