@@ -16,6 +16,7 @@ class CAPSTONE20_HYPERREAL_API UCharacterHUDWidget : public UUserWidget
 	GENERATED_BODY()
 protected:
 	UProgressBar* mHPBar;
+	UProgressBar* mSPBar;
 protected:
 	virtual void NativeOnInitialized();
 	virtual void NativePreConstruct();
@@ -33,5 +34,15 @@ public:
 			Percent = 1.f;
 
 		mHPBar->SetPercent(Percent);
+	}
+	void SetSPPercent(float Percent)
+	{
+		if (Percent < 0.f)
+			Percent = 0.f;
+
+		else if (Percent > 1.f)
+			Percent = 1.f;
+
+		mSPBar->SetPercent(Percent);
 	}
 };
