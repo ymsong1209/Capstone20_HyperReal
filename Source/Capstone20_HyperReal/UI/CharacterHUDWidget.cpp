@@ -11,6 +11,7 @@ void UCharacterHUDWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	mHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar")));
+	mSPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("SPBar")));
 	int a = 0;
 }
 

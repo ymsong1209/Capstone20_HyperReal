@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Containers/Array.h"
 #include "CharacterHUDWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "InGameUserWidget.generated.h"
-
-
+class UImage;
+class UTexture;
 /**
  * 
  */
@@ -26,6 +27,10 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 private:
 	class UImage* skillicon;
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "UI Elements")
+	TArray<UImage*> skillImages;
+	TArray<UImage*> skillBackImages;
 	class UMaterialInstanceDynamic* MatInst;
 	float rate;
 public:
@@ -35,5 +40,6 @@ public:
 	}
 public:
 	void SetHP(int32 HP, int32 HPMax);
-	void Skill1CoolTime(float frate);
+	void CalSkillCoolTime(int idx, float fRate);
+	void SetSkillImage(int idx, UTexture* tex);
 };
