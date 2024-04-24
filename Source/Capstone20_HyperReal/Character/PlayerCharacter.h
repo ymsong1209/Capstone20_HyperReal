@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../GameInfo.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
@@ -10,15 +10,6 @@ class UPlayerAnimInstance;
 class UInputMappingContext;
 class UInputAction;
 class FActionInputInstance;
-
-enum class EPlayerSkill
-{
-	SkillA,
-	SkillS,
-	SkillD,
-	SkillF,
-	None
-};
 
 UCLASS()
 class CAPSTONE20_HYPERREAL_API APlayerCharacter : public ACharacter
@@ -60,8 +51,13 @@ public:
 	// 재생 시킬 애니메이션 인덱스
 	int32 m_iAttackMontageIndex;
 
+	// 공격시 살짝 이동할 힘
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
 	float m_fAttackImpulse;
+
+	// 고스트 트레일 생성 간격
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect)
+	float m_fGhostTrailTickTime;
 
 protected:
 	class UPlayerAnimInstance* m_pAnim;
@@ -71,6 +67,17 @@ protected:
 
 	EPlayerSkill m_eUsingSkill;
 
+	float m_fAnimPlaySpeed;
+
+	bool m_bGhostTrail;
+
+	USkeletalMesh* m_SKMesh;
+
+private:
+	float m_fDefaultSpeed;
+	float m_fDefaultAccel;
+	float m_fAccGhostTime;
+
 public:
 	bool OnAttack() const { return m_bOnAttack; };
 	void SetAttack(bool _bAttack) { m_bOnAttack = _bAttack; }
@@ -78,6 +85,9 @@ public:
 	bool IsComboDectected() { return m_bComboDetected; }
 
 	EPlayerSkill GetUsingSkill() { return m_eUsingSkill; }
+
+	float GetAnimPlaySpeed() { return m_fAnimPlaySpeed; }
+	void SetAnimPlaySpeed(float _fSpeed) { m_fAnimPlaySpeed = _fSpeed; }
 
 protected:
 	// Called when the game starts or when spawned
@@ -103,4 +113,14 @@ public:
 	virtual void Attack();
 	virtual void AttackEnd();
 	virtual void AttackReset();
+
+	virtual void SkillEnd() {};
+
+	FVector GetMousePosition();
+
+public:
+	// 감속하거나 가속할 배율 입력
+	void ChangeWalkSpeed(float _value);
+
+	void SpawnGhostTrail();
 };

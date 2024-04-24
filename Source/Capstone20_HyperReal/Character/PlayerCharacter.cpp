@@ -13,13 +13,14 @@
 #include "Engine/World.h"
 #include "PlayerAnimInstance.h"
 #include "ClickMoveController.h"
+#include "GhostTrail.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 
 // Sets default values
-APlayerCharacter::APlayerCharacter()	:
+APlayerCharacter::APlayerCharacter() :
 	DefaultMappingContext(nullptr),
 	AttackAction(nullptr),
 	m_pAnim(nullptr),
@@ -27,7 +28,10 @@ APlayerCharacter::APlayerCharacter()	:
 	m_bOnAttack(false),
 	m_bComboDetected(false),
 	m_eUsingSkill(EPlayerSkill::None),
-	m_fAttackImpulse(0.f)
+	m_fAttackImpulse(0.f),
+	m_fAnimPlaySpeed(1.f),
+	m_fGhostTrailTickTime(0.1f),
+	m_bGhostTrail(false)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -62,6 +66,9 @@ APlayerCharacter::APlayerCharacter()	:
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+	
+	m_fDefaultSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	m_fDefaultAccel = GetCharacterMovement()->MaxAcceleration;
 }
 
 // Called when the game starts or when spawned
@@ -89,6 +96,26 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (m_bGhostTrail)
+	{
+		m_fAccGhostTime += DeltaTime;
+
+		if (m_fAccGhostTime >= m_fGhostTrailTickTime)
+		{
+			m_fAccGhostTime -= m_fGhostTrailTickTime;
+
+			FActorSpawnParameters param;
+			param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			AGhostTrail* pGhost = GetWorld()->SpawnActor<AGhostTrail>(
+				AGhostTrail::StaticClass(),
+				GetMesh()->GetComponentLocation(),
+				GetMesh()->GetComponentRotation(), param);
+
+			pGhost->SetMesh(m_SKMesh);
+			pGhost->CopyAnimation(GetMesh());
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -153,4 +180,27 @@ void APlayerCharacter::AttackReset()
 {
 	m_bOnAttack = false;
 	m_bComboDetected = false;
+}
+
+FVector APlayerCharacter::GetMousePosition()
+{
+	FHitResult Hit;
+	bool bHitSuccessful = false;
+
+	AClickMoveController* pController = Cast<AClickMoveController>(GetController());
+
+	bHitSuccessful = pController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+	FVector CachedDestination;
+
+	// If we hit a surface, cache the location
+	if (bHitSuccessful)
+		CachedDestination = Hit.Location;
+
+	return CachedDestination;
+}
+
+void APlayerCharacter::ChangeWalkSpeed(float _value)
+{
+	GetCharacterMovement()->MaxWalkSpeed = (m_fDefaultSpeed * _value);
+	GetCharacterMovement()->MaxAcceleration = (m_fDefaultAccel * _value);
 }

@@ -11,29 +11,37 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
+#include "Components/PrimitiveComponent.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Components/DecalComponent.h"
 
 #include "SoldierAnimInstance.h"
 #include "ClickMoveController.h"
 #include "LongSword.h"
+#include "../Projectile/SoldierChargeSlash.h"
 
-ASkeletonSoldier::ASkeletonSoldier()	:
-	//RWeapon(nullptr),
+ASkeletonSoldier::ASkeletonSoldier() :
 	m_fChargeStartTime(0.f),
 	m_ChargingMontage(nullptr),
 	m_ChargeAttackMontage(nullptr),
 	m_WhirlWindMontage(nullptr),
+	m_LeapAttackMontage(nullptr),
 	m_fChargingTick(0.75f),
 	m_fWhilrwindDuration(4.f),
 	m_fWhildWindSpeed(1000.f),
-	m_iChargeAttackCount(0)
+	m_iChargeAttackCount(0),
+	m_fLeapMaxDistance(500.f)
 {
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(30.f, 86.0f);
 
 	// 코드로 캐릭터 메쉬 세팅
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MesshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/ToonSkeletonSoldier/Characters/Meshes/SKM_ToonSkeleton_Soldier_Amethyst.SKM_ToonSkeleton_Soldier_Amethyst'"));
-	if (MesshAsset.Succeeded())
-		GetMesh()->SetSkeletalMesh(MesshAsset.Object);
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/ToonSkeletonSoldier/Characters/Meshes/SKM_ToonSkeleton_Soldier_Amethyst.SKM_ToonSkeleton_Soldier_Amethyst'"));
+	if (MeshAsset.Succeeded())
+	{
+		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
+		m_SKMesh = MeshAsset.Object;
+	}
 
 	// 코드로 애니메이션 블루프린트 세팅
 	static ConstructorHelpers::FClassFinder<USoldierAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SJWContent/Character/AB_SkeletonSoldier.AB_SkeletonSoldier_C'"));
@@ -60,6 +68,20 @@ ASkeletonSoldier::ASkeletonSoldier()	:
 		m_WhirlWindMontage = AnimWhirlwind.Object;
 	}
 
+	// 리프어택 애니메이션 수동 세팅
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AnimLeapAttack(TEXT("/Script/Engine.AnimMontage'/Game/A_SJWContent/Character/Animation/AM_LeapAttack.AM_LeapAttack'"));
+	if (AnimLeapAttack.Succeeded())
+	{
+		m_LeapAttackMontage = AnimLeapAttack.Object;
+	}
+
+	// 언데드 퓨리 애니메이션 수동 세팅
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AnimUndeadFury(TEXT("/Script/Engine.AnimMontage'/Game/A_SJWContent/Character/Animation/AM_SoldierUndeadFury.AM_SoldierUndeadFury'"));
+	if (AnimUndeadFury.Succeeded())
+	{
+		m_UndeadFuryMontage = AnimUndeadFury.Object;
+	}
+
 	// 입력 매핑 수동 설정
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputA(TEXT("/Script/EnhancedInput.InputAction'/Game/A_SJWContent/Input/Action/IA_SkillA.IA_SkillA'"));
 	if (InputA.Succeeded())
@@ -84,6 +106,29 @@ ASkeletonSoldier::ASkeletonSoldier()	:
 	{
 		SkillFAction = InputF.Object;
 	}
+	
+	// 데칼 머티리얼 로딩
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MILeapRange(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/MT_LeapAttackRange.MT_LeapAttackRange'"));
+	if (MILeapRange.Succeeded())
+	{
+		m_pLeapAttackRangeDecalInterface = MILeapRange.Object;
+	}
+
+	// 리프 어택시 바닥에 생성될 범위 확인용 데칼 컴포넌트 생성
+	m_pLeapAttackRangeDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("LeapRange"));
+	m_pLeapAttackRangeDecal->SetDecalMaterial(m_pLeapAttackRangeDecalInterface);
+
+	m_pLeapAttackRangeDecal->SetRelativeLocation(FVector(0.f, 0.f, -80.f));
+	m_pLeapAttackRangeDecal->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
+	m_pLeapAttackRangeDecal->SetRelativeScale3D(FVector(0.5f, 2.6f, 2.6f));
+	m_pLeapAttackRangeDecal->SetupAttachment(RootComponent);
+	m_pLeapAttackRangeDecal->SetHiddenInGame(true);
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MILeapAttack(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/MT_LeapAttack.MT_LeapAttack'"));
+	if (MILeapAttack.Succeeded())
+	{
+		m_pLeapAttackDecalInterface = MILeapAttack.Object;
+	}
 
 	m_fAttackImpulse = 1200.f;
 }
@@ -104,17 +149,62 @@ void ASkeletonSoldier::BeginPlay()
 		m_pRWeapon->SetActorRelativeScale3D(FVector(2.f, 2.f, 3.f));
 	}
 
+	if (IsValid(m_pLeapAttackRangeDecal))
+	{
+		m_pLeapAttackRangeDecal->SetHiddenInGame(true);
+		m_pLeapAttackRangeDecal->SetRelativeLocation(FVector(0.f, 0.f, -80.f));
+		m_pLeapAttackRangeDecal->SetRelativeScale3D(FVector(0.5f, 2.6f, 2.6f));
+	}
 }
 
 void ASkeletonSoldier::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// 훨윈드 사용중 회전
-	if (m_eUsingSkill == EPlayerSkill::SkillA)
+	switch (m_eUsingSkill)
+	{
+		// 훨윈드
+	case EPlayerSkill::SkillA:
 	{
 		FRotator fCurRot = FRotator(0.f, 0.f, 0.f);
 		SetActorRotation(fCurRot);
+	}
+		break;
+		// 리프 어택
+	case EPlayerSkill::SkillS:
+	{
+		if (m_bOnLeapAttackCharge)
+		{
+			FVector vMousePos = GetMousePosition();
+			vMousePos.Z = GetActorLocation().Z;
+
+			// 최대 거리 밖으로 이동 안하도록 설정
+			if (FVector::Dist(vMousePos, GetActorLocation()) > m_fLeapMaxDistance)
+			{
+				FVector vDir = (vMousePos - GetActorLocation()).GetSafeNormal();
+				m_vLeapAttackPos = (GetActorLocation() + vDir * m_fLeapMaxDistance);
+			}
+			else
+				m_vLeapAttackPos = vMousePos;
+
+			m_vLeapAttackPos.Z = GetMousePosition().Z;
+
+			// 위치 확인용 스피어 출력
+			DrawDebugSphere(GetWorld(), m_vLeapAttackPos, 10.f, 50, FColor::Green);
+
+			if (IsValid(m_pLeapAttackDecal))
+				m_pLeapAttackDecal->SetWorldLocation(m_vLeapAttackPos);
+		}
+	}
+		break;
+	case EPlayerSkill::SkillD:
+		break;
+	case EPlayerSkill::SkillF:
+		break;
+	case EPlayerSkill::None:
+		break;
+	default:
+		break;
 	}
 }
 
@@ -133,6 +223,12 @@ void ASkeletonSoldier::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// A 버튼에 휠윈드 공격 바인딩
 		pInput->BindAction(SkillAAction, ETriggerEvent::Started, this, &ASkeletonSoldier::Whirlwind);
+
+		// S 버틈에 도약 공격 바인딩
+		pInput->BindAction(SkillSAction, ETriggerEvent::Started, this, &ASkeletonSoldier::LeapAttack);
+
+		// F 버튼에 언데드 퓨리 바인딩
+		pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::UndeadFury);
 	}
 }
 
@@ -151,7 +247,7 @@ void ASkeletonSoldier::Attack()
 		{
 			// 몽타주 초기화
 			m_pAnim->Montage_SetPosition(m_arrAttackMontage[m_iAttackMontageIndex], 0.f);
-			m_pAnim->Montage_Play(m_arrAttackMontage[m_iAttackMontageIndex]);
+			m_pAnim->Montage_Play(m_arrAttackMontage[m_iAttackMontageIndex], GetAnimPlaySpeed());
 
 			m_iAttackMontageIndex = (m_iAttackMontageIndex + 1) % m_arrAttackMontage.Num();
 		}
@@ -160,9 +256,36 @@ void ASkeletonSoldier::Attack()
 	Super::Attack();
 }
 
+void ASkeletonSoldier::SkillEnd()
+{
+	switch (m_eUsingSkill)
+	{
+	case EPlayerSkill::SkillA:
+		break;
+	case EPlayerSkill::SkillS:
+		m_eUsingSkill = EPlayerSkill::None;
+		break;
+	case EPlayerSkill::SkillD:
+	{
+		if (++m_iAccChargeAttackCount >= m_iChargeAttackCount)
+		{
+			m_pAnim->Montage_Stop(0.1f);
+			m_iChargeAttackCount = 0;
+			m_iAccChargeAttackCount = 0;
+			m_fChargeStartTime = 0.f;
+			m_eUsingSkill = EPlayerSkill::None;
+		}
+	}
+		break;
+	case EPlayerSkill::SkillF:
+		m_eUsingSkill = EPlayerSkill::None;
+		break;
+	}
+}
+
 void ASkeletonSoldier::ChargeStart()
 {
-	if (m_eUsingSkill != EPlayerSkill::None)
+	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None))
 		return;
 
 	GetCharacterMovement()->StopMovementImmediately();
@@ -173,7 +296,7 @@ void ASkeletonSoldier::ChargeStart()
 	if (!m_pAnim->Montage_IsPlaying(m_ChargingMontage))
 	{
 		m_pAnim->Montage_SetPosition(m_ChargingMontage, 0.f);
-		m_pAnim->Montage_Play(m_ChargingMontage);
+		m_pAnim->Montage_Play(m_ChargingMontage, GetAnimPlaySpeed());
 		m_iChargeAttackCount = 0;
 	}
 }
@@ -220,24 +343,21 @@ void ASkeletonSoldier::ChargeAttack()
 	if (!m_pAnim->Montage_IsPlaying(m_ChargeAttackMontage))
 	{
 		m_pAnim->Montage_SetPosition(m_ChargeAttackMontage, 0.f);
-		m_pAnim->Montage_Play(m_ChargeAttackMontage);
+		m_pAnim->Montage_Play(m_ChargeAttackMontage, GetAnimPlaySpeed());
 	}
-
-	m_fChargeStartTime = 0.f;
-	m_eUsingSkill = EPlayerSkill::None;
 }
 
 void ASkeletonSoldier::Whirlwind()
 {
 	// 아무 스킬도 안쓰고 있었으면 휠윈드 실행
-	if (m_eUsingSkill == EPlayerSkill::None)
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillA;
 
 		if (!m_pAnim->Montage_IsPlaying(m_WhirlWindMontage))
 		{
 			m_pAnim->Montage_SetPosition(m_WhirlWindMontage, 0.f);
-			m_pAnim->Montage_Play(m_WhirlWindMontage);
+			m_pAnim->Montage_Play(m_WhirlWindMontage, GetAnimPlaySpeed());
 
 			// 타이머 설정해서 몇초후 훨윈드 자동 종료	
 			GetWorldTimerManager().SetTimer(m_hWhirlwindHandle, this, &ASkeletonSoldier::WhirlwindEnd, m_fWhilrwindDuration, false);
@@ -253,6 +373,69 @@ void ASkeletonSoldier::Whirlwind()
 	}
 }
 
+void ASkeletonSoldier::LeapAttack()
+{
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None))
+	{
+		m_eUsingSkill = EPlayerSkill::SkillS;
+
+		if (!m_pAnim->Montage_IsPlaying(m_LeapAttackMontage))
+		{
+			m_pAnim->Montage_SetPosition(m_LeapAttackMontage, 0.f);
+			m_pAnim->Montage_Play(m_LeapAttackMontage, GetAnimPlaySpeed());
+			GetCharacterMovement()->StopMovementImmediately();
+			m_bOnLeapAttackCharge = true;
+			m_pLeapAttackRangeDecal->SetHiddenInGame(false);
+
+			// 낙하할 위치 알려주는 데칼 생성
+			m_pLeapAttackDecal = UGameplayStatics::SpawnDecalAtLocation(this, m_pLeapAttackDecalInterface, FVector(64.f, 128.f, 128.f), 
+				GetActorLocation(), FRotator(-90.f, 0.f, 0.f), 0.f);
+
+			// 거리 확인용 디버깅 오브젝트
+			DrawDebugCircle(GetWorld(), GetActorLocation(), m_fLeapMaxDistance, 
+				50, FColor(255.f, 255.f, 0.f), false, 1.f, 0U, 1.f, FVector(0.f, 1.f, 0.f), FVector(1.f, 0.f, 0.f));
+		}
+	}
+}
+
+void ASkeletonSoldier::UndeadFury()
+{
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None))
+	{
+		m_eUsingSkill = EPlayerSkill::SkillF;
+
+		if (!m_pAnim->Montage_IsPlaying(m_UndeadFuryMontage))
+		{
+			m_pAnim->Montage_SetPosition(m_UndeadFuryMontage, 0.f);
+			m_pAnim->Montage_Play(m_UndeadFuryMontage);
+			GetCharacterMovement()->StopMovementImmediately();
+
+			// 애니메이션 재생속도 변경
+			SetAnimPlaySpeed(1.5f);
+
+			// 이동 속도 변경
+			ChangeWalkSpeed(1.5f);
+
+			GetWorldTimerManager().SetTimer(m_hUndeadFuryHandle, this, &ASkeletonSoldier::UndeadFuryBuffEnd, 5.f, false);
+
+			m_bGhostTrail = true;
+		}
+	}
+}
+
+void ASkeletonSoldier::UndeadFuryBuffEnd()
+{
+	SetAnimPlaySpeed(1.f);
+	ChangeWalkSpeed(1.f);
+	m_bGhostTrail = false;
+}
+
+void ASkeletonSoldier::ChargeAttackEnd()
+{
+	m_fChargeStartTime = 0.f;
+	m_eUsingSkill = EPlayerSkill::None;
+}
+
 void ASkeletonSoldier::WhirlwindEnd()
 {
 	m_eUsingSkill = EPlayerSkill::None;
@@ -261,4 +444,30 @@ void ASkeletonSoldier::WhirlwindEnd()
 
 	if (m_pRWeapon)
 		m_pRWeapon->EndTrail();
+}
+
+void ASkeletonSoldier::LeapAttackMove()
+{
+	m_pLeapAttackRangeDecal->SetHiddenInGame(true);
+
+	if (IsValid(m_pLeapAttackDecal))
+	{
+		m_pLeapAttackDecal->DestroyComponent();
+		m_pLeapAttackDecal = nullptr;
+	}
+
+	FVector vDir = (m_vLeapAttackPos - GetActorLocation()).GetSafeNormal();
+	SetActorRotation(vDir.Rotation());
+	SetActorLocation(m_vLeapAttackPos);
+	m_vLeapAttackPos = FVector::ZeroVector;
+	m_bOnLeapAttackCharge = false;
+}
+
+void ASkeletonSoldier::EjectChargeSlash()
+{
+	UE_LOG(LogTemp, Log, TEXT("Charge Slash Eject"));
+	FVector vLoc = GetActorLocation() + GetActorForwardVector() * 100.f;
+	FActorSpawnParameters param;
+	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	ASoldierChargeSlash* pSlash = GetWorld()->SpawnActor<ASoldierChargeSlash>(vLoc, GetActorRotation(), param);
 }

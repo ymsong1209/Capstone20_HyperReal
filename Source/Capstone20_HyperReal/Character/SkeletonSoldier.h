@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../GameInfo.h"
 #include "PlayerCharacter.h"
 #include "SkeletonSoldier.generated.h"
 
@@ -26,6 +26,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	UAnimMontage* m_WhirlWindMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	UAnimMontage* m_LeapAttackMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	UAnimMontage* m_UndeadFuryMontage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
 	float m_fChargingTick;
 
@@ -35,13 +41,34 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
 	float m_fWhildWindSpeed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	float m_fLeapMaxDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	UMaterialInterface* m_pLeapAttackRangeDecalInterface;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	UMaterialInterface* m_pLeapAttackDecalInterface;
+
 private:
 	float m_fChargeStartTime;
 	int32 m_iChargeAttackCount;
+	int32 m_iAccChargeAttackCount;
 
 	FTimerHandle m_hWhirlwindHandle;
+	FTimerHandle m_hUndeadFuryHandle;
 
 	class AWeapon* m_pRWeapon;
+
+	FVector m_vLeapAttackPos;
+	bool m_bOnLeapAttackCharge;
+
+	UDecalComponent* m_pLeapAttackDecal;
+
+private:
+	// Leap 공격 범위용 데칼
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UDecalComponent* m_pLeapAttackRangeDecal;
 
 public:
 	int32 GetChargeAttackCount() { return m_iChargeAttackCount; }
@@ -59,16 +86,29 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
-	virtual void Attack();
+	virtual void Attack() override;
+	virtual void SkillEnd() override;
 
 private:
-	// D 키에 바인딩
+	// 차지 공격
 	void ChargeStart();
 	void Charging();
 	void ChargeAttack();
 
-	// A 키에 바인딩
+	// 훨윈드
 	void Whirlwind();
+
+	// 리프 어택
+	void LeapAttack();
+
+	// 언데드 퓨리
+	void UndeadFury();
+	void UndeadFuryBuffEnd();
+
 public:
+	void ChargeAttackEnd();
 	void WhirlwindEnd();
+	void LeapAttackMove();
+
+	void EjectChargeSlash();
 };

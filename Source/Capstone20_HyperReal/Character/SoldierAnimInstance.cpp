@@ -2,15 +2,13 @@
 
 
 #include "SoldierAnimInstance.h"
-#include "SkeletonSoldier.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "SkeletonSoldier.h"
 #include "Weapon.h"
 
 USoldierAnimInstance::USoldierAnimInstance()	:
-	m_iChargeAttackCount(0),
-	m_bOnWhirlwind(false)
+	m_iChargeAttackCount(0)
 {
 }
 
@@ -27,24 +25,18 @@ void USoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	if (IsValid(pPlayer))
 	{
-		m_bOnWhirlwind = (pPlayer->GetUsingSkill() == EPlayerSkill::SkillA);
+		m_eUsingSkill = pPlayer->GetUsingSkill();
 	}
 }
 
 void USoldierAnimInstance::AnimNotify_ChargeAttack()
 {
-	UE_LOG(LogTemp, Log, TEXT("Charge Attack"));
-}
+	// 투사체 발사!
+	ASkeletonSoldier* pPlayer = Cast<ASkeletonSoldier>(TryGetPawnOwner());
 
-void USoldierAnimInstance::AnimNotify_ChargeAttackEnd()
-{
-	ASkeletonSoldier* pSoldier = Cast<ASkeletonSoldier>(TryGetPawnOwner());
+	if (IsValid(pPlayer))
+		pPlayer->EjectChargeSlash();
 
-	if (++m_iChargeAttackCount >= pSoldier->GetChargeAttackCount())
-	{
-		Montage_Stop(0.1f);
-		m_iChargeAttackCount = 0;
-	}
 }
 
 void USoldierAnimInstance::AnimNotify_TrailStart()
@@ -70,5 +62,30 @@ void USoldierAnimInstance::AnimNotify_TrailEnd()
 
 		if (IsValid(pWeapon))
 			pWeapon->EndTrail();
+	}
+}
+
+void USoldierAnimInstance::AnimNotify_LeapChargeEnd()
+{
+	ASkeletonSoldier* pPlayer = Cast<ASkeletonSoldier>(TryGetPawnOwner());
+
+	if (IsValid(pPlayer))
+	{
+		pPlayer->LeapAttackMove();
+	}
+}
+
+void USoldierAnimInstance::AnimNotify_LeapAttack()
+{
+
+}
+
+void USoldierAnimInstance::AnimNotify_SkillEnd()
+{
+	ASkeletonSoldier* pPlayer = Cast<ASkeletonSoldier>(TryGetPawnOwner());
+
+	if (IsValid(pPlayer))
+	{
+		pPlayer->SkillEnd();
 	}
 }

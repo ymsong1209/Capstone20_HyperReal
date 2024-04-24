@@ -2,13 +2,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../GameInfo.h"
 #include "PlayerAnimInstance.h"
 #include "SoldierAnimInstance.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class CAPSTONE20_HYPERREAL_API USoldierAnimInstance : public UPlayerAnimInstance
 {
@@ -18,8 +15,8 @@ public:
 	USoldierAnimInstance();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	bool m_bOnWhirlwind;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EPlayerSkill m_eUsingSkill;
 
 public:
 	virtual void NativeInitializeAnimation();
@@ -33,11 +30,17 @@ public:
 	virtual void AnimNotify_ChargeAttack();
 
 	UFUNCTION()
-	virtual void AnimNotify_ChargeAttackEnd();
-
-	UFUNCTION()
 	virtual void AnimNotify_TrailStart();
 
 	UFUNCTION()
 	virtual void AnimNotify_TrailEnd();
+
+	UFUNCTION()
+	virtual void AnimNotify_LeapChargeEnd();
+
+	UFUNCTION()
+	virtual void AnimNotify_LeapAttack();
+
+	UFUNCTION()
+	virtual void AnimNotify_SkillEnd();
 };

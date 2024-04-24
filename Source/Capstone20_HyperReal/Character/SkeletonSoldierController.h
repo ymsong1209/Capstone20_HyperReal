@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../GameInfo.h"
 #include "ClickMoveController.h"
 #include "SkeletonSoldierController.generated.h"
 
