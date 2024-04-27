@@ -19,4 +19,6 @@ void ABaseEnemyAIController::BeginPlay()
 
 		GetBlackboardComponent()->SetValueAsObject(TEXT("Player"), PlayerPawn);
 	}
+
+	
 }

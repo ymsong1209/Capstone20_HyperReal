@@ -8,6 +8,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "UObject/NoExportTypes.h"
+#include "GameData.h"
 
 #include "GameInfo.generated.h"
 

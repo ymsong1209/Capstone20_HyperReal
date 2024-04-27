@@ -2,18 +2,23 @@
 
 #pragma once
 
+#include "../GameInfo.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "BaseEnemy.generated.h"
 
 class AEnemy_BaseWeapon;
+class UEnemyAnimInstance;
 
 UCLASS()
 class CAPSTONE20_HYPERREAL_API ABaseEnemy : public ACharacter
 {
 	GENERATED_BODY()
 private:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
+	bool IsSpawned;
+
+	UPROPERTY(EditAnywhere)
 	bool CanAttack;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -22,21 +27,20 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	AEnemy_BaseWeapon* Weapon;
 
-
 public:
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void SetCanAttack(bool _attack) {
-		CanAttack = _attack;
-	}
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	UAnimMontage* SpawnAnimMontage;
 
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	bool GetCanAttack() const { return CanAttack; }
-
+protected:
+	class UEnemyAnimInstance* AnimInstance;
+	
+public:
+	bool GetIsSpawned() {return IsSpawned;}
+	void SetIsSpawned(bool _spawn) { IsSpawned = _spawn; }
+	bool GetCanAttack() { return CanAttack; }
+	void SetCanAttack(bool _attack) { CanAttack = _attack; }
+	AEnemy_BaseWeapon* GetWeapon() { return Weapon; }
 	void AttackMelee();
-
-public:
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void SpawnFinished();
 
 public:
 	// Sets default values for this character's properties

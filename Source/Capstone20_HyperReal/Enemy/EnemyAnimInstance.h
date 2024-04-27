@@ -18,4 +18,9 @@ public:
 	UFUNCTION()
 	virtual void AnimNotify_Attack();
 
+	UFUNCTION()
+	virtual void AnimNotify_SpawnFinished();
+
+	UFUNCTION()
+	virtual void AnimNotify_DrawFinished();
 };
