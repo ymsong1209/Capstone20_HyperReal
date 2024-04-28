@@ -52,4 +52,8 @@ public:
 	virtual void NativeInitializeAnimation();
 	virtual void NativeUpdateAnimation(float DeltaSeconds);
 
+public:
+	UFUNCTION()
+	void AnimNotify_DeathEnd();
+
 };

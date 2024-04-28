@@ -3,6 +3,8 @@
 
 #include "Monster.h"
 #include "../CapStoneGameInstance.h"
+#include "MonsterAnimInstance.h"
+#include "MonsterSpawnPoint.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -17,6 +19,7 @@ AMonster::AMonster()
 
 	SetCanBeDamaged(true);
 
+	mSpawnPoint = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -24,27 +27,29 @@ void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	mAnim = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if (GameInst) {
 		const FMonsterDataTableInfo* Info = GameInst->FindMonsterInfo(mDataTableKey);
 		if (Info) {
 			UE_LOG(LogTemp, Display, TEXT("Info"));
-			m_Info.Name = Info->Name;
-			m_Info.Attack = Info->Attack;
-			m_Info.Armor = Info->Armor;
-			m_Info.HP = Info->HP;
-			m_Info.MaxHP = Info->HP;
-			m_Info.MP = Info->MP;
-			m_Info.MaxMP = Info->MP;
-			m_Info.AttackSpeed = Info->AttackSpeed;
-			m_Info.MoveSpeed = Info->MoveSpeed;
-			m_Info.CriticalRatio = Info->CriticalRatio;
-			m_Info.CriticalDamage = Info->CriticalDamage;
-			m_Info.TraceDistance = Info->TraceDistance;
-			m_Info.AttackDistance = Info->AttackDistance;
-			m_Info.Level = Info->Level;
-			m_Info.Exp = Info->Exp;
-			m_Info.Gold = Info->Gold;
+			mInfo.Name = Info->Name;
+			mInfo.Attack = Info->Attack;
+			mInfo.Armor = Info->Armor;
+			mInfo.HP = Info->HP;
+			mInfo.MaxHP = Info->HP;
+			mInfo.MP = Info->MP;
+			mInfo.MaxMP = Info->MP;
+			mInfo.AttackSpeed = Info->AttackSpeed;
+			mInfo.MoveSpeed = Info->MoveSpeed;
+			mInfo.CriticalRatio = Info->CriticalRatio;
+			mInfo.CriticalDamage = Info->CriticalDamage;
+			mInfo.TraceDistance = Info->TraceDistance;
+			mInfo.AttackDistance = Info->AttackDistance;
+			mInfo.Level = Info->Level;
+			mInfo.Exp = Info->Exp;
+			mInfo.Gold = Info->Gold;
 		}
 		else {
 			UE_LOG(LogTemp, Error, TEXT("No Info"));
@@ -59,8 +64,33 @@ void AMonster::Tick(float DeltaTime)
 
 }
 
-float AMonster::TakeDamage(float _Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+//-1.f return시 몬스터 사망
+float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	float Damage = Super::TakeDamage(_Damage, DamageEvent, EventInstigator, DamageCauser);
+	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	//무적 상태인 경우
+	if (DamageAmount == 0.f)
+		return Damage;
+
+	Damage = DamageAmount - mInfo.Armor;
+	Damage = Damage < 1.f ? 1.f : Damage;
+
+	mInfo.HP -= (int32)Damage;
+
+	if (mInfo.HP <= 0) {
+		mAnim->ChangeAnimType(EMonsterAnim::Death);
+		Damage = -1.f;
+	}
+
+	UE_LOG(LogTemp, Display, TEXT("Damage : %.2f"), DamageAmount);
+	
 	return Damage;
+}
+
+//죽는 모션 끝난 후 호출
+void AMonster::Death()
+{
+	mSpawnPoint->MonsterDeath();
+	Destroy();
 }

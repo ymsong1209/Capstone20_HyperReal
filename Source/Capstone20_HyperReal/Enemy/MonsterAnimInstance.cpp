@@ -28,3 +28,11 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	}
 }
+
+void UMonsterAnimInstance::AnimNotify_DeathEnd()
+{
+	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
+	if (IsValid(Monster)) {
+		Monster->Death();
+	}
+}

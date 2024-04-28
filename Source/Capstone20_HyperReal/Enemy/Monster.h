@@ -17,13 +17,21 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	FMonsterInfo m_Info;
+	FMonsterInfo mInfo;
+
+	class UMonsterAnimInstance* mAnim;
+
+	class AMonsterSpawnPoint* mSpawnPoint;
 
 	FString mDataTableKey;
 
 public:
 	const FMonsterInfo& GetMonsterInfo() const {
-		return m_Info;
+		return mInfo;
+	}
+
+	void SetSpawnPoint(class AMonsterSpawnPoint* Point) {
+		mSpawnPoint = Point;
 	}
 
 protected:
@@ -35,5 +43,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
-
+public:
+	void Death();
 };
