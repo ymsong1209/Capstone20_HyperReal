@@ -30,14 +30,10 @@ ASwordMan::ASwordMan()
 	// animationBP 레퍼런스 받을때 _C를 사용해야함
 	static ConstructorHelpers::FClassFinder<UMonsterAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SYMContent/Monster/ABP_SwordMan.ABP_SwordMan_C'"));
 	if (AnimClass.Succeeded()) {
-		UE_LOG(LogTemp, Warning, TEXT("AnimClass Setting complete"));
 		GetMesh()->SetAnimInstanceClass(AnimClass.Class);
 	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("AnimClass Setting failed"));
-	}
 		
-
+	mDataTableKey = TEXT("SwordMan");
 }
 
 // Called when the game starts or when spawned

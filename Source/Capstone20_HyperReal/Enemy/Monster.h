@@ -16,6 +16,17 @@ public:
 	AMonster();
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	FMonsterInfo m_Info;
+
+	FString mDataTableKey;
+
+public:
+	const FMonsterInfo& GetMonsterInfo() const {
+		return m_Info;
+	}
+
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
