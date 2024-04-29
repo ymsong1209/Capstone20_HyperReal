@@ -5,6 +5,7 @@
 #include "EngineMinimal.h"
 #include "Engine.h"
 #include "DrawDebugHelpers.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "UObject/NoExportTypes.h"

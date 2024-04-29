@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../GameInfo.h"
+//#include "MonsterAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
@@ -26,6 +27,8 @@ protected:
 	FString mDataTableKey;
 
 public:
+	class UMonsterAnimInstance* GetAnimInstance() const { return mAnim; }
+	
 	const FMonsterInfo& GetMonsterInfo() const {
 		return mInfo;
 	}

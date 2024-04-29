@@ -55,6 +55,8 @@ void AMonster::BeginPlay()
 			mInfo.Level = Info->Level;
 			mInfo.Exp = Info->Exp;
 			mInfo.Gold = Info->Gold;
+
+			GetCharacterMovement()->MaxWalkSpeed = Info->MoveSpeed;
 		}
 		else {
 			UE_LOG(LogTemp, Error, TEXT("No Info"));
