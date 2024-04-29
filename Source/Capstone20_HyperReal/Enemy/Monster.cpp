@@ -5,6 +5,7 @@
 #include "../CapStoneGameInstance.h"
 #include "MonsterAnimInstance.h"
 #include "MonsterSpawnPoint.h"
+#include "MonsterAIController.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -20,6 +21,10 @@ AMonster::AMonster()
 	SetCanBeDamaged(true);
 
 	mSpawnPoint = nullptr;
+
+	AIControllerClass = AMonsterAIController::StaticClass();
+
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 // Called when the game starts or when spawned

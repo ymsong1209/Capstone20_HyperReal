@@ -15,7 +15,6 @@ ASwordMan::ASwordMan()
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/Toony_Tiny_RTS_Set_UE5/Meshes/Characters_Prebuilt/Units/SK_Swordman.SK_Swordman'"));
 	if (MeshAsset.Succeeded())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SkeletalMesh setting complete"));
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 	}
 	else {
@@ -31,6 +30,9 @@ ASwordMan::ASwordMan()
 	static ConstructorHelpers::FClassFinder<UMonsterAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SYMContent/Monster/ABP_SwordMan.ABP_SwordMan_C'"));
 	if (AnimClass.Succeeded()) {
 		GetMesh()->SetAnimInstanceClass(AnimClass.Class);
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("AnimClass Setting Failed"));
 	}
 		
 	mDataTableKey = TEXT("SwordMan");
