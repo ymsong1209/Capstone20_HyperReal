@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "..\GameInfo.h"
+#include "../GameInfo.h"
+#include "Particles/ParticleSystem.h"
 #include "GameFramework/Actor.h"
 #include "ProjectileBase.generated.h"
 
@@ -22,6 +23,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* m_Mesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* m_Particle;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UNiagaraComponent* m_Niagara;
 
@@ -31,9 +35,42 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Input)
 	float m_fMaxDistance;
 
+	AController* m_OwnerController;
+
+	FVector m_PrevLoc;
+
+	float m_Damage;
+
+	AActor* m_Target;
+
+public:
+	void SetTarget(AActor* Target)
+	{
+		m_Target = Target;
+	}
+	
+	void SetDamage(float Damage)
+	{
+		m_Damage = Damage;
+	}
+
+	void SetOwnerController(AController* Controller)
+	{
+		m_OwnerController = Controller;
+	}
 private:
 	float m_fAccDistance;
+	
+public:
+	UFUNCTION()
+	void CollisionStop(const FHitResult& ImpactResult);
+	UFUNCTION()
+	void CollisionBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity);
 
+protected:
+	virtual void ProjectileStop(const FHitResult& ImpactResult);
+	virtual void ProjectileBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity);
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
