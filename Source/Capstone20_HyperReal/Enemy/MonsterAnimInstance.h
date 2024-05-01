@@ -56,4 +56,10 @@ public:
 	UFUNCTION()
 	void AnimNotify_DeathEnd();
 
+	UFUNCTION()
+	void AnimNotify_AttackEnd();
+
+	UFUNCTION()
+	void AnimNotify_Attack();
+
 };

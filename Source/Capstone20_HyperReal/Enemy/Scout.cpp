@@ -3,6 +3,9 @@
 
 #include "Scout.h"
 #include "MonsterAnimInstance.h"
+#include "../Projectile/ScoutArrow.h"
+#include "MonsterAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 AScout::AScout()
 {
@@ -44,4 +47,27 @@ void AScout::BeginPlay()
 void AScout::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AScout::Attack()
+{
+	Super::Attack();
+	// FVector Loc = GetActorLocation() + GetActorForwardVector() * 100.f;
+	//
+	// FActorSpawnParameters param;
+	// param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	//
+	// AScoutArrow* ArrowActor = GetWorld()->SpawnActor<AScoutArrow>(Loc, GetActorRotation(), param);
+	//
+	// ArrowActor->SetOwnerController(GetController());
+	// ArrowActor->SetDamage(static_cast<float>(mInfo.Attack));
+	//
+	// //AIController를 이용해 Blackboard에 있는 target을 얻어옴
+	// AAIController* AIController = Cast<AAIController>(GetController());
+	// AActor* Target = Cast<AActor>(AIController->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
+	//
+	// if(Target)
+	// {
+	// 	ArrowActor->SetTarget(Target);
+	// }
 }

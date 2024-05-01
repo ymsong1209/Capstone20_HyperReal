@@ -10,7 +10,7 @@
 #include "NiagaraComponent.h"
 #include "UObject/NoExportTypes.h"
 #include "GameData.h"
-
+#include "Engine/DamageEvents.h"
 #include "GameInfo.generated.h"
 
 UENUM(BlueprintType)

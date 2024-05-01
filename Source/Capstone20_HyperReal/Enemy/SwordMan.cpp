@@ -3,7 +3,7 @@
 
 #include "SwordMan.h"
 #include "MonsterAnimInstance.h"
-#include "UObject/ConstructorHelpers.h"
+
 
 // Sets default values
 ASwordMan::ASwordMan()
@@ -50,4 +50,45 @@ void ASwordMan::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ASwordMan::Attack()
+{
+	Super::Attack();
+	FVector Start = GetActorLocation() + GetActorForwardVector() * 50.f;
+	FVector End = GetActorLocation() + GetActorForwardVector() * (50.f + mInfo.AttackDistance);
+
+	FCollisionQueryParams params(NAME_None, false, this);
+
+	FHitResult result;
+	bool Hit = GetWorld()->SweepSingleByChannel(result,Start,End, FQuat::Identity,
+		ECC_EngineTraceChannel3,
+		FCollisionShape::MakeSphere(50.f), params);
+
+	if(Hit)
+	{
+		// FActorSpawnParameters param;
+		// param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		//
+		// AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(
+		// 	result.ImpactPoint,
+		// 	result.ImpactNormal.Rotation()(), param);
+		//
+		// Effect->SetParticle(TEXT(""));
+		// Effect->SetSound(TEXT(""));
+
+		if(result.GetActor()->TakeDamage(mInfo.Attack, FDamageEvent(),
+			GetController(), this) == -1.f)
+		{
+			
+		}
+		
+	}
+#if ENABLE_DRAW_DEBUG
+	FColor DrawColor = Hit ? FColor::Red : FColor::Green;
+
+	DrawDebugCapsule(GetWorld(), (Start + End)/ 2.f, mInfo.AttackDistance, 50.f,
+		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
+		DrawColor, false, 0.5f);
+#endif
 }

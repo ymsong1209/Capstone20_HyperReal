@@ -25,6 +25,8 @@ AMonster::AMonster()
 	AIControllerClass = AMonsterAIController::StaticClass();
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	mAttackEnd = false;
 }
 
 // Called when the game starts or when spawned
@@ -68,7 +70,6 @@ void AMonster::BeginPlay()
 void AMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 //-1.f return시 몬스터 사망
@@ -100,4 +101,8 @@ void AMonster::Death()
 {
 	mSpawnPoint->MonsterDeath();
 	Destroy();
+}
+
+void AMonster::Attack()
+{
 }

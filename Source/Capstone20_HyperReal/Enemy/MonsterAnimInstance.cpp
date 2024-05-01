@@ -36,3 +36,19 @@ void UMonsterAnimInstance::AnimNotify_DeathEnd()
 		Monster->Death();
 	}
 }
+
+void UMonsterAnimInstance::AnimNotify_AttackEnd()
+{
+	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
+	if (IsValid(Monster)) {
+		Monster->SetAttackEnd(true);
+	}
+}
+
+void UMonsterAnimInstance::AnimNotify_Attack()
+{
+	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
+	if (IsValid(Monster)) {
+		Monster->Attack();
+	}
+}

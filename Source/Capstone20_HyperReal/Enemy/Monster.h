@@ -3,7 +3,6 @@
 #pragma once
 
 #include "../GameInfo.h"
-//#include "MonsterAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
@@ -26,7 +25,13 @@ protected:
 
 	FString mDataTableKey;
 
+	bool mAttackEnd;
 public:
+	bool GetAttackEnd() const
+	{
+		return mAttackEnd;
+	}
+	
 	class UMonsterAnimInstance* GetAnimInstance() const { return mAnim; }
 	
 	const FMonsterInfo& GetMonsterInfo() const {
@@ -35,6 +40,11 @@ public:
 
 	void SetSpawnPoint(class AMonsterSpawnPoint* Point) {
 		mSpawnPoint = Point;
+	}
+
+	void SetAttackEnd(bool End)
+	{
+		mAttackEnd = End;
 	}
 
 protected:
@@ -48,4 +58,7 @@ public:
 
 public:
 	void Death();
+
+public:
+	virtual void Attack();
 };
