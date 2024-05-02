@@ -6,6 +6,7 @@
 #include "MonsterAnimInstance.h"
 #include "MonsterSpawnPoint.h"
 #include "MonsterAIController.h"
+#include "Building.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -27,6 +28,7 @@ AMonster::AMonster()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	mAttackEnd = false;
+	bIsInvincible = false;
 }
 
 // Called when the game starts or when spawned
@@ -78,7 +80,7 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	//무적 상태인 경우
-	if (DamageAmount == 0.f)
+	if (bIsInvincible)
 		return Damage;
 
 	Damage = DamageAmount - mInfo.Armor;
@@ -87,17 +89,29 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 	mInfo.HP -= (int32)Damage;
 
 	if (mInfo.HP <= 0) {
-		mAnim->ChangeAnimType(EMonsterAnim::Death);
+		HandleDeath();
 		Damage = -1.f;
 	}
-
-	UE_LOG(LogTemp, Display, TEXT("Damage : %.2f"), DamageAmount);
 	
 	return Damage;
 }
 
-//죽는 모션 끝난 후 호출
-void AMonster::Death()
+void AMonster::HandleDeath()
+{
+	mAnim->ChangeAnimType(EMonsterAnim::Death);
+	//monster랑 연결된 Ai를 끊음
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	{
+		AIController->UnPossess(); // 몬스터 컨트롤 해제
+	}
+	mBuilding->RemoveMonster(this);
+	//무적 상태로 만들어서 대미지 더이상 안들어오게 함
+	bIsInvincible = true;
+}
+
+
+//죽는 모션 끝난 후 notify로 호출
+void AMonster::DeathEnd()
 {
 	mSpawnPoint->MonsterDeath();
 	Destroy();

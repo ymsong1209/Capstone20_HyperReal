@@ -20,9 +20,13 @@ private:
 	UPROPERTY()
 	UDataTable* mMonsterInfoTable;
 
+	UPROPERTY()
+	UDataTable* mBuildingInfoTable;
+
 public:
 	const FMonsterDataTableInfo* FindMonsterInfo(const FString& _Name);
 	const FPlayerDataTableInfo* FindPlayerInfo(const FString& _Name);
+	const FBuildingDataTableInfo* FindBuildingInfo(const FString& _Name);
 public:
 	virtual void Init();
 

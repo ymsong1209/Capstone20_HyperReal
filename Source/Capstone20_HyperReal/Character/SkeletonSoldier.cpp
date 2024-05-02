@@ -18,6 +18,7 @@
 #include "SoldierAnimInstance.h"
 #include "ClickMoveController.h"
 #include "LongSword.h"
+#include "../Enemy/Building.h"
 #include "../Projectile/SoldierChargeSlash.h"
 
 ASkeletonSoldier::ASkeletonSoldier() :
@@ -228,7 +229,8 @@ void ASkeletonSoldier::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		pInput->BindAction(SkillSAction, ETriggerEvent::Started, this, &ASkeletonSoldier::LeapAttack);
 
 		// F 버튼에 언데드 퓨리 바인딩
-		pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::UndeadFury);
+		//pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::UndeadFury);
+		pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::TestBuildingSpawn);
 	}
 }
 
@@ -470,4 +472,16 @@ void ASkeletonSoldier::EjectChargeSlash()
 	FActorSpawnParameters param;
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	ASoldierChargeSlash* pSlash = GetWorld()->SpawnActor<ASoldierChargeSlash>(vLoc, GetActorRotation(), param);
+}
+
+void ASkeletonSoldier::TestBuildingSpawn()
+{
+	for (TActorIterator<ABuilding> It(GetWorld()); It; ++It)
+	{
+		ABuilding* Building = *It;
+		if (Building)
+		{
+			Building->SpawnMonster();
+		}
+	}
 }

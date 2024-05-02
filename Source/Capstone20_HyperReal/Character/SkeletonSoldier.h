@@ -111,4 +111,7 @@ public:
 	void LeapAttackMove();
 
 	void EjectChargeSlash();
+
+public:
+	void TestBuildingSpawn();
 };

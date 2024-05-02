@@ -11,6 +11,11 @@ UCapStoneGameInstance::UCapStoneGameInstance()
 		mMonsterInfoTable = MonsterTableAsset.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UDataTable> BuildingTableAsset(TEXT("/Script/Engine.DataTable'/Game/A_SYMContent/Building/DT_BuildingInfo.DT_BuildingInfo'"));
+	if (BuildingTableAsset.Succeeded()) {
+		mBuildingInfoTable = BuildingTableAsset.Object;
+	}
+	
 	//static ConstructorHelpers::FObjectFinder<UDataTable> PlayerTableAsset(TEXT(""));
 	//if (PlayerTableAsset.Succeeded()) {
 	//	mPlayerInfoTable = PlayerTableAsset.Object;
@@ -38,6 +43,17 @@ const FPlayerDataTableInfo* UCapStoneGameInstance::FindPlayerInfo(const FString&
 		return nullptr;
 	}
 	
+}
+
+const FBuildingDataTableInfo* UCapStoneGameInstance::FindBuildingInfo(const FString& _Name)
+{
+	if (mBuildingInfoTable) {
+		return mBuildingInfoTable->FindRow<FBuildingDataTableInfo>(*_Name, TEXT(""));
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("No BuildingInfoTable"));
+		return nullptr;
+	}
 }
 
 void UCapStoneGameInstance::Init()

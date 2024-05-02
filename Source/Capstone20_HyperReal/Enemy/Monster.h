@@ -23,9 +23,12 @@ protected:
 
 	class AMonsterSpawnPoint* mSpawnPoint;
 
+	class ABuilding* mBuilding;
+
 	FString mDataTableKey;
 
 	bool mAttackEnd;
+	bool bIsInvincible;
 public:
 	bool GetAttackEnd() const
 	{
@@ -40,6 +43,14 @@ public:
 
 	void SetSpawnPoint(class AMonsterSpawnPoint* Point) {
 		mSpawnPoint = Point;
+	}
+
+	void SetOwnerBuilding(class ABuilding* Buliding) {
+		mBuilding = Buliding;
+	}
+
+	ABuilding* GetOwnerBuilding() {
+		return mBuilding;
 	}
 
 	void SetAttackEnd(bool End)
@@ -57,7 +68,8 @@ public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
-	void Death();
+	void HandleDeath();
+	void DeathEnd();
 
 public:
 	virtual void Attack();
