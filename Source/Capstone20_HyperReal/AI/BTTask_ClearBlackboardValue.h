@@ -2,13 +2,14 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../GameInfo.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "BTTask_ClearBlackboardValue.generated.h"
 
 /**
  * 
  */
+ //baseenemy
 UCLASS()
 class CAPSTONE20_HYPERREAL_API UBTTask_ClearBlackboardValue : public UBTTask_BlackboardBase
 {

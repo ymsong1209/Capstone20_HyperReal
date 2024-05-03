@@ -7,6 +7,7 @@
 #include "Building.generated.h"
 
 class AMonster;
+//class UParticleSystemComponent;
 UCLASS()
 class CAPSTONE20_HYPERREAL_API ABuilding : public APawn
 {
@@ -27,13 +28,18 @@ protected:
 	TArray<TSubclassOf<AMonster>> mMonsterClasses;
 	
 	TArray<class AMonster*> mMonsterVector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* mHitParticle;
 	
 	int		mCurPhase;
 	float	mAccTime;
 	float	mTotalTime;
-	bool	mbActivated;//공격받기 전엔 비활성화
+	bool	mbIsActivated;//공격받기 전엔 비활성화
 	bool	mbIsInvincible;
-
+	bool	mbIsShaking;
+private:
+	FVector	mOriginalLocation;
 
 public:
 	const FBuildingInfo& GetBuildingInfo() const {
@@ -58,6 +64,8 @@ public:
 	void RemoveMonster(class AMonster* monster);
 	void KillAllMonsters();
 	void Death();
+	void SpawnHitParticles() const;
+	void HitShake();
 
 public:
 	virtual void Attack();

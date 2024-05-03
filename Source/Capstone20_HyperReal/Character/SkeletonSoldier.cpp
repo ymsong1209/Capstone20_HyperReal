@@ -18,7 +18,7 @@
 #include "SoldierAnimInstance.h"
 #include "ClickMoveController.h"
 #include "LongSword.h"
-#include "../Enemy/Building.h"
+#include "../Building/Building.h"
 #include "../Projectile/SoldierChargeSlash.h"
 
 ASkeletonSoldier::ASkeletonSoldier() :
@@ -230,6 +230,7 @@ void ASkeletonSoldier::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// F 버튼에 언데드 퓨리 바인딩
 		//pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::UndeadFury);
+		//건물상호작용 테스트 코드
 		pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::TestBuildingSpawn);
 	}
 }
@@ -481,7 +482,14 @@ void ASkeletonSoldier::TestBuildingSpawn()
 		ABuilding* Building = *It;
 		if (Building)
 		{
-			Building->SpawnMonster();
+			//AController* MyOwnerInstigator = GetOwner()->GetInstigatorController();
+			//UClass* DamageTypeClass =  UDamageType::StaticClass();
+			//UGameplayStatics::ApplyDamage(Building, 100, MyOwnerInstigator, this, DamageTypeClass);
+			//Building->SpawnMonster();
+			Building->HitShake();
+			Building->SpawnHitParticles();
 		}
 	}
+
+	
 }

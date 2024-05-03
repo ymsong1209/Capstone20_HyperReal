@@ -6,7 +6,7 @@
 #include "MonsterAnimInstance.h"
 #include "MonsterSpawnPoint.h"
 #include "MonsterAIController.h"
-#include "Building.h"
+#include "../Building/Building.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -80,7 +80,7 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	//무적 상태인 경우
-	if (bIsInvincible)
+	if (bIsInvincible || Damage == -1.f)
 		return Damage;
 
 	Damage = DamageAmount - mInfo.Armor;
@@ -90,6 +90,7 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 
 	if (mInfo.HP <= 0) {
 		HandleDeath();
+		//죽었을 경우 -1.f반환
 		Damage = -1.f;
 	}
 	
@@ -113,7 +114,7 @@ void AMonster::HandleDeath()
 //죽는 모션 끝난 후 notify로 호출
 void AMonster::DeathEnd()
 {
-	mSpawnPoint->MonsterDeath();
+	//mSpawnPoint->MonsterDeath();
 	Destroy();
 }
 

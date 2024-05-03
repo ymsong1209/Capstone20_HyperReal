@@ -2,17 +2,25 @@
 
 
 #include "Building.h"
-#include "Monster.h"
+#include "../Enemy/Monster.h"
 #include "../CapStoneGameInstance.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "../Character/PlayerCharacter.h"
 
 // Sets default values
-ABuilding::ABuilding()
+ABuilding::ABuilding() :
+	mCurPhase(0),
+	mAccTime(0.f),
+	mTotalTime(0.f),
+	mbIsActivated(false),
+	mbIsInvincible(false),
+	mbIsShaking(false)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
 	mMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	mHitParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HitParticle"));
 	RootComponent = mMesh;
 	// 생성자에서 첫 번째 메쉬로 초기화
 	if (mMeshes.Num() > 0)
@@ -24,21 +32,14 @@ ABuilding::ABuilding()
 	//GetCapsuleComponent()->SetCollisionProfileName(TEXT("Monster"));
 	mMesh->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 	mMesh->bReceivesDecals = false;
-
+	
 	SetCanBeDamaged(true);
-
-	mCurPhase = 0;
-	mTotalTime = 0.f;
-	mAccTime = 0.f;
-	mbIsInvincible = false;
-	mbActivated = false;
 }
 
 // Called when the game starts or when spawned
 void ABuilding::BeginPlay()
 {
 	Super::BeginPlay();
-	mDataTableKey = "TowerA";
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if (GameInst) {
 		const FBuildingDataTableInfo* Info = GameInst->FindBuildingInfo(mDataTableKey);
@@ -57,6 +58,7 @@ void ABuilding::BeginPlay()
 			mInfo.Level = Info->Level;
 			mInfo.Exp = Info->Exp;
 			mInfo.Gold = Info->Gold;
+			mInfo.PhaseTriggerHP = Info->PhaseTriggerHP;
 		}
 		else {
 			UE_LOG(LogTemp, Error, TEXT("No Info"));
@@ -68,7 +70,7 @@ void ABuilding::BeginPlay()
 void ABuilding::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if(mbActivated == false) return;
+	if(mbIsActivated == false) return;
 	
 	mAccTime += DeltaTime;
 	mTotalTime += DeltaTime;
@@ -83,7 +85,7 @@ void ABuilding::Tick(float DeltaTime)
 
 void ABuilding::Activate()
 {
-	mbActivated = true;
+	mbIsActivated = true;
 	SpawnMonster();
 	
 }
@@ -144,11 +146,11 @@ float ABuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	
 	//무적 상태인 경우
-	if (mbIsInvincible)
+	if (mbIsInvincible || Damage == -1.f)
 		return Damage;
 
 	//비활성화되어있었으면 활성화시킴
-	if(mbActivated == false)
+	if(mbIsActivated == false)
 	{
 		Activate();
 	}
@@ -161,9 +163,10 @@ float ABuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	if (mInfo.HP <= 0) {
 		//Todo : Chaos Crush적용
 		Death();
+		//죽었을 경우 -1.f반환
 		Damage = -1.f;
 	}
-	
+	//SpawnHitParticles();
 	return Damage;
 }
 
@@ -172,6 +175,59 @@ void ABuilding::Death()
 {
 	mbIsInvincible = true;
 	KillAllMonsters();
+	Destroy();
+}
+
+void ABuilding::SpawnHitParticles() const
+{
+	
+	int SpawnCount = FMath::RandRange(2, 5);
+
+	// 건물의 Bounding Box 크기를 구함
+	FBox Bounds = GetComponentsBoundingBox(true);
+	FVector Min = Bounds.Min;
+	FVector Max = Bounds.Max;
+
+	for (int i = 0; i < SpawnCount; ++i)
+	{
+		// 건물 경계 부근에서 파티클이 나타나도록 위치를 랜덤으로 결정
+		FVector SpawnLocation = FVector(
+			FMath::RandRange(Min.X, Max.X),   
+			FMath::RandRange(Min.Y, Max.Y),   
+			FMath::RandRange(Min.Z, Max.Z)    
+		);
+
+		// 파티클 시스템 스폰
+		if(mHitParticle)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), mHitParticle->Template, SpawnLocation, FRotator::ZeroRotator, true);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("No Particles"));
+		}
+	}
+		
+}
+
+void ABuilding::HitShake()
+{
+	if (!mbIsShaking)
+	{
+		mbIsShaking = true; // 흔들림 시작 표시
+		mOriginalLocation = GetActorLocation(); // 원래 위치 저장
+
+		float ShakeAmount = 10.0f;
+		FVector NewLocation = mOriginalLocation + FMath::VRand() * ShakeAmount;
+		SetActorLocation(NewLocation);
+
+		FTimerHandle ShakeTimerHandle;
+		// 원래 위치로 돌아가는 로직
+		GetWorld()->GetTimerManager().SetTimer(ShakeTimerHandle, [this]() {
+			SetActorLocation(mOriginalLocation);
+			mbIsShaking = false; // 흔들림 종료 표시
+		}, 0.1f, false);
+	}
 }
 
 void ABuilding::KillAllMonsters()
