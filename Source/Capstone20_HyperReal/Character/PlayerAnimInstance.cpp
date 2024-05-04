@@ -37,8 +37,7 @@ void UPlayerAnimInstance::AnimNotify_AttackCombo()
 
 	if (IsValid(pPlayer))
 	{
-		//if (pPlayer->IsComboDectected())
-		//	pPlayer->SetAttack(false);
+		pPlayer->AttackCombo();
 	}
 }
 

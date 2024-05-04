@@ -111,6 +111,7 @@ private:
 
 public:
 	virtual void Attack();
+	virtual void AttackCombo();
 	virtual void AttackEnd();
 	virtual void AttackReset();
 
@@ -121,6 +122,4 @@ public:
 public:
 	// 감속하거나 가속할 배율 입력
 	void ChangeWalkSpeed(float _value);
-
-	void SpawnGhostTrail();
 };

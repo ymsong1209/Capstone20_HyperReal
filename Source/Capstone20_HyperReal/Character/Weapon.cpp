@@ -12,6 +12,8 @@ AWeapon::AWeapon()	:
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	RootComponent = WeaponMesh;
+
+	WeaponMesh->SetCollisionProfileName(TEXT("PlayerObject"));
 }
 
 // Called when the game starts or when spawned

@@ -29,6 +29,16 @@ void USoldierAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 }
 
+void USoldierAnimInstance::AnimNotify_Attack()
+{
+	Super::AnimNotify_Attack();
+
+	ASkeletonSoldier* pPlayer = Cast<ASkeletonSoldier>(TryGetPawnOwner());
+
+	if (IsValid(pPlayer))
+		pPlayer->AttackHitCheck();
+}
+
 void USoldierAnimInstance::AnimNotify_ChargeAttack()
 {
 	// 투사체 발사!
@@ -36,7 +46,6 @@ void USoldierAnimInstance::AnimNotify_ChargeAttack()
 
 	if (IsValid(pPlayer))
 		pPlayer->EjectChargeSlash();
-
 }
 
 void USoldierAnimInstance::AnimNotify_TrailStart()

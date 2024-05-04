@@ -105,12 +105,23 @@ private:
 	void UndeadFury();
 	void UndeadFuryBuffEnd();
 
+	// 0, 1 번 횡베기용 콜리전
+	void AttackCrossCut();
+
+	// 2 번 어퍼 슬래쉬
+	void AttackUpperCut();
+
+	// 3 번 내려찍기
+	void AttackSmashCut();
+
 public:
 	void ChargeAttackEnd();
 	void WhirlwindEnd();
 	void LeapAttackMove();
 
 	void EjectChargeSlash();
+
+	void AttackHitCheck();
 
 public:
 	//건물 상호작용 테스트 코드

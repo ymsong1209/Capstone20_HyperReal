@@ -26,6 +26,8 @@ private:
 	int32 m_iChargeAttackCount;
 
 public:
+	virtual void AnimNotify_Attack() override;
+
 	UFUNCTION()
 	virtual void AnimNotify_ChargeAttack();
 
