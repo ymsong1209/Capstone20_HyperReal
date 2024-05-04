@@ -19,6 +19,7 @@
 #include "ClickMoveController.h"
 #include "LongSword.h"
 #include "../Projectile/SoldierChargeSlash.h"
+#include "../Enemy/BaseEnemy.h"
 
 ASkeletonSoldier::ASkeletonSoldier() :
 	m_fChargeStartTime(0.f),
@@ -248,8 +249,6 @@ void ASkeletonSoldier::Attack()
 			// 몽타주 초기화
 			m_pAnim->Montage_SetPosition(m_arrAttackMontage[m_iAttackMontageIndex], 0.f);
 			m_pAnim->Montage_Play(m_arrAttackMontage[m_iAttackMontageIndex], GetAnimPlaySpeed());
-
-			m_iAttackMontageIndex = (m_iAttackMontageIndex + 1) % m_arrAttackMontage.Num();
 		}
 	}
 
@@ -470,4 +469,156 @@ void ASkeletonSoldier::EjectChargeSlash()
 	FActorSpawnParameters param;
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	ASoldierChargeSlash* pSlash = GetWorld()->SpawnActor<ASoldierChargeSlash>(vLoc, GetActorRotation(), param);
+}
+
+void ASkeletonSoldier::AttackHitCheck()
+{
+	switch (m_iAttackMontageIndex)
+	{
+	case 0:
+	case 1:
+		AttackCrossCut();
+		break;
+	case 2:
+		AttackUpperCut();
+		break;
+	case 3:
+		AttackSmashCut();
+		break;
+	}
+}
+
+
+void ASkeletonSoldier::AttackCrossCut()
+{
+	float fDegree = 120.f;
+	TSet<AActor*> HitActorSet;
+	FCollisionQueryParams	params(NAME_None, false, this);
+
+	int32 iCount = 7;
+
+	for (int i = 0; i < iCount; i++)
+	{
+		FVector vDir = GetActorForwardVector();
+		FRotator vRot = FRotator(0.f, ((fDegree / -2.f) + (fDegree / iCount * i)), 0.f);
+
+		FQuat QuatRot = FQuat(vRot);
+		vDir = QuatRot.RotateVector(vDir);
+
+		FVector	Start = GetActorLocation() + vDir * 50.f;
+		FVector	End = GetActorLocation() + vDir * 150.f;
+
+		TArray<FHitResult>	HitArray;
+		bool Hit = GetWorld()->SweepMultiByChannel(HitArray, Start, End, FQuat::Identity,
+			ECollisionChannel::ECC_GameTraceChannel4,
+			FCollisionShape::MakeSphere(30.f), params);
+
+		if (Hit)
+		{
+			for (int32 j = 0; j < HitArray.Num(); ++j)
+			{
+				HitActorSet.Add(HitArray[j].GetActor());
+			}
+		}
+
+#if ENABLE_DRAW_DEBUG
+
+		FColor	DrawColor = Hit ? FColor::Red : FColor::Green;
+
+		DrawDebugCapsule(GetWorld(), (Start + End) / 2.f, 100.f, 30.f,
+			FRotationMatrix::MakeFromZ(vDir).ToQuat(),
+			DrawColor, false, 0.5f);
+
+#endif
+	}
+
+	// 액터 set 에 들어있는 오브젝트들 다시 한번 체크
+	for (const auto& actor : HitActorSet)
+	{
+		if (actor->TakeDamage(100.f, FDamageEvent(),
+			GetController(), this) == -1.f)
+		{
+			//ABaseEnemy* pEnemy = Cast<ABaseEnemy>(HitArray[i].GetActor());
+
+			//if (pEnemy)
+			//{
+			//}
+		}
+	}
+}
+
+void ASkeletonSoldier::AttackUpperCut()
+{
+	FVector	Start = GetActorLocation() + GetActorForwardVector() * 50.f;
+	FVector	End = GetActorLocation() + GetActorForwardVector() * 250.f;
+
+	FCollisionQueryParams	params(NAME_None, false, this);
+	TArray<FHitResult>	HitArray;
+	bool Hit = GetWorld()->SweepMultiByChannel(HitArray, Start, End, FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel4,
+		FCollisionShape::MakeSphere(50.f), params);
+
+	if (Hit)
+	{
+		for (int32 i = 0; i < HitArray.Num(); ++i)
+		{
+			if (HitArray[i].GetActor()->TakeDamage(100.f, FDamageEvent(),
+				GetController(), this) == -1.f)
+			{
+				// 공중으로 뛰울 수 있으면 뛰우도록 해야함
+				//ABaseEnemy* pEnemy = Cast<ABaseEnemy>(HitArray[i].GetActor());
+
+				//if (pEnemy)
+				//{
+				//}
+			}
+		}
+	}
+
+#if ENABLE_DRAW_DEBUG
+
+	FColor	DrawColor = Hit ? FColor::Red : FColor::Green;
+
+	DrawDebugCapsule(GetWorld(), (Start + End) / 2.f, 100.f, 50.f,
+		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
+		DrawColor, false, 0.5f);
+
+#endif
+}
+
+void ASkeletonSoldier::AttackSmashCut()
+{
+	FVector	Start = GetActorLocation() + GetActorForwardVector() * 50.f;
+	FVector	End = GetActorLocation() + GetActorForwardVector() * 250.f;
+
+	FCollisionQueryParams	params(NAME_None, false, this);
+	TArray<FHitResult>	HitArray;
+	bool Hit = GetWorld()->SweepMultiByChannel(HitArray, Start, End, FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel4,
+		FCollisionShape::MakeSphere(50.f), params);
+
+	if (Hit)
+	{
+		for (int32 i = 0; i < HitArray.Num(); ++i)
+		{
+			if (HitArray[i].GetActor()->TakeDamage(100.f, FDamageEvent(),
+				GetController(), this) == -1.f)
+			{
+				//ABaseEnemy* pEnemy = Cast<ABaseEnemy>(HitArray[i].GetActor());
+
+				//if (pEnemy)
+				//{
+				//}
+			}
+		}
+	}
+
+#if ENABLE_DRAW_DEBUG
+
+	FColor	DrawColor = Hit ? FColor::Red : FColor::Green;
+
+	DrawDebugSphere(GetWorld(), (Start + End) / 2.f, 150.f, 50.f,
+		DrawColor, false, 0.5f);
+
+#endif
 }

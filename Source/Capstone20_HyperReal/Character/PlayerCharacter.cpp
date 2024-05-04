@@ -38,6 +38,7 @@ APlayerCharacter::APlayerCharacter() :
 
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
@@ -162,12 +163,19 @@ void APlayerCharacter::Attack()
 		if (bHitSuccessful)
 			CachedDestination = Hit.Location;
 
-		FVector vDir = (CachedDestination - GetActorLocation()).GetSafeNormal();
+		FVector vDir = (CachedDestination - GetActorLocation());
+		vDir.Z = 0.f;
+		vDir = vDir.GetSafeNormal();
 		SetActorRotation(vDir.Rotation());
 	}
 
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->AddImpulse(GetActorForwardVector() * m_fAttackImpulse, true);
+}
+
+void APlayerCharacter::AttackCombo()
+{
+	m_iAttackMontageIndex = (m_iAttackMontageIndex + 1) % m_arrAttackMontage.Num();
 }
 
 void APlayerCharacter::AttackEnd()
