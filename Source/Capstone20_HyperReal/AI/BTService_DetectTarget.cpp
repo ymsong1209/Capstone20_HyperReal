@@ -9,14 +9,14 @@
 UBTService_DetectTarget::UBTService_DetectTarget()
 {
 	NodeName = TEXT("Detect");
-	//tickÀÌ 0.5ÃÊ +=0.1ÃÊ »çÀÌ¿¡ ÇÑ¹ø ÀÛµ¿µÊ
+	//tickì´ 0.5ì´ˆ +=0.1ì´ˆ ì‚¬ì´ì— í•œë²ˆ ìž‘ë™ë¨
 	Interval = 0.5f;
 }
 
 void UBTService_DetectTarget::InitializeFromAsset(UBehaviorTree& Asset)
 {
 	Super::InitializeFromAsset(Asset);
-	CachedOwnerComp = nullptr;  // ÃÊ±âÈ­
+	CachedOwnerComp = nullptr;  // ï¿½Ê±ï¿½È­
 }
 
 void UBTService_DetectTarget::ClearTimerAndSetInterval()
@@ -45,20 +45,20 @@ void UBTService_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 	const FMonsterInfo& Info = Monster->GetMonsterInfo();
 	FCollisionQueryParams params(NAME_None, false, Monster);
 
-	//ÁÖº¯¿¡ ÇÃ·¹ÀÌ¾î°¡ ÀÖ´ÂÁö ÆÇ´Ü.
+	//ì£¼ë³€ì— í”Œë ˆì´ì–´ê°€ ìžˆëŠ”ì§€ íŒë‹¨.
 	FHitResult result;
 	bool Hit = GetWorld()->SweepSingleByChannel(result, Monster->GetActorLocation(),
 		Monster->GetActorLocation(), FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel5,
 		FCollisionShape::MakeSphere(Info.TraceDistance), params);
 	
-	//ÇÃ·¹ÀÌ¾î°¡ ÁÖº¯¿¡ ÀÖÀ»½Ã
+	//í”Œë ˆì´ì–´ê°€ ì£¼ë³€ì— ìžˆì„ì‹œ
 	if (Hit) {
 		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), result.GetActor());
 		Monster->SetActorTickInterval(0.f);
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	}
-	//ÇÃ·¹ÀÌ¾î°¡ ÁÖº¯¿¡ ¾øÀ¸¸é PlayerÃßÀû Á¾·á
+	//í”Œë ˆì´ì–´ê°€ ì£¼ë³€ì— ì—†ìœ¼ë©´ Playerì¶”ì  ì¢…ë£Œ
 	else {
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UBTService_DetectTarget::ClearTimerAndSetInterval, 2.0f, false);

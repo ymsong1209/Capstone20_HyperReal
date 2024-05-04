@@ -55,26 +55,26 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		return;
 	}
 
-	//¸ó½ºÅÍ¿Í targetÀÇ À§Ä¡¸¦ ¾ò¾î¿È
+	//ëª¬ìŠ¤í„°ì™€ targetì˜ ìœ„ì¹˜ë¥¼ ì–»ì–´ì˜´
 	FVector MonsterLoc = Monster->GetActorLocation();
 	FVector TargetLoc = Target->GetActorLocation();
 
-	//µÎ À§Ä¡ÀÇ ³ôÀÌ¸¦ ¸ÂÃçÁÜ
+	//ë‘ ìœ„ì¹˜ì˜ ë†’ì´ë¥¼ ë§žì¶°ì¤Œ
 	MonsterLoc.Z = TargetLoc.Z;
 
-	//µÎ À§Ä¡ »çÀÌÀÇ °Å¸®¸¦ ±¸ÇÔ
+	//ë‘ ìœ„ì¹˜ ì‚¬ì´ì˜ ê±°ë¦¬ë¥¼ êµ¬í•¨
 	float Distance = FVector::Distance(MonsterLoc, TargetLoc);
 
-	//°ø°ÝÀÌ ³¡³µÀ» °æ¿ì
+	//ê³µê²©ì´ ëë‚¬ì„ ê²½ìš°
 	if(Monster->GetAttackEnd())
 	{
-		//°ø°Ý ¹üÀ§¸¦ ¹þ¾î³ª¸é failed return
+		//ê³µê²© ë²”ìœ„ë¥¼ ë²—ì–´ë‚˜ë©´ failed return
 		if (Distance > Monster->GetMonsterInfo().AttackDistance) {
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		}
 		else
 		{
-			//¸ó½ºÅÍ°¡ Å¸°ÙÀ» ¹Ù¶óº¸°Ô ÇÔ
+			//ëª¬ìŠ¤í„°ê°€ íƒ€ê²Ÿì„ ë°”ë¼ë³´ê²Œ í•¨
 			FVector Dir = TargetLoc - MonsterLoc;
 			Dir.Normalize();
 			Monster->SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));

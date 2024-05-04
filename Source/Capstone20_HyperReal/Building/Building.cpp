@@ -22,7 +22,7 @@ ABuilding::ABuilding() :
 	mMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	mHitParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HitParticle"));
 	RootComponent = mMesh;
-	// »ı¼ºÀÚ¿¡¼­ Ã¹ ¹øÂ° ¸Ş½¬·Î ÃÊ±âÈ­
+	// ìƒì„±ìì—ì„œ ì²« ë²ˆì§¸ ë©”ì‰¬ë¡œ ì´ˆê¸°í™”
 	if (mMeshes.Num() > 0)
 	{
 		mMesh->SetStaticMesh(mMeshes[0]);
@@ -96,34 +96,34 @@ void ABuilding::SpawnMonster()
 	for(int i = 0;i<mInfo.MonstersPerSpawn;++i)
 	{
 		FVector2D RandCircle = FMath::RandPointInCircle(mInfo.SpawnRadius);
-		FVector SpawnLocation = GetActorLocation() + FVector(RandCircle.X, RandCircle.Y, 0); // 2D Æ÷ÀÎÆ®¸¦ 3D º¤ÅÍ·Î º¯È¯
+		FVector SpawnLocation = GetActorLocation() + FVector(RandCircle.X, RandCircle.Y, 0); // 2D í¬ì¸íŠ¸ë¥¼ 3D ë²¡í„°ë¡œ ë³€í™˜
 		FRotator SpawnRotation = GetActorRotation();
 
-		// ¶¥¿¡ ½ºÆùµÇµµ·Ï ³ôÀÌ¸¦ Á¶Á¤
-		FVector Start = SpawnLocation + FVector(0, 0, 1000);  // °øÁß¿¡¼­ ½ÃÀÛ
-		FVector End = SpawnLocation - FVector(0, 0, 1000);    // Áö¸é ¹æÇâÀ¸·Î ·¹ÀÌÄ³½ºÆ®
+		// ë•…ì— ìŠ¤í°ë˜ë„ë¡ ë†’ì´ë¥¼ ì¡°ì •
+		FVector Start = SpawnLocation + FVector(0, 0, 1000);  // ê³µì¤‘ì—ì„œ ì‹œì‘
+		FVector End = SpawnLocation - FVector(0, 0, 1000);    // ì§€ë©´ ë°©í–¥ìœ¼ë¡œ ë ˆì´ìºìŠ¤íŠ¸
 
 		FHitResult HitResult;
 		FCollisionQueryParams Params;
-		Params.AddIgnoredActor(this);  // °Ç¹°Àº ¹«½Ã
+		Params.AddIgnoredActor(this);  // ê±´ë¬¼ì€ ë¬´ì‹œ
 		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
 
 		if (bHit)
 		{
-			// ·¹ÀÌÄ³½ºÆ®¿¡ ¼º°øÇÏ¸é Áö¸é¿¡ ½ºÆù
+			// ë ˆì´ìºìŠ¤íŠ¸ì— ì„±ê³µí•˜ë©´ ì§€ë©´ì— ìŠ¤í°
 			SpawnLocation = HitResult.Location;
 		}
 
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-		// ¹è¿­¿¡¼­ ·£´ıÇÏ°Ô ¸ó½ºÅÍ Å¬·¡½º ¼±ÅÃ
+		// ë°°ì—´ì—ì„œ ëœë¤í•˜ê²Œ ëª¬ìŠ¤í„° í´ë˜ìŠ¤ ì„ íƒ
 		TSubclassOf<AMonster> ChosenMonsterClass = mMonsterClasses[FMath::RandRange(0, mMonsterClasses.Num() - 1)];
 		AMonster* SpawnedMonster = GetWorld()->SpawnActor<AMonster>(ChosenMonsterClass, SpawnLocation, SpawnRotation, SpawnParams);
 		
 		if (SpawnedMonster)
 		{
-			//»ı¼ºµÈ ¸ó½ºÅÍ¿¡°Ô building¾Ë·ÁÁÜ
+			//ìƒì„±ëœ ëª¬ìŠ¤í„°ì—ê²Œ buildingì•Œë ¤ì¤Œ
 			SpawnedMonster->SetOwnerBuilding(this);
 			mMonsterVector.Add(SpawnedMonster);
 		}
@@ -135,7 +135,7 @@ void ABuilding::RemoveMonster(AMonster* monster)
 {
 	if (monster)
 	{
-		mMonsterVector.RemoveSingle(monster);  // ¸ó½ºÅÍ Á¦°Å
+		mMonsterVector.RemoveSingle(monster);  // ëª¬ìŠ¤í„° ì œê±°
 	}
 }
 
@@ -145,11 +145,11 @@ float ABuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 {
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	
-	//¹«Àû »óÅÂÀÎ °æ¿ì
+	//ë¬´ì  ìƒíƒœì¸ ê²½ìš°
 	if (mbIsInvincible || Damage == -1.f)
 		return Damage;
 
-	//ºñÈ°¼ºÈ­µÇ¾îÀÖ¾úÀ¸¸é È°¼ºÈ­½ÃÅ´
+	//ë¹„í™œì„±í™”ë˜ì–´ìˆì—ˆìœ¼ë©´ í™œì„±í™”ì‹œí‚´
 	if(mbIsActivated == false)
 	{
 		Activate();
@@ -161,16 +161,16 @@ float ABuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	mInfo.HP -= (int32)Damage;
 
 	if (mInfo.HP <= 0) {
-		//Todo : Chaos CrushÀû¿ë
+		//Todo : Chaos Crushì ìš©
 		Death();
-		//Á×¾úÀ» °æ¿ì -1.f¹İÈ¯
+		//ì£½ì—ˆì„ ê²½ìš° -1.fë°˜í™˜
 		Damage = -1.f;
 	}
 	//SpawnHitParticles();
 	return Damage;
 }
 
-//°Ç¹° Á×À½Ã³¸®
+//ê±´ë¬¼ ì£½ìŒì²˜ë¦¬
 void ABuilding::Death()
 {
 	mbIsInvincible = true;
@@ -183,21 +183,21 @@ void ABuilding::SpawnHitParticles() const
 	
 	int SpawnCount = FMath::RandRange(2, 5);
 
-	// °Ç¹°ÀÇ Bounding Box Å©±â¸¦ ±¸ÇÔ
+	// ê±´ë¬¼ì˜ Bounding Box í¬ê¸°ë¥¼ êµ¬í•¨
 	FBox Bounds = GetComponentsBoundingBox(true);
 	FVector Min = Bounds.Min;
 	FVector Max = Bounds.Max;
 
 	for (int i = 0; i < SpawnCount; ++i)
 	{
-		// °Ç¹° °æ°è ºÎ±Ù¿¡¼­ ÆÄÆ¼Å¬ÀÌ ³ªÅ¸³ªµµ·Ï À§Ä¡¸¦ ·£´ıÀ¸·Î °áÁ¤
+		// ê±´ë¬¼ ê²½ê³„ ë¶€ê·¼ì—ì„œ íŒŒí‹°í´ì´ ë‚˜íƒ€ë‚˜ë„ë¡ ìœ„ì¹˜ë¥¼ ëœë¤ìœ¼ë¡œ ê²°ì •
 		FVector SpawnLocation = FVector(
 			FMath::RandRange(Min.X, Max.X),   
 			FMath::RandRange(Min.Y, Max.Y),   
 			FMath::RandRange(Min.Z, Max.Z)    
 		);
 
-		// ÆÄÆ¼Å¬ ½Ã½ºÅÛ ½ºÆù
+		// íŒŒí‹°í´ ì‹œìŠ¤í…œ ìŠ¤í°
 		if(mHitParticle)
 		{
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), mHitParticle->Template, SpawnLocation, FRotator::ZeroRotator, true);
@@ -214,18 +214,18 @@ void ABuilding::HitShake()
 {
 	if (!mbIsShaking)
 	{
-		mbIsShaking = true; // Èçµé¸² ½ÃÀÛ Ç¥½Ã
-		mOriginalLocation = GetActorLocation(); // ¿ø·¡ À§Ä¡ ÀúÀå
+		mbIsShaking = true; // í”ë“¤ë¦¼ ì‹œì‘ í‘œì‹œ
+		mOriginalLocation = GetActorLocation(); // ì›ë˜ ìœ„ì¹˜ ì €ì¥
 
 		float ShakeAmount = 10.0f;
 		FVector NewLocation = mOriginalLocation + FMath::VRand() * ShakeAmount;
 		SetActorLocation(NewLocation);
 
 		FTimerHandle ShakeTimerHandle;
-		// ¿ø·¡ À§Ä¡·Î µ¹¾Æ°¡´Â ·ÎÁ÷
+		// ì›ë˜ ìœ„ì¹˜ë¡œ ëŒì•„ê°€ëŠ” ë¡œì§
 		GetWorld()->GetTimerManager().SetTimer(ShakeTimerHandle, [this]() {
 			SetActorLocation(mOriginalLocation);
-			mbIsShaking = false; // Èçµé¸² Á¾·á Ç¥½Ã
+			mbIsShaking = false; // í”ë“¤ë¦¼ ì¢…ë£Œ í‘œì‹œ
 		}, 0.1f, false);
 	}
 }

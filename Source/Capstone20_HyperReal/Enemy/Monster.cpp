@@ -13,7 +13,7 @@ AMonster::AMonster()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.TickInterval = 0.5f;//±âº»ÀûÀ¸·Î tickÀº 0.5ÃÊ¿¡ ÇÑ¹ø¾¿ È£ÃâµÈ´Ù.
+	PrimaryActorTick.TickInterval = 0.5f;//ê¸°ë³¸ì ìœ¼ë¡œ tickì€ 0.5ì´ˆì— í•œë²ˆì”© í˜¸ì¶œëœë‹¤.
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Monster"));
@@ -74,12 +74,12 @@ void AMonster::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-//-1.f return½Ã ¸ó½ºÅÍ »ç¸Á
+//-1.f returnì‹œ ëª¬ìŠ¤í„° ì‚¬ë§
 float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	//¹«Àû »óÅÂÀÎ °æ¿ì
+	//ë¬´ì  ìƒíƒœì¸ ê²½ìš°
 	if (bIsInvincible || Damage == -1.f)
 		return Damage;
 
@@ -90,11 +90,11 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 
 	if (mInfo.HP <= 0) {
 		HandleDeath();
-		//Á×¾úÀ» °æ¿ì -1.f¹İÈ¯
+		//ì£½ì—ˆì„ ê²½ìš° -1.fë°˜í™˜
 		Damage = -1.f;
 	}
 
-	//ÇÃ·¹ÀÌ¾î°¡ ¸ó½ºÅÍÀÇ ÀÎ½Ä ¹üÀ§ ¹Û¿¡¼­ ¶§¸± °æ¿ì, ÇÃ·¹ÀÌ¾î ÃßÀûÇØ¾ßÇÔ
+	//í”Œë ˆì´ì–´ê°€ ëª¬ìŠ¤í„°ì˜ ì¸ì‹ ë²”ìœ„ ë°–ì—ì„œ ë•Œë¦´ ê²½ìš°, í”Œë ˆì´ì–´ ì¶”ì í•´ì•¼í•¨
 	if (AAIController* AIController = Cast<AAIController>(Controller)) {
 		if (UBlackboardComponent* BlackboardComp = AIController->GetBlackboardComponent()) {
 			BlackboardComp->SetValueAsObject(TEXT("Target"), DamageCauser);
@@ -108,18 +108,18 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 void AMonster::HandleDeath()
 {
 	mAnim->ChangeAnimType(EMonsterAnim::Death);
-	//monster¶û ¿¬°áµÈ Ai¸¦ ²÷À½
+	//monsterë‘ ì—°ê²°ëœ Aië¥¼ ëŠìŒ
 	if (AAIController* AIController = Cast<AAIController>(GetController()))
 	{
-		AIController->UnPossess(); // ¸ó½ºÅÍ ÄÁÆ®·Ñ ÇØÁ¦
+		AIController->UnPossess(); // ëª¬ìŠ¤í„° ì»¨íŠ¸ë¡¤ í•´ì œ
 	}
 	mBuilding->RemoveMonster(this);
-	//¹«Àû »óÅÂ·Î ¸¸µé¾î¼­ ´ë¹ÌÁö ´õÀÌ»ó ¾Èµé¾î¿À°Ô ÇÔ
+	//ë¬´ì  ìƒíƒœë¡œ ë§Œë“¤ì–´ì„œ ëŒ€ë¯¸ì§€ ë”ì´ìƒ ì•ˆë“¤ì–´ì˜¤ê²Œ í•¨
 	bIsInvincible = true;
 }
 
 
-//Á×´Â ¸ğ¼Ç ³¡³­ ÈÄ notify·Î È£Ãâ
+//ì£½ëŠ” ëª¨ì…˜ ëë‚œ í›„ notifyë¡œ í˜¸ì¶œ
 void AMonster::DeathEnd()
 {
 	//mSpawnPoint->MonsterDeath();

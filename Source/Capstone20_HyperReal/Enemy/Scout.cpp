@@ -12,7 +12,7 @@ AScout::AScout()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// ÄÚµå·Î Ä³¸¯ÅÍ ¸Ş½¬ ¼¼ÆÃ
+	// ì½”ë“œë¡œ ìºë¦­í„° ë©”ì‰¬ ì„¸íŒ…
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/Toony_Tiny_RTS_Set_UE5/Meshes/Characters_Prebuilt/Units/SK_Scout.SK_Scout'"));
 	if (MeshAsset.Succeeded())
 	{
@@ -27,7 +27,7 @@ AScout::AScout()
 	GetMesh()->SetRelativeScale3D(FVector(0.7f, 0.7f, 0.7f));
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 
-	// animationBP ·¹ÆÛ·±½º ¹ŞÀ»¶§ _C¸¦ »ç¿ëÇØ¾ßÇÔ
+	// animationBP ë ˆí¼ëŸ°ìŠ¤ ë°›ì„ë•Œ _Cë¥¼ ì‚¬ìš©í•´ì•¼í•¨
 	static ConstructorHelpers::FClassFinder<UMonsterAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SYMContent/Monster/ABP_Scout.ABP_Scout_C'"));
 	if (AnimClass.Succeeded()) {
 		GetMesh()->SetAnimInstanceClass(AnimClass.Class);
@@ -62,7 +62,7 @@ void AScout::Attack()
 	ArrowActor->SetOwnerController(GetController());
 	ArrowActor->SetDamage(static_cast<float>(mInfo.Attack));
 	
-	//AIController¸¦ ÀÌ¿ëÇØ Blackboard¿¡ ÀÖ´Â targetÀ» ¾ò¾î¿È
+	//AIControllerë¥¼ ì´ìš©í•´ Blackboardì— ìˆëŠ” targetì„ ì–»ì–´ì˜´
 	AAIController* AIController = Cast<AAIController>(GetController());
 	AActor* Target = Cast<AActor>(AIController->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
 	

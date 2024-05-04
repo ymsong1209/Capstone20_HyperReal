@@ -6,7 +6,7 @@
 UBTTask_Trace::UBTTask_Trace()
 {
 	NodeName = TEXT("Trace");
-	//tick È£ÃâµÇ°Ô ÇÔ
+	//tick í˜¸ì¶œë˜ê²Œ í•¨
 	bNotifyTick = true;
 }
 
@@ -25,7 +25,7 @@ EBTNodeResult::Type UBTTask_Trace::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 		return EBTNodeResult::Failed;
 	}
 
-	//Å¸°ÙÀÇ À§Ä¡·Î ÀÌµ¿
+	//íƒ€ê²Ÿì˜ ìœ„ì¹˜ë¡œ ì´ë™
 	UAIBlueprintHelperLibrary::SimpleMoveToActor(OwnerComp.GetAIOwner(), Target);
 
 	Monster->GetAnimInstance()->ChangeAnimType(EMonsterAnim::Run);
@@ -57,14 +57,14 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 		return;
 	}
 
-	//¸ó½ºÅÍ¿Í targetÀÇ À§Ä¡¸¦ ¾ò¾î¿È
+	//ëª¬ìŠ¤í„°ì™€ targetì˜ ìœ„ì¹˜ë¥¼ ì–»ì–´ì˜´
 	FVector MonsterLoc = Monster->GetActorLocation();
 	FVector TargetLoc = Target->GetActorLocation();
 
-	//µÎ À§Ä¡ÀÇ ³ôÀÌ¸¦ ¸ÂÃçÁÜ
+	//ë‘ ìœ„ì¹˜ì˜ ë†’ì´ë¥¼ ë§ì¶°ì¤Œ
 	MonsterLoc.Z = TargetLoc.Z;
 
-	//µÎ À§Ä¡ »çÀÌÀÇ °Å¸®¸¦ ±¸ÇÔ
+	//ë‘ ìœ„ì¹˜ ì‚¬ì´ì˜ ê±°ë¦¬ë¥¼ êµ¬í•¨
 	float Distance = FVector::Distance(MonsterLoc, TargetLoc);
 	
 	if (Distance <= Monster->GetMonsterInfo().AttackDistance) {

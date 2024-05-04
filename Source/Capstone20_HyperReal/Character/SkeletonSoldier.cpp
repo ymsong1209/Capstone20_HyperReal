@@ -229,9 +229,9 @@ void ASkeletonSoldier::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		pInput->BindAction(SkillSAction, ETriggerEvent::Started, this, &ASkeletonSoldier::LeapAttack);
 
 		// F 버튼에 언데드 퓨리 바인딩
-		//pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::UndeadFury);
+		pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::UndeadFury);
 		//건물상호작용 테스트 코드
-		pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::TestBuildingSpawn);
+		//pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::TestBuildingSpawn);
 	}
 }
 

@@ -35,7 +35,7 @@ protected:
 	int		mCurPhase;
 	float	mAccTime;
 	float	mTotalTime;
-	bool	mbIsActivated;//°ø°Ý¹Þ±â Àü¿£ ºñÈ°¼ºÈ­
+	bool	mbIsActivated;//ê³µê²©ë°›ê¸° ì „ì—” ë¹„í™œì„±í™”
 	bool	mbIsInvincible;
 	bool	mbIsShaking;
 private:

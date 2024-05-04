@@ -17,14 +17,14 @@ float ATowerA::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 	AActor* DamageCauser)
 {
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	//¹«Àû »óÅÂÀÎ °æ¿ì
+	//ë¬´ì  ìƒíƒœì¸ ê²½ìš°
 	if (Damage == -1.f)
 		return Damage;
 	
 	while (mCurPhase < mInfo.PhaseTriggerHP.Num() && mInfo.HP <= mInfo.PhaseTriggerHP[mCurPhase])
 	{
-		mInfo.SpawnIntervalSeconds -= 1.f; // °­È­ ½ÇÇà, ¿¹¸¦ µé¾î ½ºÆù °£°İÀ» °¨¼Ò
-		++mCurPhase; // ´ÙÀ½ ´Ü°è·Î ÀÌµ¿
+		mInfo.SpawnIntervalSeconds -= 1.f; // ê°•í™” ì‹¤í–‰, ì˜ˆë¥¼ ë“¤ì–´ ìŠ¤í° ê°„ê²©ì„ ê°ì†Œ
+		++mCurPhase; // ë‹¤ìŒ ë‹¨ê³„ë¡œ ì´ë™
 		if (mCurPhase < mMeshes.Num() && mMeshes[mCurPhase])
 		{
 			mMesh->SetStaticMesh(mMeshes[mCurPhase]);

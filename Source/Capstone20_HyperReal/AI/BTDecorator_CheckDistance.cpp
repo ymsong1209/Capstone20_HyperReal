@@ -23,14 +23,14 @@ bool UBTDecorator_CheckDistance::CalculateRawConditionValue(UBehaviorTreeCompone
 
 	if (!Target) return false;
 
-	//¸ó½ºÅÍ¿Í targetÀÇ À§Ä¡¸¦ ¾ò¾î¿È
+	//ëª¬ìŠ¤í„°ì™€ targetì˜ ìœ„ì¹˜ë¥¼ ì–»ì–´ì˜´
 	FVector MonsterLoc = Monster->GetActorLocation();
 	FVector TargetLoc = Target->GetActorLocation();
 
-	//µÎ À§Ä¡ÀÇ ³ôÀÌ¸¦ ¸ÂÃçÁÜ
+	//ë‘ ìœ„ì¹˜ì˜ ë†’ì´ë¥¼ ë§ì¶°ì¤Œ
 	MonsterLoc.Z = TargetLoc.Z;
 
-	//µÎ À§Ä¡ »çÀÌÀÇ °Å¸®¸¦ ±¸ÇÔ
+	//ë‘ ìœ„ì¹˜ ì‚¬ì´ì˜ ê±°ë¦¬ë¥¼ êµ¬í•¨
 	float Distance = FVector::Distance(MonsterLoc, TargetLoc);
 	float CheckDistance = 0.f;
 

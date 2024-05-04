@@ -59,7 +59,7 @@ void AScoutArrow::ProjectileStop(const FHitResult& ImpactResult)
 {
 	Super::ProjectileStop(ImpactResult);
 
-	// //È­»ì ¸Â´Â ÀÌÆåÆ® ¹ß»ı
+	// //í™”ì‚´ ë§ëŠ” ì´í™íŠ¸ ë°œìƒ
 	// FActorSpawnParameters param;
 	// param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	//

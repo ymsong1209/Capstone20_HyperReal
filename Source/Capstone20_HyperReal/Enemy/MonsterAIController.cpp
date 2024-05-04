@@ -24,17 +24,17 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	//ºí·¢º¸µåÁöÁ¤
+	//ë¸”ë™ë³´ë“œì§€ì •
 	if (mAIBlackboard) {
 		UBlackboardComponent* BlackboardComp = Blackboard.Get();
 		UseBlackboard(mAIBlackboard, BlackboardComp);
 	}
 	
-	//Çàµ¿Æ®¸® µ¿ÀÛ
+	//í–‰ë™íŠ¸ë¦¬ ë™ì‘
 
 	if (mAITree) {
 		if (!RunBehaviorTree(mAITree)) {
-			//¿¹¿ÜÃ³¸®
+			//ì˜ˆì™¸ì²˜ë¦¬
 
 		}
 	}

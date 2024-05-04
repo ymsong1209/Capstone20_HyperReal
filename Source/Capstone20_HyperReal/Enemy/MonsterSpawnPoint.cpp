@@ -20,7 +20,7 @@ AMonsterSpawnPoint::AMonsterSpawnPoint()
 	mSpawnMonster = nullptr;
 	mSpawnTimeAcc = 0.f;
 
-	//mSpawnTimeÀÌ -1.fÀÏ °æ¿ì ÇÑ¹ø¸¸ spawn
+	//mSpawnTimeì´ -1.fì¼ ê²½ìš° í•œë²ˆë§Œ spawn
 	mSpawnTime = -1.f;
 }
 
@@ -29,7 +29,7 @@ void AMonsterSpawnPoint::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//Ã³À½¿¡´Â ¸ó½ºÅÍ »ý¼º
+	//ì²˜ìŒì—ëŠ” ëª¬ìŠ¤í„° ìƒì„±
 	if (IsValid(mMonsterClass)) {
 
 		FActorSpawnParameters param;
@@ -37,7 +37,7 @@ void AMonsterSpawnPoint::BeginPlay()
 
 		mSpawnMonster = GetWorld()->SpawnActor<AMonster>(mMonsterClass, GetActorLocation(), GetActorRotation(), param);
 
-		//»ý¼ºµÈ ¸ó½ºÅÍ¿¡°Ô spawnpoint¾Ë·ÁÁÜ
+		//ìƒì„±ëœ ëª¬ìŠ¤í„°ì—ê²Œ spawnpointì•Œë ¤ì¤Œ
 		mSpawnMonster->SetSpawnPoint(this);
 	}
 
@@ -49,10 +49,10 @@ void AMonsterSpawnPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//¸ó½ºÅÍ°¡ Á×¾úÀ» °æ¿ì °è¼ÓÇØ¼­ Spawn Ã³¸®¸¦ ÇØÁÖ¾î¾ß ÇÒ °æ¿ì
+	//ëª¬ìŠ¤í„°ê°€ ì£½ì—ˆì„ ê²½ìš° ê³„ì†í•´ì„œ Spawn ì²˜ë¦¬ë¥¼ í•´ì£¼ì–´ì•¼ í•  ê²½ìš°
 	if (mSpawnTime > -1.f) {
 
-		//¸ó½ºÅÍ°¡ Á×¾ú´ÂÁö ÆÇ´Ü.
+		//ëª¬ìŠ¤í„°ê°€ ì£½ì—ˆëŠ”ì§€ íŒë‹¨.
 		if (mSpawnMonster == nullptr) {
 			mSpawnTimeAcc += DeltaTime;
 			if (mSpawnTimeAcc >= mSpawnTime) {
@@ -63,7 +63,7 @@ void AMonsterSpawnPoint::Tick(float DeltaTime)
 
 				mSpawnMonster = GetWorld()->SpawnActor<AMonster>(mMonsterClass, GetActorLocation(), GetActorRotation(), param);
 
-				//»ý¼ºµÈ ¸ó½ºÅÍ¿¡°Ô spawnpoint¾Ë·ÁÁÜ
+				//ìƒì„±ëœ ëª¬ìŠ¤í„°ì—ê²Œ spawnpointì•Œë ¤ì¤Œ
 				mSpawnMonster->SetSpawnPoint(this);
 			}
 		}

@@ -59,7 +59,7 @@ void AProjectileBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//m_fMaxDistance°¡ -1.fÀÏ°æ¿ì¿¡ ¹«ÇÑÀ¸·Î ³ª°¨.
+	//m_fMaxDistanceê°€ -1.fì¼ê²½ìš°ì— ë¬´í•œìœ¼ë¡œ ë‚˜ê°.
 	if (m_fMaxDistance > -1.f)
 	{
 		m_fAccDistance -= m_Projectile->Velocity.Size() * DeltaTime;
