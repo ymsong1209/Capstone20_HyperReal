@@ -58,7 +58,7 @@ void AScout::Attack()
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	
 	AScoutArrow* ArrowActor = GetWorld()->SpawnActor<AScoutArrow>(Loc, GetActorRotation(), param);
-	
+	if(!ArrowActor) return;
 	ArrowActor->SetOwnerController(GetController());
 	ArrowActor->SetDamage(static_cast<float>(mInfo.Attack));
 	

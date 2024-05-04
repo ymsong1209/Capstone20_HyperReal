@@ -13,6 +13,7 @@ AMonster::AMonster()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.TickInterval = 0.5f;//기본적으로 tick은 0.5초에 한번씩 호출된다.
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Monster"));
@@ -24,7 +25,6 @@ AMonster::AMonster()
 	mSpawnPoint = nullptr;
 
 	AIControllerClass = AMonsterAIController::StaticClass();
-
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	mAttackEnd = false;
@@ -93,6 +93,14 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 		//죽었을 경우 -1.f반환
 		Damage = -1.f;
 	}
+
+	//플레이어가 몬스터의 인식 범위 밖에서 때릴 경우, 플레이어 추적해야함
+	if (AAIController* AIController = Cast<AAIController>(Controller)) {
+		if (UBlackboardComponent* BlackboardComp = AIController->GetBlackboardComponent()) {
+			BlackboardComp->SetValueAsObject(TEXT("Target"), DamageCauser);
+		}
+	}
+	SetActorTickInterval(0.f);
 	
 	return Damage;
 }

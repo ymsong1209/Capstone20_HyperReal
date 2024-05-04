@@ -17,6 +17,7 @@ AMonsterAIController::AMonsterAIController()
 	if (AIBlackBoardAsset.Succeeded()) {
 		mAIBlackboard = AIBlackBoardAsset.Object;
 	}
+	
 }
 
 void AMonsterAIController::OnPossess(APawn* InPawn)

@@ -62,7 +62,7 @@ void ASwordMan::Attack()
 
 	FHitResult result;
 	bool Hit = GetWorld()->SweepSingleByChannel(result,Start,End, FQuat::Identity,
-		ECC_EngineTraceChannel3,
+		ECC_GameTraceChannel3,
 		FCollisionShape::MakeSphere(50.f), params);
 
 	if(Hit)
@@ -84,11 +84,11 @@ void ASwordMan::Attack()
 		}
 		
 	}
-#if ENABLE_DRAW_DEBUG
-	FColor DrawColor = Hit ? FColor::Red : FColor::Green;
-
-	DrawDebugCapsule(GetWorld(), (Start + End)/ 2.f, mInfo.AttackDistance, 50.f,
-		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
-		DrawColor, false, 0.5f);
-#endif
+// #if ENABLE_DRAW_DEBUG
+// 	FColor DrawColor = Hit ? FColor::Red : FColor::Green;
+//
+// 	DrawDebugCapsule(GetWorld(), (Start + End)/ 2.f, mInfo.AttackDistance, 50.f,
+// 		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
+// 		DrawColor, false, 0.5f);
+// #endif
 }

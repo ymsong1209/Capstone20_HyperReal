@@ -13,19 +13,36 @@ UBTService_DetectTarget::UBTService_DetectTarget()
 	Interval = 0.5f;
 }
 
+void UBTService_DetectTarget::InitializeFromAsset(UBehaviorTree& Asset)
+{
+	Super::InitializeFromAsset(Asset);
+	CachedOwnerComp = nullptr;  // 초기화
+}
+
+void UBTService_DetectTarget::ClearTimerAndSetInterval()
+{
+	if(!CachedOwnerComp) return;
+	AAIController* Controller = Cast<AMonsterAIController>(CachedOwnerComp->GetAIOwner());
+	if (!Controller) return;
+
+	AMonster* Monster = Cast<AMonster>(Controller->GetPawn());
+	if (!Monster) return;
+	Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), nullptr);
+	Monster->SetActorTickInterval(0.5f);
+}
+
 void UBTService_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+	CachedOwnerComp = &OwnerComp;
 	AAIController* Controller = Cast<AMonsterAIController>(OwnerComp.GetAIOwner());
 
 	if (!Controller) return;
 
 	AMonster* Monster = Cast<AMonster>(Controller->GetPawn());
-
 	if (!Monster) return;
 
 	const FMonsterInfo& Info = Monster->GetMonsterInfo();
-
 	FCollisionQueryParams params(NAME_None, false, Monster);
 
 	//주변에 플레이어가 있는지 판단.
@@ -34,18 +51,16 @@ void UBTService_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 		Monster->GetActorLocation(), FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel5,
 		FCollisionShape::MakeSphere(Info.TraceDistance), params);
-
-#if ENABLE_DRAW_DEBUG
-	FColor DrawColor = Hit ? FColor::Red : FColor::Green;
-
-	DrawDebugSphere(GetWorld(), Monster->GetActorLocation(), Info.TraceDistance, 20,
-		DrawColor, false, 0.3f);
-#endif
-
+	
+	//플레이어가 주변에 있을시
 	if (Hit) {
 		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), result.GetActor());
+		Monster->SetActorTickInterval(0.f);
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	}
+	//플레이어가 주변에 없으면 Player추적 종료
 	else {
-		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), nullptr);
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UBTService_DetectTarget::ClearTimerAndSetInterval, 2.0f, false);
 	}
 }

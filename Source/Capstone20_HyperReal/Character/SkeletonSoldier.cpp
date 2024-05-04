@@ -485,7 +485,7 @@ void ASkeletonSoldier::TestBuildingSpawn()
 			//AController* MyOwnerInstigator = GetOwner()->GetInstigatorController();
 			//UClass* DamageTypeClass =  UDamageType::StaticClass();
 			//UGameplayStatics::ApplyDamage(Building, 100, MyOwnerInstigator, this, DamageTypeClass);
-			//Building->SpawnMonster();
+			Building->SpawnMonster();
 			Building->HitShake();
 			Building->SpawnHitParticles();
 		}
