@@ -20,7 +20,7 @@
 #include "LongSword.h"
 #include "../Building/Building.h"
 #include "../Projectile/SoldierChargeSlash.h"
-#include "../Enemy/BaseEnemy.h"
+#include "../Enemy/Monster.h"
 
 ASkeletonSoldier::ASkeletonSoldier() :
 	m_fChargeStartTime(0.f),
@@ -541,7 +541,7 @@ void ASkeletonSoldier::AttackCrossCut()
 		if (actor->TakeDamage(100.f, FDamageEvent(),
 			GetController(), this) == -1.f)
 		{
-			//ABaseEnemy* pEnemy = Cast<ABaseEnemy>(HitArray[i].GetActor());
+			//AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
 
 			//if (pEnemy)
 			//{
@@ -569,7 +569,7 @@ void ASkeletonSoldier::AttackUpperCut()
 				GetController(), this) == -1.f)
 			{
 				// 공중으로 뛰울 수 있으면 뛰우도록 해야함
-				//ABaseEnemy* pEnemy = Cast<ABaseEnemy>(HitArray[i].GetActor());
+				//AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
 
 				//if (pEnemy)
 				//{
@@ -607,7 +607,7 @@ void ASkeletonSoldier::AttackSmashCut()
 			if (HitArray[i].GetActor()->TakeDamage(100.f, FDamageEvent(),
 				GetController(), this) == -1.f)
 			{
-				//ABaseEnemy* pEnemy = Cast<ABaseEnemy>(HitArray[i].GetActor());
+				//AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
 
 				//if (pEnemy)
 				//{

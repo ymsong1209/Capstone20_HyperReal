@@ -113,7 +113,11 @@ void AMonster::HandleDeath()
 	{
 		AIController->UnPossess(); // 몬스터 컨트롤 해제
 	}
-	mBuilding->RemoveMonster(this);
+	if(mBuilding)
+	{
+		mBuilding->RemoveMonster(this);
+	}
+	
 	//무적 상태로 만들어서 대미지 더이상 안들어오게 함
 	bIsInvincible = true;
 }
