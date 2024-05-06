@@ -15,7 +15,9 @@ ALongSword::ALongSword()
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/A_SJWContent/Weapon/SK_LongSword.SK_LongSword'"));
 
 	if (MeshAsset.Succeeded())
-		WeaponMesh->SetSkeletalMesh(MeshAsset.Object);
+		m_WeaponMesh->SetSkeletalMesh(MeshAsset.Object);
+
+	m_WeaponMesh->SetRelativeScale3D(FVector(2.f, 2.f, 3.f));
 }
 
 void ALongSword::BeginPlay()
@@ -23,6 +25,5 @@ void ALongSword::BeginPlay()
 	Super::BeginPlay();
 
 	// 크기 조정
-	WeaponMesh->SetRelativeScale3D(FVector(2.f, 2.f, 3.f));
-	WeaponMesh->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+	m_WeaponMesh->SetAnimationMode(EAnimationMode::AnimationSingleNode);
 }

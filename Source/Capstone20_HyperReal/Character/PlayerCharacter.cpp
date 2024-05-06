@@ -135,6 +135,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
+float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	return 0.0f;
+}
+
 void APlayerCharacter::Attack()
 {
 	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None))
@@ -176,18 +181,21 @@ void APlayerCharacter::Attack()
 void APlayerCharacter::AttackCombo()
 {
 	m_iAttackMontageIndex = (m_iAttackMontageIndex + 1) % m_arrAttackMontage.Num();
+	m_bComboDetected = false;
 }
 
 void APlayerCharacter::AttackEnd()
 {
 	m_iAttackMontageIndex = 0;
-	AttackReset();
+	m_bOnAttack = false;
+	m_bComboDetected = false;
 }
 
 void APlayerCharacter::AttackReset()
 {
 	m_bOnAttack = false;
 	m_bComboDetected = false;
+	Attack();
 }
 
 FVector APlayerCharacter::GetMousePosition()

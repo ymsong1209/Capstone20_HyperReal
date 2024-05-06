@@ -9,17 +9,17 @@ AProjectileBase::AProjectileBase()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	m_Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	m_Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
 	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	m_Niagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
 	m_Projectile = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile"));
 	
 
-	SetRootComponent(m_Sphere);
+	SetRootComponent(m_Capsule);
 
-	m_Mesh->SetupAttachment(m_Sphere);
-	m_Niagara->SetupAttachment(m_Sphere);
-	m_Projectile->SetUpdatedComponent(m_Sphere);
+	m_Mesh->SetupAttachment(m_Capsule);
+	m_Niagara->SetupAttachment(m_Capsule);
+	m_Projectile->SetUpdatedComponent(m_Capsule);
 
 	m_Mesh->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 	m_Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);

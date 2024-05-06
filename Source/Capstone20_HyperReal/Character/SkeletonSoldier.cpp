@@ -18,6 +18,9 @@
 #include "SoldierAnimInstance.h"
 #include "ClickMoveController.h"
 #include "LongSword.h"
+#include "../Effect/EffectBase.h"
+#include "../Effect/SmashCameraShake.h"
+
 #include "../Building/Building.h"
 #include "../Projectile/SoldierChargeSlash.h"
 #include "../Enemy/Monster.h"
@@ -148,7 +151,6 @@ void ASkeletonSoldier::BeginPlay()
 		m_pRWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocket);
 		m_pRWeapon->SetActorRelativeLocation(FVector(0.f, 0.f, -30.f));
 		m_pRWeapon->SetActorRelativeRotation(FRotator(0.f, 90.f, 0.f));
-		m_pRWeapon->SetActorRelativeScale3D(FVector(2.f, 2.f, 3.f));
 	}
 
 	if (IsValid(m_pLeapAttackRangeDecal))
@@ -359,8 +361,12 @@ void ASkeletonSoldier::Whirlwind()
 			m_pAnim->Montage_SetPosition(m_WhirlWindMontage, 0.f);
 			m_pAnim->Montage_Play(m_WhirlWindMontage, GetAnimPlaySpeed());
 
+			// 타미어 설정해서 특정 틱마다 콜리전 발생
+			GetWorldTimerManager().SetTimer(m_hAttackWhirlwindHandle, this, &ASkeletonSoldier::AttackWhirlwind, 0.5f, true, 0.f);
+
 			// 타이머 설정해서 몇초후 훨윈드 자동 종료	
 			GetWorldTimerManager().SetTimer(m_hWhirlwindHandle, this, &ASkeletonSoldier::WhirlwindEnd, m_fWhilrwindDuration, false);
+
 		}
 
 		if (m_pRWeapon)
@@ -371,6 +377,51 @@ void ASkeletonSoldier::Whirlwind()
 	{
 		WhirlwindEnd();
 	}
+}
+
+void ASkeletonSoldier::AttackWhirlwind()
+{
+	float fRadius = 200.f;
+	float fStartPos = 50.f;
+	float fEndPos = -50.f;
+
+	FVector	Start = GetActorLocation() + GetActorUpVector() * fStartPos;
+	FVector	End = GetActorLocation() + GetActorUpVector() * fEndPos;
+
+	FCollisionQueryParams	params(NAME_None, false, this);
+	TArray<FHitResult>	HitArray;
+
+	bool Hit = GetWorld()->SweepMultiByChannel(HitArray, Start, End, FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel4,
+		FCollisionShape::MakeSphere(fRadius), params);
+
+	if (Hit)
+	{
+		for (int32 i = 0; i < HitArray.Num(); ++i)
+		{
+			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
+				GetController(), this) == -1.f)
+			{
+				SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
+
+				AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
+
+				if (pEnemy)
+				{
+				}
+			}
+		}
+	}
+
+#if ENABLE_DRAW_DEBUG
+
+	FColor	DrawColor = Hit ? FColor::Red : FColor::Green;
+
+	DrawDebugCapsule(GetWorld(), (Start + End) / 2.f, (fStartPos + fEndPos) / 2.f, fRadius,
+		FRotationMatrix::MakeFromZ(GetActorUpVector()).ToQuat(),
+		DrawColor, false, 0.5f);
+
+#endif
 }
 
 void ASkeletonSoldier::LeapAttack()
@@ -391,11 +442,63 @@ void ASkeletonSoldier::LeapAttack()
 			m_pLeapAttackDecal = UGameplayStatics::SpawnDecalAtLocation(this, m_pLeapAttackDecalInterface, FVector(64.f, 128.f, 128.f), 
 				GetActorLocation(), FRotator(-90.f, 0.f, 0.f), 0.f);
 
+#if ENABLE_DRAW_DEBUG
 			// 거리 확인용 디버깅 오브젝트
 			DrawDebugCircle(GetWorld(), GetActorLocation(), m_fLeapMaxDistance, 
 				50, FColor(255.f, 255.f, 0.f), false, 1.f, 0U, 1.f, FVector(0.f, 1.f, 0.f), FVector(1.f, 0.f, 0.f));
+#endif
 		}
 	}
+}
+
+void ASkeletonSoldier::AttackLeapAttack()
+{
+	SetActorEnableCollision(true);
+
+	// Camera shake
+	GetController<AClickMoveController>()->ClientStartCameraShake(USmashCameraShake::StaticClass());
+
+	float fRadius = 100.f;
+	float fStartPos = 50.f;
+	float fEndPos = -50.f;
+
+	FVector	Start = GetActorLocation() + GetActorUpVector() * fStartPos;
+	FVector	End = GetActorLocation() + GetActorUpVector() * fEndPos;
+
+	FCollisionQueryParams	params(NAME_None, false, this);
+	TArray<FHitResult>	HitArray;
+
+	bool Hit = GetWorld()->SweepMultiByChannel(HitArray, Start, End, FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel4,
+		FCollisionShape::MakeSphere(fRadius), params);
+
+	if (Hit)
+	{
+		for (int32 i = 0; i < HitArray.Num(); ++i)
+		{
+			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
+				GetController(), this) == -1.f)
+			{
+				SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
+
+				AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
+
+				if (pEnemy)
+				{
+				}
+			}
+		}
+	}
+
+#if ENABLE_DRAW_DEBUG
+
+	FColor	DrawColor = Hit ? FColor::Red : FColor::Green;
+
+	DrawDebugCapsule(GetWorld(), (Start + End) / 2.f, (fStartPos + fEndPos) / 2.f, fRadius,
+		FRotationMatrix::MakeFromZ(GetActorUpVector()).ToQuat(),
+		DrawColor, false, 0.5f);
+
+#endif
 }
 
 void ASkeletonSoldier::UndeadFury()
@@ -440,6 +543,7 @@ void ASkeletonSoldier::WhirlwindEnd()
 {
 	m_eUsingSkill = EPlayerSkill::None;
 	m_pAnim->Montage_Stop(0.f);
+	GetWorldTimerManager().ClearTimer(m_hAttackWhirlwindHandle);
 	GetWorldTimerManager().ClearTimer(m_hWhirlwindHandle);
 
 	if (m_pRWeapon)
@@ -448,6 +552,7 @@ void ASkeletonSoldier::WhirlwindEnd()
 
 void ASkeletonSoldier::LeapAttackMove()
 {
+	SetActorEnableCollision(false);
 	m_pLeapAttackRangeDecal->SetHiddenInGame(true);
 
 	if (IsValid(m_pLeapAttackDecal))
@@ -461,15 +566,19 @@ void ASkeletonSoldier::LeapAttackMove()
 	SetActorLocation(m_vLeapAttackPos);
 	m_vLeapAttackPos = FVector::ZeroVector;
 	m_bOnLeapAttackCharge = false;
+
+	// Camera shake
+	GetController<AClickMoveController>()->ClientStartCameraShake(USmashCameraShake::StaticClass());
 }
 
 void ASkeletonSoldier::EjectChargeSlash()
 {
-	UE_LOG(LogTemp, Log, TEXT("Charge Slash Eject"));
 	FVector vLoc = GetActorLocation() + GetActorForwardVector() * 100.f;
 	FActorSpawnParameters param;
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	ASoldierChargeSlash* pSlash = GetWorld()->SpawnActor<ASoldierChargeSlash>(vLoc, GetActorRotation(), param);
+	pSlash->SetDamage(100.f);
+	pSlash->SetOwnerController(GetController());
 }
 
 void ASkeletonSoldier::AttackHitCheck()
@@ -493,10 +602,13 @@ void ASkeletonSoldier::AttackHitCheck()
 void ASkeletonSoldier::AttackCrossCut()
 {
 	float fDegree = 120.f;
-	TSet<AActor*> HitActorSet;
+	TMap<AActor*, FHitResult> HitResultMap;
 	FCollisionQueryParams	params(NAME_None, false, this);
 
 	int32 iCount = 7;
+	float fRadius = 30.f;
+	float fStartPos = 50.f;
+	float fEndPos = 150.f;
 
 	for (int i = 0; i < iCount; i++)
 	{
@@ -506,19 +618,19 @@ void ASkeletonSoldier::AttackCrossCut()
 		FQuat QuatRot = FQuat(vRot);
 		vDir = QuatRot.RotateVector(vDir);
 
-		FVector	Start = GetActorLocation() + vDir * 50.f;
-		FVector	End = GetActorLocation() + vDir * 150.f;
+		FVector	Start = GetActorLocation() + vDir * fStartPos;
+		FVector	End = GetActorLocation() + vDir * fEndPos;
 
 		TArray<FHitResult>	HitArray;
 		bool Hit = GetWorld()->SweepMultiByChannel(HitArray, Start, End, FQuat::Identity,
 			ECollisionChannel::ECC_GameTraceChannel4,
-			FCollisionShape::MakeSphere(30.f), params);
+			FCollisionShape::MakeSphere(fRadius), params);
 
 		if (Hit)
 		{
 			for (int32 j = 0; j < HitArray.Num(); ++j)
 			{
-				HitActorSet.Add(HitArray[j].GetActor());
+				HitResultMap.Add(HitArray[j].GetActor(), HitArray[j]);
 			}
 		}
 
@@ -526,18 +638,19 @@ void ASkeletonSoldier::AttackCrossCut()
 
 		FColor	DrawColor = Hit ? FColor::Red : FColor::Green;
 
-		DrawDebugCapsule(GetWorld(), (Start + End) / 2.f, 100.f, 30.f,
+		DrawDebugCapsule(GetWorld(), (Start + End) / 2.f, (fStartPos + fEndPos) / 2.f, fRadius,
 			FRotationMatrix::MakeFromZ(vDir).ToQuat(),
 			DrawColor, false, 0.5f);
 
 #endif
 	}
 
-	// 액터 set 에 들어있는 오브젝트들 다시 한번 체크
-	for (const auto& actor : HitActorSet)
+	// 중복 충돌을 제거하고 hit 으 정보를 활용하기 위해 map 으로 변경
+	for (const auto& Hit : HitResultMap)
 	{
-		if (actor->TakeDamage(100.f, FDamageEvent(),
-			GetController(), this) == -1.f)
+		SpawnHitEffect(Hit.Value.ImpactPoint, Hit.Value.ImpactNormal.Rotation());
+
+		if (Hit.Key->TakeDamage(1.f, FDamageEvent(), GetController(), this) == -1.f)
 		{
 			//AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
 
@@ -550,20 +663,26 @@ void ASkeletonSoldier::AttackCrossCut()
 
 void ASkeletonSoldier::AttackUpperCut()
 {
-	FVector	Start = GetActorLocation() + GetActorForwardVector() * 50.f;
-	FVector	End = GetActorLocation() + GetActorForwardVector() * 250.f;
+	float fRadius = 70.f;
+	float fStartPos = 50.f;
+	float fEndPos = 200.f;
+
+	FVector	Start = GetActorLocation() + GetActorForwardVector() * fStartPos;
+	FVector	End = GetActorLocation() + GetActorForwardVector() * fEndPos;
 
 	FCollisionQueryParams	params(NAME_None, false, this);
 	TArray<FHitResult>	HitArray;
 	bool Hit = GetWorld()->SweepMultiByChannel(HitArray, Start, End, FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel4,
-		FCollisionShape::MakeSphere(50.f), params);
+		FCollisionShape::MakeSphere(fRadius), params);
 
 	if (Hit)
 	{
 		for (int32 i = 0; i < HitArray.Num(); ++i)
 		{
-			if (HitArray[i].GetActor()->TakeDamage(100.f, FDamageEvent(),
+			SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
+
+			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
 				GetController(), this) == -1.f)
 			{
 				// 공중으로 뛰울 수 있으면 뛰우도록 해야함
@@ -580,7 +699,7 @@ void ASkeletonSoldier::AttackUpperCut()
 
 	FColor	DrawColor = Hit ? FColor::Red : FColor::Green;
 
-	DrawDebugCapsule(GetWorld(), (Start + End) / 2.f, 100.f, 50.f,
+	DrawDebugCapsule(GetWorld(), (Start + End) / 2.f, (fStartPos + fEndPos) / 2.f, fRadius,
 		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
 		DrawColor, false, 0.5f);
 
@@ -589,27 +708,43 @@ void ASkeletonSoldier::AttackUpperCut()
 
 void ASkeletonSoldier::AttackSmashCut()
 {
-	FVector	Start = GetActorLocation() + GetActorForwardVector() * 50.f;
-	FVector	End = GetActorLocation() + GetActorForwardVector() * 250.f;
+	// Camera shake
+	GetController<AClickMoveController>()->ClientStartCameraShake(USmashCameraShake::StaticClass());
+
+	float fRadius = 70.f;
+	float fStartPos = 50.f;
+	float fEndPos = 200.f;
+
+	FVector	Start = GetActorLocation() + GetActorForwardVector() * fStartPos;
+	FVector	End = GetActorLocation() + GetActorForwardVector() * fEndPos;
 
 	FCollisionQueryParams	params(NAME_None, false, this);
 	TArray<FHitResult>	HitArray;
 	bool Hit = GetWorld()->SweepMultiByChannel(HitArray, Start, End, FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel4,
-		FCollisionShape::MakeSphere(50.f), params);
+		FCollisionShape::MakeSphere(fRadius), params);
 
 	if (Hit)
 	{
 		for (int32 i = 0; i < HitArray.Num(); ++i)
 		{
-			if (HitArray[i].GetActor()->TakeDamage(100.f, FDamageEvent(),
+			SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
+
+			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
 				GetController(), this) == -1.f)
 			{
-				//AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
+				// 몬스터라면 약간 앞으로 밀쳐내기
+				AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
 
-				//if (pEnemy)
-				//{
-				//}
+				if (pEnemy)
+				{
+					UE_LOG(LogTemp, Log, TEXT("enemy detected"));
+					FVector vCurPos = GetActorLocation();
+					FVector vEnemyPos = pEnemy->GetActorLocation();
+
+					FVector vDir = (vEnemyPos - vCurPos).GetSafeNormal();
+					pEnemy->GetCharacterMovement()->AddImpulse(vDir * 1000.f, true);
+				}
 			}
 		}
 	}
@@ -618,8 +753,38 @@ void ASkeletonSoldier::AttackSmashCut()
 
 	FColor	DrawColor = Hit ? FColor::Red : FColor::Green;
 
-	DrawDebugSphere(GetWorld(), (Start + End) / 2.f, 150.f, 50.f,
+	DrawDebugCapsule(GetWorld(), (Start + End) / 2.f, (fStartPos + fEndPos) / 2.f, fRadius,
+		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
 		DrawColor, false, 0.5f);
 
 #endif
+}
+
+void ASkeletonSoldier::SpawnHitEffect(FVector _vLoc, FRotator _vRot)
+{
+	FActorSpawnParameters param;
+
+	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(_vLoc, _vRot, param);
+
+	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/Hack_And_Slash_FX/VFX_Niagara/Impacts/NS_Demon_Slash_Impact.NS_Demon_Slash_Impact'"));
+}
+
+void ASkeletonSoldier::TestBuildingSpawn()
+{
+	for (TActorIterator<ABuilding> It(GetWorld()); It; ++It)
+	{
+		ABuilding* Building = *It;
+		if (Building)
+		{
+			//AController* MyOwnerInstigator = GetOwner()->GetInstigatorController();
+			//UClass* DamageTypeClass =  UDamageType::StaticClass();
+			//UGameplayStatics::ApplyDamage(Building, 100, MyOwnerInstigator, this, DamageTypeClass);
+			Building->SpawnMonster();
+			Building->HitShake();
+			Building->SpawnHitParticles();
+		}
+	}
+
+	
 }

@@ -12,13 +12,16 @@ class CAPSTONE20_HYPERREAL_API AWeapon : public AActor
 	GENERATED_BODY()
 	
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UCapsuleComponent* m_Capsule;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
 	UAnimSequence* m_ASWeapon;
 
 protected:
 	// 무기 표현용 스켈레탈 매쉬(트레일을 구현하기 위함)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
-	class USkeletalMeshComponent* WeaponMesh;
+	class USkeletalMeshComponent* m_WeaponMesh;
 
 public:	
 	// Sets default values for this actor's properties

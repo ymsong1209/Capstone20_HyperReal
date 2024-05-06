@@ -10,10 +10,13 @@ AWeapon::AWeapon()	:
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
-	RootComponent = WeaponMesh;
+	m_Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
+	m_WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 
-	WeaponMesh->SetCollisionProfileName(TEXT("PlayerObject"));
+	SetRootComponent(m_Capsule);
+
+	m_WeaponMesh->SetupAttachment(m_Capsule);
+	m_Capsule->SetCollisionProfileName(TEXT("PlayerObject"));
 }
 
 // Called when the game starts or when spawned
@@ -25,13 +28,13 @@ void AWeapon::BeginPlay()
 void AWeapon::StartTrail()
 {
 	if(m_ASWeapon)
-		WeaponMesh->PlayAnimation(m_ASWeapon, true);
+		m_WeaponMesh->PlayAnimation(m_ASWeapon, true);
 }
 
 void AWeapon::EndTrail()
 {
 	if (m_ASWeapon)
-		WeaponMesh->SetAnimation(nullptr);
+		m_WeaponMesh->SetAnimation(nullptr);
 }
 
 
