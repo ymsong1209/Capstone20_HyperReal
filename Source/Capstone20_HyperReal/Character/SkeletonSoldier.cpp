@@ -231,8 +231,6 @@ void ASkeletonSoldier::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// F 버튼에 언데드 퓨리 바인딩
 		pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::UndeadFury);
-		//건물상호작용 테스트 코드
-		//pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::TestBuildingSpawn);
 	}
 }
 
@@ -624,23 +622,4 @@ void ASkeletonSoldier::AttackSmashCut()
 		DrawColor, false, 0.5f);
 
 #endif
-}
-
-void ASkeletonSoldier::TestBuildingSpawn()
-{
-	for (TActorIterator<ABuilding> It(GetWorld()); It; ++It)
-	{
-		ABuilding* Building = *It;
-		if (Building)
-		{
-			//AController* MyOwnerInstigator = GetOwner()->GetInstigatorController();
-			//UClass* DamageTypeClass =  UDamageType::StaticClass();
-			//UGameplayStatics::ApplyDamage(Building, 100, MyOwnerInstigator, this, DamageTypeClass);
-			Building->SpawnMonster();
-			Building->HitShake();
-			Building->SpawnHitParticles();
-		}
-	}
-
-	
 }

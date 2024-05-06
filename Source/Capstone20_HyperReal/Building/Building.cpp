@@ -28,8 +28,8 @@ ABuilding::ABuilding() :
 		mMesh->SetStaticMesh(mMeshes[0]);
 	}
 	
-	mMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//GetCapsuleComponent()->SetCollisionProfileName(TEXT("Monster"));
+	//mMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	mMesh->SetCollisionProfileName(TEXT("Building"));
 	mMesh->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 	mMesh->bReceivesDecals = false;
 	
@@ -166,7 +166,8 @@ float ABuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 		//죽었을 경우 -1.f반환
 		Damage = -1.f;
 	}
-	//SpawnHitParticles();
+	SpawnHitParticles();
+	HitShake();
 	return Damage;
 }
 
