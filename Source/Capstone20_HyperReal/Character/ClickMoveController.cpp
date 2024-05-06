@@ -58,7 +58,8 @@ void AClickMoveController::OnInputStarted()
 }
 
 void AClickMoveController::OnClickMoveTriggered()
-{	// We flag that the input is being pressed
+{	
+	// We flag that the input is being pressed
 	FollowTime += GetWorld()->GetDeltaSeconds();
 
 	// We look for the location in the world where the player has pressed the input

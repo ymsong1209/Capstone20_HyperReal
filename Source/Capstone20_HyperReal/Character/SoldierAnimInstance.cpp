@@ -86,7 +86,12 @@ void USoldierAnimInstance::AnimNotify_LeapChargeEnd()
 
 void USoldierAnimInstance::AnimNotify_LeapAttack()
 {
+	ASkeletonSoldier* pPlayer = Cast<ASkeletonSoldier>(TryGetPawnOwner());
 
+	if (IsValid(pPlayer))
+	{
+		pPlayer->AttackLeapAttack();
+	}
 }
 
 void USoldierAnimInstance::AnimNotify_SkillEnd()

@@ -32,13 +32,13 @@ AScoutArrow::AScoutArrow()
 	m_Projectile->ProjectileGravityScale = 0.f;
 	m_Projectile->bRotationFollowsVelocity = true;
 
-	m_Sphere->SetCollisionProfileName(TEXT("MonsterObject"));
+	m_Capsule->SetCollisionProfileName(TEXT("MonsterObject"));
 
 	//Overlap Event
-	m_Sphere->SetGenerateOverlapEvents(true);
+	m_Capsule->SetGenerateOverlapEvents(true);
 
 	//Hit Event
-	m_Sphere->SetNotifyRigidBodyCollision(true);
+	m_Capsule->SetNotifyRigidBodyCollision(true);
 
 	m_fMaxDistance = 2000.f;
 

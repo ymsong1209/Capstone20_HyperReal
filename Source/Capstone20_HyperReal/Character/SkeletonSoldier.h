@@ -56,6 +56,8 @@ private:
 	int32 m_iAccChargeAttackCount;
 
 	FTimerHandle m_hWhirlwindHandle;
+	FTimerHandle m_hAttackWhirlwindHandle;
+
 	FTimerHandle m_hUndeadFuryHandle;
 
 	class AWeapon* m_pRWeapon;
@@ -64,6 +66,7 @@ private:
 	bool m_bOnLeapAttackCharge;
 
 	UDecalComponent* m_pLeapAttackDecal;
+
 
 private:
 	// Leap 공격 범위용 데칼
@@ -98,6 +101,9 @@ private:
 	// 훨윈드
 	void Whirlwind();
 
+	// 훨윈드 충돌체 생성
+	void AttackWhirlwind();
+
 	// 리프 어택
 	void LeapAttack();
 
@@ -114,8 +120,12 @@ private:
 	// 3 번 내려찍기
 	void AttackSmashCut();
 
+	void SpawnHitEffect(FVector _vLoc, FRotator _vRot);
+
 public:
 	void ChargeAttackEnd();
+	void AttackLeapAttack();
+
 	void WhirlwindEnd();
 	void LeapAttackMove();
 
