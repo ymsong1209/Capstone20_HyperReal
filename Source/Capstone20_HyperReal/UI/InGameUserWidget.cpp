@@ -6,6 +6,7 @@
 #include "Materials/Material.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Engine/Texture.h"
+#include "../GameData.h"
 void UInGameUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -15,6 +16,15 @@ void UInGameUserWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	mCharacterHUD = Cast<UCharacterHUDWidget>(GetWidgetFromName(TEXT("UI_CharacterHUD")));
+	mPrevGold = Cast<UTextBlock>(GetWidgetFromName(TEXT("PrevMoney")));
+	mEarnGold = Cast<UTextBlock>(GetWidgetFromName(TEXT("earnMoney")));
+	mDestoryRate = Cast<UTextBlock>(GetWidgetFromName(TEXT("DestroyRate")));
+
+	
+	FString	t = "Testcode";
+	mPrevGold->SetText(FText::FromString(t));
+	mEarnGold->SetText(FText::FromString(t));
+
 	skillicon = Cast<UImage>(GetWidgetFromName(TEXT("skillicon1")));
 
 	const int32 NumImages = 4;
@@ -54,6 +64,9 @@ void UInGameUserWidget::NativePreConstruct()
 void UInGameUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	SetPrevGold(1000);
+	SetEarnGold(500);
+	SetDestoryRate(25.7f);
 	
 }
 
@@ -107,3 +120,24 @@ void UInGameUserWidget::SetSkillImage(int idx, UTexture* tex)
 		skillImages[idx]->GetDynamicMaterial()->SetTextureParameterValue(FName("SkillImage"), tex);
 	}
 }
+
+void UInGameUserWidget::SetPrevGold(int gold)
+{
+	mPrevGold->SetText(FText::FromString(FString::FromInt(gold)));
+}
+
+void UInGameUserWidget::SetEarnGold(int gold)
+{
+	FString str = "+";
+	str += FString::FromInt(gold);
+	mEarnGold->SetText(FText::FromString(str));
+}
+
+void UInGameUserWidget::SetDestoryRate(float fRate)
+{
+	int iRate=FMath::FloorToInt(fRate);
+	FString str=FString::FromInt(iRate) + "%";
+	mDestoryRate->SetText(FText::FromString(str));
+}
+
+
