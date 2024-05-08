@@ -27,6 +27,15 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		OwnerComp.GetAIOwner()->StopMovement();
 		return EBTNodeResult::Succeeded;
 	}
+
+	//몬스터와 target의 위치를 얻어옴
+	FVector MonsterLoc = Monster->GetActorLocation();
+	FVector TargetLoc = Target->GetActorLocation();
+	//몬스터가 타겟을 바라보게 함
+	FVector Dir = TargetLoc - MonsterLoc;
+	Dir.Normalize();
+	Monster->SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
+		
 	Monster->GetAnimInstance()->ChangeAnimType(EMonsterAnim::Attack);
 
 	return EBTNodeResult::InProgress;
@@ -35,6 +44,9 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 EBTNodeResult::Type UBTTask_Attack::AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type result = Super::AbortTask(OwnerComp, NodeMemory);
+	// AMonster* Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	// Monster->GetAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
+	// OwnerComp.GetAIOwner()->StopMovement();
 	return result;
 }
 
@@ -70,6 +82,7 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	{
 		//공격 범위를 벗어나면 failed return
 		if (Distance > Monster->GetMonsterInfo().AttackDistance) {
+			Monster->GetAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		}
 		else

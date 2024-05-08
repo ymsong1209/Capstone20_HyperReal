@@ -92,7 +92,6 @@ void ABuilding::Activate()
 
 void ABuilding::SpawnMonster()
 {
-	UE_LOG(LogTemp, Display, TEXT("SpawnMonsterCalled"));
 	for(int i = 0;i<mInfo.MonstersPerSpawn;++i)
 	{
 		FVector2D RandCircle = FMath::RandPointInCircle(mInfo.SpawnRadius);
@@ -175,7 +174,7 @@ float ABuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 void ABuilding::Death()
 {
 	mbIsInvincible = true;
-	KillAllMonsters();
+	//KillAllMonsters();
 	Destroy();
 }
 

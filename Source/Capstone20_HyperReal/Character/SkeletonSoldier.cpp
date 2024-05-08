@@ -20,8 +20,6 @@
 #include "LongSword.h"
 #include "../Effect/EffectBase.h"
 #include "../Effect/SmashCameraShake.h"
-
-#include "../Building/Building.h"
 #include "../Projectile/SoldierChargeSlash.h"
 #include "../Enemy/Monster.h"
 
@@ -400,7 +398,7 @@ void ASkeletonSoldier::AttackWhirlwind()
 		for (int32 i = 0; i < HitArray.Num(); ++i)
 		{
 			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
-				GetController(), this) == -1.f)
+				GetController(), this) != -1.f)
 			{
 				SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
 
@@ -477,7 +475,7 @@ void ASkeletonSoldier::AttackLeapAttack()
 		for (int32 i = 0; i < HitArray.Num(); ++i)
 		{
 			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
-				GetController(), this) == -1.f)
+				GetController(), this) != -1.f)
 			{
 				SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
 
@@ -650,7 +648,7 @@ void ASkeletonSoldier::AttackCrossCut()
 	{
 		SpawnHitEffect(Hit.Value.ImpactPoint, Hit.Value.ImpactNormal.Rotation());
 
-		if (Hit.Key->TakeDamage(1.f, FDamageEvent(), GetController(), this) == -1.f)
+		if (Hit.Key->TakeDamage(1.f, FDamageEvent(), GetController(), this) != -1.f)
 		{
 			//AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
 
@@ -683,7 +681,7 @@ void ASkeletonSoldier::AttackUpperCut()
 			SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
 
 			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
-				GetController(), this) == -1.f)
+				GetController(), this) != -1.f)
 			{
 				// 공중으로 뛰울 수 있으면 뛰우도록 해야함
 				//AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
@@ -731,14 +729,13 @@ void ASkeletonSoldier::AttackSmashCut()
 			SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
 
 			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
-				GetController(), this) == -1.f)
+				GetController(), this) != -1.f)
 			{
 				// 몬스터라면 약간 앞으로 밀쳐내기
 				AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
 
 				if (pEnemy)
 				{
-					UE_LOG(LogTemp, Log, TEXT("enemy detected"));
 					FVector vCurPos = GetActorLocation();
 					FVector vEnemyPos = pEnemy->GetActorLocation();
 
@@ -768,23 +765,4 @@ void ASkeletonSoldier::SpawnHitEffect(FVector _vLoc, FRotator _vRot)
 	AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(_vLoc, _vRot, param);
 
 	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/Hack_And_Slash_FX/VFX_Niagara/Impacts/NS_Demon_Slash_Impact.NS_Demon_Slash_Impact'"));
-}
-
-void ASkeletonSoldier::TestBuildingSpawn()
-{
-	for (TActorIterator<ABuilding> It(GetWorld()); It; ++It)
-	{
-		ABuilding* Building = *It;
-		if (Building)
-		{
-			//AController* MyOwnerInstigator = GetOwner()->GetInstigatorController();
-			//UClass* DamageTypeClass =  UDamageType::StaticClass();
-			//UGameplayStatics::ApplyDamage(Building, 100, MyOwnerInstigator, this, DamageTypeClass);
-			Building->SpawnMonster();
-			Building->HitShake();
-			Building->SpawnHitParticles();
-		}
-	}
-
-	
 }

@@ -70,7 +70,6 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 	if (Distance <= Monster->GetMonsterInfo().AttackDistance) {
 		OwnerComp.GetAIOwner()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		return;
 	}
 }
 

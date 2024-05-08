@@ -64,10 +64,14 @@ void AScout::Attack()
 	
 	//AIController를 이용해 Blackboard에 있는 target을 얻어옴
 	AAIController* AIController = Cast<AAIController>(GetController());
-	AActor* Target = Cast<AActor>(AIController->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
-	
-	if(Target)
+	if(AIController)
 	{
-		ArrowActor->SetTarget(Target);
+		AActor* Target = Cast<AActor>(AIController->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
+		// //유도탄
+		// if(Target)
+		// {
+		// 	ArrowActor->SetTarget(Target);
+		// }
 	}
+	
 }

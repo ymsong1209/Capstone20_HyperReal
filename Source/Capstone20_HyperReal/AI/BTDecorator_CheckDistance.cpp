@@ -38,7 +38,11 @@ bool UBTDecorator_CheckDistance::CalculateRawConditionValue(UBehaviorTreeCompone
 	switch (mCheckType)
 	{
 	case ECheckDistanceType::Trace:
-		CheckDistance = Monster->GetMonsterInfo().TraceDistance;
+		return true;
+		{
+			//유한 추적 할라면 활성화
+			CheckDistance = Monster->GetMonsterInfo().TraceDistance;
+		}
 		break;
 	case ECheckDistanceType::Attack:
 		CheckDistance = Monster->GetMonsterInfo().AttackDistance;

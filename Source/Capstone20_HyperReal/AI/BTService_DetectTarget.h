@@ -22,6 +22,9 @@ public:
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;
+private:
+	void TracePlayer(UBehaviorTreeComponent& OwnerComp);
+	void CheckPlayerInTraceDistance(UBehaviorTreeComponent& OwnerComp);
 public:
 	UBTService_DetectTarget();
 	

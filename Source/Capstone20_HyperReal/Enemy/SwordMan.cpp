@@ -55,8 +55,8 @@ void ASwordMan::Tick(float DeltaTime)
 void ASwordMan::Attack()
 {
 	Super::Attack();
-	FVector Start = GetActorLocation() + GetActorForwardVector() * 50.f;
-	FVector End = GetActorLocation() + GetActorForwardVector() * (50.f + mInfo.AttackDistance);
+	FVector Start = GetActorLocation() + GetActorForwardVector();
+	FVector End = GetActorLocation() + GetActorForwardVector() * (mInfo.AttackDistance);
 
 	FCollisionQueryParams params(NAME_None, false, this);
 
@@ -87,7 +87,7 @@ void ASwordMan::Attack()
 #if ENABLE_DRAW_DEBUG
 	FColor DrawColor = Hit ? FColor::Red : FColor::Green;
 
-	DrawDebugCapsule(GetWorld(), (Start + End)/ 2.f, mInfo.AttackDistance, 50.f,
+	DrawDebugCapsule(GetWorld(), (Start + End)/ 2.f, mInfo.AttackDistance / 2.f, 50.f,
 		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
 		DrawColor, false, 0.5f);
 #endif

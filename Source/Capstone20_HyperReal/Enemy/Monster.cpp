@@ -42,7 +42,6 @@ void AMonster::BeginPlay()
 	if (GameInst) {
 		const FMonsterDataTableInfo* Info = GameInst->FindMonsterInfo(mDataTableKey);
 		if (Info) {
-			UE_LOG(LogTemp, Display, TEXT("Info"));
 			mInfo.Name = Info->Name;
 			mInfo.Attack = Info->Attack;
 			mInfo.Armor = Info->Armor;

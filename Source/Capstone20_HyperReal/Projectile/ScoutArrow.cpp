@@ -73,12 +73,10 @@ void AScoutArrow::ProjectileStop(const FHitResult& ImpactResult)
 	
 	
 	ImpactResult.GetActor()->TakeDamage(m_Damage,FDamageEvent(),m_OwnerController, this);
-	UE_LOG(LogTemp, Warning, TEXT("CollisionStopCalled"));
 	Destroy();
 }
 
 void AScoutArrow::ProjectileBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity)
 {
 	Super::ProjectileBounce(ImpactResult, ImpactVelocity);
-	UE_LOG(LogTemp, Warning, TEXT("CollisionBounceCalled"));
 }
