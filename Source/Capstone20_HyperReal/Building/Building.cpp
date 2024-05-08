@@ -178,38 +178,83 @@ void ABuilding::Death()
 	Destroy();
 }
 
+// void ABuilding::SpawnHitParticles() const
+// {
+// 	
+// 	int SpawnCount = FMath::RandRange(2, 5);
+//
+// 	// 건물의 Bounding Box 크기를 구함
+// 	FBox Bounds = GetComponentsBoundingBox(true);
+// 	FVector Min = Bounds.Min;
+// 	FVector Max = Bounds.Max;
+//
+// 	for (int i = 0; i < SpawnCount; ++i)
+// 	{
+// 		// 건물 경계 부근에서 파티클이 나타나도록 위치를 랜덤으로 결정
+// 		FVector SpawnLocation = FVector(
+// 			FMath::RandRange(Min.X, Max.X),   
+// 			FMath::RandRange(Min.Y, Max.Y),   
+// 			FMath::RandRange(Min.Z, Max.Z)    
+// 		);
+//
+// 		// 파티클 시스템 스폰
+// 		if(mHitParticle)
+// 		{
+// 			UE_LOG(LogTemp, Error, TEXT("Particles spawned"));
+// 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), mHitParticle->Template, SpawnLocation, FRotator::ZeroRotator, true);
+// 		}
+// 		else
+// 		{
+// 			UE_LOG(LogTemp, Error, TEXT("No Particles"));
+// 		}
+// 	}
+// 		
+// }
+
 void ABuilding::SpawnHitParticles() const
 {
-	
-	int SpawnCount = FMath::RandRange(2, 5);
-
-	// 건물의 Bounding Box 크기를 구함
-	FBox Bounds = GetComponentsBoundingBox(true);
-	FVector Min = Bounds.Min;
-	FVector Max = Bounds.Max;
+	int SpawnCount = FMath::RandRange(5, 10);
 
 	for (int i = 0; i < SpawnCount; ++i)
 	{
-		// 건물 경계 부근에서 파티클이 나타나도록 위치를 랜덤으로 결정
-		FVector SpawnLocation = FVector(
-			FMath::RandRange(Min.X, Max.X),   
-			FMath::RandRange(Min.Y, Max.Y),   
-			FMath::RandRange(Min.Z, Max.Z)    
-		);
+		// 메쉬의 바운딩 박스 중심 및 크기를 가져옴
+		FVector Origin = mMesh->GetComponentLocation();
+		FVector BoxExtent = mMesh->Bounds.BoxExtent;
 
-		// 파티클 시스템 스폰
-		if(mHitParticle)
+		// 메쉬 콜라이더의 바깥 표면 근처에 랜덤한 위치 생성
+		FVector RandomDirection = FMath::VRand();
+		RandomDirection.Z = FMath::Abs(RandomDirection.Z); // Z 방향은 항상 위쪽
+		RandomDirection.Normalize();
+
+		// 콜라이더 외벽을 향한 랜덤 위치를 박스 범위 안에서 계산
+		FVector GuessLocation = Origin + (RandomDirection * BoxExtent) * FMath::RandRange(1.0f, 1.2f);
+	
+		// 메쉬의 콜라이더 표면에 가장 가까운 위치를 찾음
+		FVector ClosestPointOnSurface;
+		if (mMesh->GetClosestPointOnCollision(GuessLocation, ClosestPointOnSurface))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), mHitParticle->Template, SpawnLocation, FRotator::ZeroRotator, true);
+			if (mHitParticle)
+			{
+				//UE_LOG(LogTemp, Error, TEXT("Particles spawned at %s"), *ClosestPointOnSurface.ToString());
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), mHitParticle->Template, ClosestPointOnSurface, FRotator::ZeroRotator, true);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("No Particles"));
+			}
+
+			// 디버그 용도로 파티클 스폰 위치를 시각화
+			//DrawDebugSphere(GetWorld(), ClosestPointOnSurface, 20.0f, 12, FColor::Red, false, 2.0f);
+		
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("No Particles"));
+			//UE_LOG(LogTemp, Error, TEXT("Could not find closest point on surface"));
 		}
 	}
-		
+	
+	
 }
-
 void ABuilding::HitShake()
 {
 	if (!mbIsShaking)
