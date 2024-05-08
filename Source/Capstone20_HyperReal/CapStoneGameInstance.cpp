@@ -20,6 +20,10 @@ UCapStoneGameInstance::UCapStoneGameInstance()
 	//if (PlayerTableAsset.Succeeded()) {
 	//	mPlayerInfoTable = PlayerTableAsset.Object;
 	//}
+	static ConstructorHelpers::FObjectFinder<UDataTable> PlayerTableAsset(TEXT("/Script/Engine.DataTable'/Game/A_KHIContent/DataTable/PlayerDT.PlayerDT'"));
+	if (PlayerTableAsset.Succeeded()) {
+		mPlayerInfoTable = PlayerTableAsset.Object;
+	}
 }
 
 const FMonsterDataTableInfo* UCapStoneGameInstance::FindMonsterInfo(const FString& _Name)

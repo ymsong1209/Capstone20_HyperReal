@@ -15,9 +15,9 @@ class CAPSTONE20_HYPERREAL_API UKHIGameInstance : public UGameInstance
 	GENERATED_BODY()
 public:
 	UKHIGameInstance();
-private:
-	//UPROPERTY()
-	//UDataTable* mPlayerInfoTable;
+public:
+	UPROPERTY()
+	UDataTable* mPlayerInfoTable;
 	//
 	//UPROPERTY()
 	//UDataTable* mMonsterInfoTable;

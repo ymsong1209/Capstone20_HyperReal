@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Containers/Array.h"
 #include "CharacterHUDWidget.h"
+#include "Components/TextBlock.h"
 #include "Blueprint/UserWidget.h"
 #include "InGameUserWidget.generated.h"
 class UImage;
@@ -18,6 +19,9 @@ class CAPSTONE20_HYPERREAL_API UInGameUserWidget : public UUserWidget
 	GENERATED_BODY()
 protected:
 	UCharacterHUDWidget* mCharacterHUD;
+	UTextBlock* mPrevGold;
+	UTextBlock* mEarnGold;
+	UTextBlock* mDestoryRate;
 protected:
 	virtual void NativeOnInitialized();
 	virtual void NativePreConstruct();
@@ -42,4 +46,7 @@ public:
 	void SetHP(int32 HP, int32 HPMax);
 	void CalSkillCoolTime(int idx, float fRate);
 	void SetSkillImage(int idx, UTexture* tex);
+	void SetPrevGold(int gold);
+	void SetEarnGold(int gold);
+	void SetDestoryRate(float fRate);
 };

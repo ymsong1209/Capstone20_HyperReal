@@ -10,8 +10,8 @@ void UCharacterHUDWidget::NativeOnInitialized()
 void UCharacterHUDWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	mHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar")));
-	mSPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("SPBar")));
+	mHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar2")));
+	mSPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("SPBar2")));
 	int a = 0;
 }
 
