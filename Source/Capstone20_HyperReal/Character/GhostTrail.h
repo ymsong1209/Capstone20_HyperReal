@@ -44,6 +44,7 @@ public:
 	void SetGhostType(EGhostTrailType _eType) { m_eGhostType = _eType; }
 	void SetLifeTime(float _fTime) { m_fLifeTime = _fTime; }
 	void SetFadeTime(float _fTime) { m_fFadeTime = _fTime; }
+	void SetColorParam(FVector& _vColor);
 
 protected:
 	// Called when the game starts or when spawned

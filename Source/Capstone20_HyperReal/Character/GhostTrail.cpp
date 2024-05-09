@@ -26,11 +26,18 @@ AGhostTrail::AGhostTrail()
 	m_fAccFadeTime = 0.f;
 }
 
+void AGhostTrail::SetColorParam(FVector& _vColor)
+{
+	for (auto& mtrl : m_arrGhostMaterial)
+	{
+		mtrl->SetVectorParameterValue(TEXT("StartColor"), _vColor);
+	}
+}
+
 // Called when the game starts or when spawned
 void AGhostTrail::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame

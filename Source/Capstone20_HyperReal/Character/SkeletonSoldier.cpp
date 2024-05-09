@@ -22,6 +22,7 @@
 #include "../Effect/SmashCameraShake.h"
 #include "../Projectile/SoldierChargeSlash.h"
 #include "../Enemy/Monster.h"
+#include "GhostTrail.h"
 
 ASkeletonSoldier::ASkeletonSoldier() :
 	m_fChargeStartTime(0.f),
@@ -33,7 +34,9 @@ ASkeletonSoldier::ASkeletonSoldier() :
 	m_fWhilrwindDuration(4.f),
 	m_fWhildWindSpeed(1000.f),
 	m_iChargeAttackCount(0),
-	m_fLeapMaxDistance(500.f)
+	m_fLeapMaxDistance(500.f),
+	m_fTrailCount(0.f),
+	m_fTrailValue(1.f)
 {
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(30.f, 86.0f);
@@ -133,6 +136,21 @@ ASkeletonSoldier::ASkeletonSoldier() :
 		m_pLeapAttackDecalInterface = MILeapAttack.Object;
 	}
 
+	// 언데드 퓨리용 머티리얼 로딩
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MIUndeadFury(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MT_UndeadFury_Inst.MT_UndeadFury_Inst'"));
+	if (MIUndeadFury.Succeeded())
+	{
+		m_pUndeadFuryInterface = MIUndeadFury.Object;
+	}
+
+	// 언데드 퓨리용 나이아가라 시스템 로딩
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NSUndeadFuryAsset(TEXT("/Script/Niagara.NiagaraSystem'/Game/A_SJWContent/Effect/Niagara/NS_UndeadFury.NS_UndeadFury'"));
+
+	if (NSUndeadFuryAsset.Succeeded())
+	{
+		m_NSEffect01->SetAsset(NSUndeadFuryAsset.Object);
+	}
+
 	m_fAttackImpulse = 1200.f;
 }
 
@@ -143,6 +161,8 @@ void ASkeletonSoldier::BeginPlay()
 	// 디폴트 무기 액터 생성
 	FName WeaponSocket(TEXT("Weapon_R"));
 	m_pRWeapon = GetWorld()->SpawnActor<ALongSword>(FVector::ZeroVector, FRotator::ZeroRotator);
+
+	m_NSEffect01->Deactivate();
 
 	if (IsValid(m_pRWeapon))
 	{
@@ -281,6 +301,46 @@ void ASkeletonSoldier::SkillEnd()
 		m_eUsingSkill = EPlayerSkill::None;
 		break;
 	}
+}
+
+void ASkeletonSoldier::SpawnGhostTrail()
+{
+	FActorSpawnParameters param;
+	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	AGhostTrail* pGhost = GetWorld()->SpawnActor<AGhostTrail>(
+		AGhostTrail::StaticClass(),
+		GetMesh()->GetComponentLocation(),
+		GetMesh()->GetComponentRotation(), param);
+
+	pGhost->SetMesh(m_SKMesh);
+	pGhost->CopyAnimation(GetMesh());
+	pGhost->SetFadeTime(0.5f);
+	pGhost->SetLifeTime(0.f);
+
+	// 색 변하는 세팅
+	FVector vColor1 = FVector(0.f, 0.f, 1.f);
+	FVector vColor2 = FVector(1.f, 1.f, 0.f);
+
+	const float fTrailMaxCount = 10.f;
+
+	m_fTrailCount += m_fTrailValue;
+
+	if (m_fTrailCount > fTrailMaxCount)
+	{
+		m_fTrailCount = fTrailMaxCount;
+		m_fTrailValue = -1.f;
+	}
+	else if (m_fTrailCount < 0.f)
+	{
+		m_fTrailCount = 0.f;
+		m_fTrailValue = 1.f;
+	}
+
+	float fValue = (m_fTrailCount / fTrailMaxCount);
+	FVector vLerpColor = FVector::SlerpNormals(vColor1, vColor2, fValue);
+
+	pGhost->SetColorParam(vLerpColor);
 }
 
 void ASkeletonSoldier::ChargeStart()
@@ -520,6 +580,14 @@ void ASkeletonSoldier::UndeadFury()
 			GetWorldTimerManager().SetTimer(m_hUndeadFuryHandle, this, &ASkeletonSoldier::UndeadFuryBuffEnd, 5.f, false);
 
 			m_bGhostTrail = true;
+
+			UMaterialInstanceDynamic* UndeadFuryDynamic = UMaterialInstanceDynamic::Create(m_pUndeadFuryInterface, this);
+
+			// 오버레이 이펙트 추가
+			GetMesh()->SetOverlayMaterial(UndeadFuryDynamic);
+
+			// 파티클 활성화
+			m_NSEffect01->Activate();
 		}
 	}
 }
@@ -528,6 +596,8 @@ void ASkeletonSoldier::UndeadFuryBuffEnd()
 {
 	SetAnimPlaySpeed(1.f);
 	ChangeWalkSpeed(1.f);
+	GetMesh()->SetOverlayMaterial(nullptr);
+	m_NSEffect01->Deactivate();
 	m_bGhostTrail = false;
 }
 

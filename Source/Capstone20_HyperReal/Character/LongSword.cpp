@@ -24,6 +24,5 @@ void ALongSword::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// 크기 조정
 	m_WeaponMesh->SetAnimationMode(EAnimationMode::AnimationSingleNode);
 }

@@ -16,7 +16,7 @@ AWeapon::AWeapon()	:
 	SetRootComponent(m_Capsule);
 
 	m_WeaponMesh->SetupAttachment(m_Capsule);
-	m_Capsule->SetCollisionProfileName(TEXT("PlayerObject"));
+	m_Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called when the game starts or when spawned

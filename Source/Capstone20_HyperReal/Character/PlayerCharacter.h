@@ -59,6 +59,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect)
 	float m_fGhostTrailTickTime;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UNiagaraComponent* m_NSEffect01;
+
 protected:
 	class UPlayerAnimInstance* m_pAnim;
 	bool m_bOnAttack;
@@ -118,6 +121,7 @@ public:
 	virtual void AttackReset();
 
 	virtual void SkillEnd() {};
+	virtual void SpawnGhostTrail();
 
 	FVector GetMousePosition();
 

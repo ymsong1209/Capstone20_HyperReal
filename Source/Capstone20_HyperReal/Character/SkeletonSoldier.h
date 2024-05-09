@@ -50,6 +50,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
 	UMaterialInterface* m_pLeapAttackDecalInterface;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	UMaterialInterface* m_pUndeadFuryInterface;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UNiagaraComponent* m_NSUndeadFuryParticle;
+
 private:
 	float m_fChargeStartTime;
 	int32 m_iChargeAttackCount;
@@ -67,11 +73,13 @@ private:
 
 	UDecalComponent* m_pLeapAttackDecal;
 
-
 private:
 	// Leap 공격 범위용 데칼
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* m_pLeapAttackRangeDecal;
+
+	float m_fTrailCount;
+	float m_fTrailValue;
 
 public:
 	int32 GetChargeAttackCount() { return m_iChargeAttackCount; }
@@ -91,6 +99,7 @@ public:
 public:
 	virtual void Attack() override;
 	virtual void SkillEnd() override;
+	virtual void SpawnGhostTrail() override;
 
 private:
 	// 차지 공격

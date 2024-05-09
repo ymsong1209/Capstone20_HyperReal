@@ -64,6 +64,10 @@ APlayerCharacter::APlayerCharacter() :
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	// 캐릭터 이펙트용 나이아가라 컴포넌트 추가(필요시 배열로 변경해도 됨)
+	m_NSEffect01 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara01"));
+	m_NSEffect01->SetupAttachment(RootComponent);
+
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -76,6 +80,8 @@ APlayerCharacter::APlayerCharacter() :
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// 애님 인스턴스 세팅
 	m_pAnim = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
@@ -104,17 +110,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 		if (m_fAccGhostTime >= m_fGhostTrailTickTime)
 		{
 			m_fAccGhostTime -= m_fGhostTrailTickTime;
-
-			FActorSpawnParameters param;
-			param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-			AGhostTrail* pGhost = GetWorld()->SpawnActor<AGhostTrail>(
-				AGhostTrail::StaticClass(),
-				GetMesh()->GetComponentLocation(),
-				GetMesh()->GetComponentRotation(), param);
-
-			pGhost->SetMesh(m_SKMesh);
-			pGhost->CopyAnimation(GetMesh());
+			SpawnGhostTrail();
 		}
 	}
 }
@@ -196,6 +192,22 @@ void APlayerCharacter::AttackReset()
 	m_bOnAttack = false;
 	m_bComboDetected = false;
 	Attack();
+}
+
+void APlayerCharacter::SpawnGhostTrail()
+{
+	FActorSpawnParameters param;
+	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	AGhostTrail* pGhost = GetWorld()->SpawnActor<AGhostTrail>(
+		AGhostTrail::StaticClass(),
+		GetMesh()->GetComponentLocation(),
+		GetMesh()->GetComponentRotation(), param);
+
+	pGhost->SetMesh(m_SKMesh);
+	pGhost->CopyAnimation(GetMesh());
+	pGhost->SetFadeTime(0.5f);
+	pGhost->SetLifeTime(0.f);
 }
 
 FVector APlayerCharacter::GetMousePosition()
