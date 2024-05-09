@@ -6,6 +6,9 @@
 #include "MonsterAnimInstance.h"
 #include "MonsterSpawnPoint.h"
 #include "MonsterAIController.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "../Building/Building.h"
 
 // Sets default values
@@ -20,8 +23,33 @@ AMonster::AMonster()
 	GetMesh()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 	GetMesh()->bReceivesDecals = false;
 
-	SetCanBeDamaged(true);
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBar"));
+	WidgetComponent->SetupAttachment(RootComponent);
 
+	// 위젯 클래스 설정
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_KHIContent/UI/MonsterHPBar.MonsterHPBar_C'"));
+	if (WidgetClass.Succeeded())
+	{
+		WidgetComponent->SetWidgetClass(WidgetClass.Class);
+		//
+	}
+
+	WidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 80.0f));
+	//WidgetComponent->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
+	WidgetComponent->SetRelativeScale3D(FVector(0.1f, 0.4f, 0.5f));
+	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	//APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(this, 0);
+	//if (CameraManager)
+	//{
+	//	FVector CameraLocation = CameraManager->GetCameraLocation();
+	//	FVector WidgetLocation = WidgetComponent->GetComponentLocation();
+	//
+	//	// Calculate the rotation from the widget to the camera
+	//	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(WidgetLocation, CameraLocation);
+	//
+	//	// Apply the rotation to the widget component
+	//	WidgetComponent->SetWorldRotation(LookAtRotation);
+	//}
 	mSpawnPoint = nullptr;
 
 	AIControllerClass = AMonsterAIController::StaticClass();
@@ -29,6 +57,23 @@ AMonster::AMonster()
 
 	mAttackEnd = false;
 	bIsInvincible = false;
+}
+
+void AMonster::SetHPBar(float fRate)
+{
+
+	UUserWidget* UserWidget = Cast<UUserWidget>(WidgetComponent->GetUserWidgetObject());
+	if (UserWidget)
+	{
+		// MonsterHPProgressBar 이름의 ProgressBar 찾기
+		UProgressBar* MonsterHPProgressBar = Cast<UProgressBar>(UserWidget->GetWidgetFromName(TEXT("MonsterHPProgressBar")));
+		if (MonsterHPProgressBar)
+		{
+			// 프로그래스바와 상호작용 (예: 값 설정, 스타일 변경 등)
+			MonsterHPProgressBar->SetPercent(fRate); // 체력을 75%로 설정
+			// 추가적인 로직 수행
+		}
+	}
 }
 
 // Called when the game starts or when spawned

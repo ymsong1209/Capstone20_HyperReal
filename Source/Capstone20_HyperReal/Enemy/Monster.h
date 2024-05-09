@@ -4,6 +4,8 @@
 
 #include "../GameInfo.h"
 #include "GameFramework/Character.h"
+#include "Components/WidgetComponent.h"
+#include "Components/ProgressBar.h"
 #include "Monster.generated.h"
 
 UCLASS()
@@ -18,7 +20,8 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FMonsterInfo mInfo;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	UWidgetComponent* WidgetComponent;
 	class UMonsterAnimInstance* mAnim;
 
 	class AMonsterSpawnPoint* mSpawnPoint;
@@ -57,6 +60,8 @@ public:
 	{
 		mAttackEnd = End;
 	}
+	void SetHPBar(float fRate);
+	
 
 protected:
 	// Called when the game starts or when spawned

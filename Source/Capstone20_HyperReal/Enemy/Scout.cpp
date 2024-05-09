@@ -47,6 +47,7 @@ void AScout::BeginPlay()
 void AScout::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	SetHPBar(0.f);
 }
 
 void AScout::Attack()

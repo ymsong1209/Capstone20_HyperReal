@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "UObject/NoExportTypes.h"
+#include "Components/Widget.h"
 #include "GameData.generated.h"
 
 /**
@@ -318,4 +319,10 @@ class CAPSTONE20_HYPERREAL_API UGameData : public UObject
 {
 	GENERATED_BODY()
 	
+public:
+	bool IsWidgetVisible(UWidget* Widget)
+	{
+		ESlateVisibility Visibility = Widget->GetVisibility();
+		return Visibility == ESlateVisibility::Visible;
+	}
 };
