@@ -56,6 +56,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UNiagaraComponent* m_NSUndeadFuryParticle;
 
+	// Leap 공격 범위용 데칼
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	UDecalComponent* m_pLeapAttackRangeDecal;
+
 private:
 	float m_fChargeStartTime;
 	int32 m_iChargeAttackCount;
@@ -72,11 +76,6 @@ private:
 	bool m_bOnLeapAttackCharge;
 
 	UDecalComponent* m_pLeapAttackDecal;
-
-private:
-	// Leap 공격 범위용 데칼
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UDecalComponent* m_pLeapAttackRangeDecal;
 
 	float m_fTrailCount;
 	float m_fTrailValue;

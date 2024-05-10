@@ -118,17 +118,12 @@ ASkeletonSoldier::ASkeletonSoldier() :
 	if (MILeapRange.Succeeded())
 	{
 		m_pLeapAttackRangeDecalInterface = MILeapRange.Object;
+
+		//// 리프 어택시 바닥에 생성될 범위 확인용 데칼 컴포넌트 생성
+		m_pLeapAttackRangeDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("LeapRange"));
+		m_pLeapAttackRangeDecal->SetDecalMaterial(m_pLeapAttackRangeDecalInterface);
+		m_pLeapAttackRangeDecal->SetupAttachment(RootComponent);
 	}
-
-	// 리프 어택시 바닥에 생성될 범위 확인용 데칼 컴포넌트 생성
-	m_pLeapAttackRangeDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("LeapRange"));
-	m_pLeapAttackRangeDecal->SetDecalMaterial(m_pLeapAttackRangeDecalInterface);
-
-	m_pLeapAttackRangeDecal->SetRelativeLocation(FVector(0.f, 0.f, -80.f));
-	m_pLeapAttackRangeDecal->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
-	m_pLeapAttackRangeDecal->SetRelativeScale3D(FVector(0.5f, 2.6f, 2.6f));
-	m_pLeapAttackRangeDecal->SetupAttachment(RootComponent);
-	m_pLeapAttackRangeDecal->SetHiddenInGame(true);
 
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MILeapAttack(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/MT_LeapAttack.MT_LeapAttack'"));
 	if (MILeapAttack.Succeeded())
@@ -157,12 +152,10 @@ ASkeletonSoldier::ASkeletonSoldier() :
 void ASkeletonSoldier::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	// 디폴트 무기 액터 생성
 	FName WeaponSocket(TEXT("Weapon_R"));
 	m_pRWeapon = GetWorld()->SpawnActor<ALongSword>(FVector::ZeroVector, FRotator::ZeroRotator);
-
-	m_NSEffect01->Deactivate();
 
 	if (IsValid(m_pRWeapon))
 	{
@@ -173,10 +166,14 @@ void ASkeletonSoldier::BeginPlay()
 
 	if (IsValid(m_pLeapAttackRangeDecal))
 	{
-		m_pLeapAttackRangeDecal->SetHiddenInGame(true);
+		UE_LOG(LogTemp, Log, TEXT("Hidden Leap Attack Range Decal"));
 		m_pLeapAttackRangeDecal->SetRelativeLocation(FVector(0.f, 0.f, -80.f));
+		m_pLeapAttackRangeDecal->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
 		m_pLeapAttackRangeDecal->SetRelativeScale3D(FVector(0.5f, 2.6f, 2.6f));
+		m_pLeapAttackRangeDecal->SetHiddenInGame(true);
 	}
+
+	m_NSEffect01->Deactivate();
 }
 
 void ASkeletonSoldier::Tick(float DeltaTime)
@@ -497,7 +494,8 @@ void ASkeletonSoldier::LeapAttack()
 			m_pLeapAttackRangeDecal->SetHiddenInGame(false);
 
 			// 낙하할 위치 알려주는 데칼 생성
-			m_pLeapAttackDecal = UGameplayStatics::SpawnDecalAtLocation(this, m_pLeapAttackDecalInterface, FVector(64.f, 128.f, 128.f), 
+			if(m_pLeapAttackDecalInterface)
+				m_pLeapAttackDecal = UGameplayStatics::SpawnDecalAtLocation(this, m_pLeapAttackDecalInterface, FVector(64.f, 128.f, 128.f), 
 				GetActorLocation(), FRotator(-90.f, 0.f, 0.f), 0.f);
 
 #if ENABLE_DRAW_DEBUG
