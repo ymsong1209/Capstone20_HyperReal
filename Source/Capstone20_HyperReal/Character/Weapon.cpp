@@ -17,12 +17,31 @@ AWeapon::AWeapon()	:
 
 	m_WeaponMesh->SetupAttachment(m_Capsule);
 	m_Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MTI_BlinkFresnel.MTI_BlinkFresnel'"));
+	if (MIBlinkOverlay.Succeeded())
+	{
+		m_pBlinkOverlayInterface = MIBlinkOverlay.Object;
+		m_MIDBlinkOverlay = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), m_pBlinkOverlayInterface);
+	}
 }
 
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// ESP 효과용 커스텀 뎁스 패스 활성화 코드
+	m_WeaponMesh->SetRenderCustomDepth(true);
+	m_WeaponMesh->CustomDepthStencilValue = 100;
+}
+
+void AWeapon::SwitchBlinkOverlay(bool _bSwitch)
+{
+	if (_bSwitch)
+		m_WeaponMesh->SetOverlayMaterial(m_MIDBlinkOverlay);
+	else
+		m_WeaponMesh->SetOverlayMaterial(nullptr);
 }
 
 void AWeapon::StartTrail()

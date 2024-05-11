@@ -74,6 +74,14 @@ APlayerCharacter::APlayerCharacter() :
 	
 	m_fDefaultSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	m_fDefaultAccel = GetCharacterMovement()->MaxAcceleration;
+
+	// 무적 판정, 차징 등등에 쓰일 깜빡이는 오버레이 머티리얼 로딩
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MTI_BlinkFresnel.MTI_BlinkFresnel'ddd"));
+	if (MIBlinkOverlay.Succeeded())
+	{
+		m_pBlinkOverlayInterface = MIBlinkOverlay.Object;
+		m_MIDBlinkOverlay = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), m_pBlinkOverlayInterface);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -95,6 +103,19 @@ void APlayerCharacter::BeginPlay()
 
 		if (IsValid(pSubSystem))
 			pSubSystem->AddMappingContext(DefaultMappingContext, 0);
+	}
+
+	// ESP 효과용 커스텀 뎁스 패스 활성화 코드
+	GetMesh()->SetRenderCustomDepth(true);
+	GetMesh()->CustomDepthStencilValue = 100;
+
+	if (IsValid(m_NSEffect01))
+	{
+		m_NSEffect01->SetRenderCustomDepth(true);
+	}
+
+	if (m_pBlinkOverlayInterface)
+	{
 	}
 }
 

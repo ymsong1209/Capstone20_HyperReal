@@ -7,8 +7,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
 #include "Components/PrimitiveComponent.h"
@@ -356,6 +354,10 @@ void ASkeletonSoldier::ChargeStart()
 		m_pAnim->Montage_Play(m_ChargingMontage, GetAnimPlaySpeed());
 		m_iChargeAttackCount = 0;
 	}
+
+	m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(1.f, 1.f, 1.f));
+	m_pRWeapon->GetMIDOverlay()->SetScalarParameterValue(TEXT("BlinkSpeed"), 2.f);
+	m_pRWeapon->SwitchBlinkOverlay(true);
 }
 
 void ASkeletonSoldier::Charging()
@@ -382,8 +384,24 @@ void ASkeletonSoldier::Charging()
 		SetActorRotation(vDir.Rotation());
 	}
 
-	// 차징 시간 체크하여 최대치를 넘기면 바로 공격실행
 	float fElapsedTime = GetWorld()->GetTimeSeconds() - m_fChargeStartTime;
+
+	// 차징 카운트를 증가시켜주는 코드 포함
+	if (fElapsedTime >= (m_fChargingTick * (float)(m_iChargeAttackCount + 1)))
+	{
+		// 오버레이 머티리얼 색상 변경
+		switch (++m_iChargeAttackCount)
+		{
+		case 1:
+			m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(0.7f, 1.f, 0.f));
+			break;
+		case 2:
+			m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(1.f, 0.f, 0.f));
+			break;
+		}
+	}
+
+	// 차징 시간 체크하여 최대치를 넘기면 바로 공격실행
 	if (fElapsedTime >= (m_fChargingTick * 3.f))
 		ChargeAttack();
 }
@@ -402,6 +420,8 @@ void ASkeletonSoldier::ChargeAttack()
 		m_pAnim->Montage_SetPosition(m_ChargeAttackMontage, 0.f);
 		m_pAnim->Montage_Play(m_ChargeAttackMontage, GetAnimPlaySpeed());
 	}
+
+	m_pRWeapon->SwitchBlinkOverlay(false);
 }
 
 void ASkeletonSoldier::Whirlwind()
@@ -421,7 +441,6 @@ void ASkeletonSoldier::Whirlwind()
 
 			// 타이머 설정해서 몇초후 훨윈드 자동 종료	
 			GetWorldTimerManager().SetTimer(m_hWhirlwindHandle, this, &ASkeletonSoldier::WhirlwindEnd, m_fWhilrwindDuration, false);
-
 		}
 
 		if (m_pRWeapon)
@@ -594,7 +613,10 @@ void ASkeletonSoldier::UndeadFuryBuffEnd()
 {
 	SetAnimPlaySpeed(1.f);
 	ChangeWalkSpeed(1.f);
-	GetMesh()->SetOverlayMaterial(nullptr);
+
+	if(GetMesh()->GetOverlayMaterial())
+		GetMesh()->SetOverlayMaterial(nullptr);
+
 	m_NSEffect01->Deactivate();
 	m_bGhostTrail = false;
 }

@@ -62,6 +62,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UNiagaraComponent* m_NSEffect01;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	UMaterialInterface* m_pBlinkOverlayInterface;
+
 protected:
 	class UPlayerAnimInstance* m_pAnim;
 	bool m_bOnAttack;
@@ -75,6 +78,8 @@ protected:
 	bool m_bGhostTrail;
 
 	USkeletalMesh* m_SKMesh;
+
+	UMaterialInstanceDynamic* m_MIDBlinkOverlay;
 
 private:
 	float m_fDefaultSpeed;
