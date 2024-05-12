@@ -85,6 +85,7 @@ private:
 	float m_fDefaultSpeed;
 	float m_fDefaultAccel;
 	float m_fAccGhostTime;
+	bool  m_bInvincible;
 
 public:
 	bool OnAttack() const { return m_bOnAttack; };
@@ -96,6 +97,9 @@ public:
 
 	float GetAnimPlaySpeed() { return m_fAnimPlaySpeed; }
 	void SetAnimPlaySpeed(float _fSpeed) { m_fAnimPlaySpeed = _fSpeed; }
+
+	bool IsInvincible() const {return m_bInvincible;}
+	void SetInvincible(bool _invincible){m_bInvincible = _invincible;}
 
 protected:
 	// Called when the game starts or when spawned

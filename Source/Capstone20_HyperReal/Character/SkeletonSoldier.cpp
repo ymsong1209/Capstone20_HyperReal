@@ -23,7 +23,6 @@
 #include "GhostTrail.h"
 
 ASkeletonSoldier::ASkeletonSoldier() :
-	m_fChargeStartTime(0.f),
 	m_ChargingMontage(nullptr),
 	m_ChargeAttackMontage(nullptr),
 	m_WhirlWindMontage(nullptr),
@@ -31,8 +30,9 @@ ASkeletonSoldier::ASkeletonSoldier() :
 	m_fChargingTick(0.75f),
 	m_fWhilrwindDuration(4.f),
 	m_fWhildWindSpeed(1000.f),
-	m_iChargeAttackCount(0),
 	m_fLeapMaxDistance(500.f),
+	m_fChargeStartTime(0.f),
+	m_iChargeAttackCount(0),
 	m_fTrailCount(0.f),
 	m_fTrailValue(1.f)
 {
@@ -46,6 +46,7 @@ ASkeletonSoldier::ASkeletonSoldier() :
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 		m_SKMesh = MeshAsset.Object;
 	}
+	GetMesh()->bReceivesDecals = false;
 
 	// 코드로 애니메이션 블루프린트 세팅
 	static ConstructorHelpers::FClassFinder<USoldierAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SJWContent/Character/AB_SkeletonSoldier.AB_SkeletonSoldier_C'"));

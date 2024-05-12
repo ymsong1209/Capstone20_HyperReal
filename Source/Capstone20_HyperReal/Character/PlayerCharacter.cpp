@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+	// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PlayerCharacter.h"
@@ -23,15 +23,16 @@
 APlayerCharacter::APlayerCharacter() :
 	DefaultMappingContext(nullptr),
 	AttackAction(nullptr),
-	m_pAnim(nullptr),
 	m_iAttackMontageIndex(0),
+	m_fAttackImpulse(0.f),
+	m_fGhostTrailTickTime(0.1f),
+	m_pAnim(nullptr),
 	m_bOnAttack(false),
 	m_bComboDetected(false),
 	m_eUsingSkill(EPlayerSkill::None),
-	m_fAttackImpulse(0.f),
 	m_fAnimPlaySpeed(1.f),
-	m_fGhostTrailTickTime(0.1f),
-	m_bGhostTrail(false)
+	m_bGhostTrail(false),
+	m_bInvincible(false)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -154,6 +155,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	//무적일 경우엔 -1.f반환
+	if(m_bInvincible) return -1.f;
 	return 0.0f;
 }
 
