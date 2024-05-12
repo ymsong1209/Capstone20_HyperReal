@@ -33,11 +33,9 @@ APortal::APortal()
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DecalMaterial(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SYMContent/Building/MT_PortalDecal_Inst.MT_PortalDecal_Inst'"));
 	if (DecalMaterial.Succeeded())
 	{
-		UE_LOG(LogTemp, Display, "success");
 		Decal->SetDecalMaterial(DecalMaterial.Object);
 	}
 	else{
-	    UE_LOG(LogTemp, Display, "failure");
 	}
 	
 	// Collider 생성
