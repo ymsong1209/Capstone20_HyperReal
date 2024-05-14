@@ -33,6 +33,21 @@ ABuilding::ABuilding() :
 	mMesh->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 	mMesh->bReceivesDecals = false;
 	
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("DestroyRate"));
+	WidgetComponent->SetupAttachment(RootComponent);
+
+	// 위젯 클래스 설정
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_KHIContent/UI/DestroyRate.DestroyRate_C'"));
+	if (WidgetClass.Succeeded())
+	{
+		WidgetComponent->SetWidgetClass(WidgetClass.Class);
+	}
+
+	WidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 80.0f));
+	//WidgetComponent->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
+	WidgetComponent->SetRelativeScale3D(FVector(0.3f, 0.3f, 0.3f));
+	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+
 	SetCanBeDamaged(true);
 }
 
@@ -64,6 +79,7 @@ void ABuilding::BeginPlay()
 			UE_LOG(LogTemp, Error, TEXT("No Info"));
 		}
 	}
+	SetDestroyRateText(97);
 }
 
 // Called every frame
@@ -290,4 +306,22 @@ void ABuilding::KillAllMonsters()
 
 void ABuilding::Attack()
 {
+}
+
+void ABuilding::SetDestroyRateText(int iRate)
+{
+	UUserWidget* UserWidget = Cast<UUserWidget>(WidgetComponent->GetUserWidgetObject());
+	if (UserWidget)
+	{
+		// MonsterHPProgressBar 이름의 ProgressBar 찾기
+		UTextBlock* destroyRateTextBlock = Cast<UTextBlock>(UserWidget->GetWidgetFromName(TEXT("DestroyRate")));
+		if (destroyRateTextBlock)
+		{
+			FString str = FString::FromInt(iRate);
+			str += "%";
+			destroyRateTextBlock->SetText(FText::FromString(str));
+		}
+	}
+
+	
 }

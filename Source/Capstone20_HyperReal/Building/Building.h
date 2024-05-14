@@ -4,6 +4,8 @@
 
 #include "../GameInfo.h"
 #include "GameFramework/Pawn.h"
+#include "Components/WidgetComponent.h"
+#include "Components/TextBlock.h"
 #include "Building.generated.h"
 
 class AMonster;
@@ -38,6 +40,9 @@ protected:
 	bool	mbIsActivated;//공격받기 전엔 비활성화
 	bool	mbIsInvincible;
 	bool	mbIsShaking;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	UWidgetComponent* WidgetComponent;
 private:
 	FVector	mOriginalLocation;
 
@@ -69,5 +74,8 @@ public:
 
 public:
 	virtual void Attack();
+
+public:
+	void SetDestroyRateText(int iRate);
 
 };
