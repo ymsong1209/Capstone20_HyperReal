@@ -16,6 +16,7 @@ void UInGameUserWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	mCharacterHUD = Cast<UCharacterHUDWidget>(GetWidgetFromName(TEXT("UI_CharacterHUD")));
+	mRewardWidget = Cast<URewardWidget>(GetWidgetFromName(TEXT("RewardWidget")));
 	mPrevGold = Cast<UTextBlock>(GetWidgetFromName(TEXT("PrevMoney")));
 	mEarnGold = Cast<UTextBlock>(GetWidgetFromName(TEXT("earnMoney")));
 	mDestoryRate = Cast<UTextBlock>(GetWidgetFromName(TEXT("DestroyRate")));
@@ -67,7 +68,9 @@ void UInGameUserWidget::NativeConstruct()
 	SetPrevGold(1000);
 	SetEarnGold(500);
 	SetDestoryRate(25.7f);
-	
+	mRewardWidget->setDestroyBuildingCount(10);
+	mRewardWidget->setRewardMoney(400);
+	mRewardWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UInGameUserWidget::NativeDestruct()
@@ -139,5 +142,15 @@ void UInGameUserWidget::SetDestoryRate(float fRate)
 	FString str=FString::FromInt(iRate) + "%";
 	mDestoryRate->SetText(FText::FromString(str));
 }
+
+void UInGameUserWidget::OpenRewardUI(int gold, int building, int enemy)
+{
+	mRewardWidget->SetVisibility(ESlateVisibility::Visible);
+	mRewardWidget->setRewardMoney(gold);
+	mRewardWidget->setDestroyBuildingCount(building);
+	mRewardWidget->setKillEnemyCount(enemy);
+}
+
+
 
 

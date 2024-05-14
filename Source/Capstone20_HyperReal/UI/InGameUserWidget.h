@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Containers/Array.h"
 #include "CharacterHUDWidget.h"
+#include "RewardWidget.h"
 #include "Components/TextBlock.h"
 #include "Blueprint/UserWidget.h"
 #include "InGameUserWidget.generated.h"
@@ -19,6 +20,7 @@ class CAPSTONE20_HYPERREAL_API UInGameUserWidget : public UUserWidget
 	GENERATED_BODY()
 protected:
 	UCharacterHUDWidget* mCharacterHUD;
+	URewardWidget* mRewardWidget;
 	UTextBlock* mPrevGold;
 	UTextBlock* mEarnGold;
 	UTextBlock* mDestoryRate;
@@ -49,4 +51,6 @@ public:
 	void SetPrevGold(int gold);
 	void SetEarnGold(int gold);
 	void SetDestoryRate(float fRate);
+
+	void OpenRewardUI(int gold,int building,int enemy);
 };
