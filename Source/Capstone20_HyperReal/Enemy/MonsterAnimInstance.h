@@ -15,6 +15,7 @@ enum class EMonsterAnim : uint8
 	Run,
 	Attack,
 	Death,
+	Hit,
 	Stun,
 	Skill1,
 	Skill2,
@@ -61,5 +62,11 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_Attack();
+
+	UFUNCTION()
+	void AnimNotify_HitStart();
+	
+	UFUNCTION()
+	void AnimNotify_HitEnd();
 
 };

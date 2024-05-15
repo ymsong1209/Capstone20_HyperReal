@@ -3,6 +3,7 @@
 
 #include "MonsterAnimInstance.h"
 #include "Monster.h"
+#include "MonsterAIController.h"
 
 UMonsterAnimInstance::UMonsterAnimInstance()
 {
@@ -24,8 +25,6 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		UCharacterMovementComponent* Movement = Monster->GetCharacterMovement();
 
 		mGround = Movement->IsMovingOnGround();
-
-
 	}
 }
 
@@ -39,6 +38,7 @@ void UMonsterAnimInstance::AnimNotify_DeathEnd()
 
 void UMonsterAnimInstance::AnimNotify_AttackEnd()
 {
+	//UE_LOG(LogTemp, Warning, TEXT("AnimNotify_AttackEnd"));
 	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
 	if (IsValid(Monster)) {
 		Monster->SetAttackEnd(true);
@@ -47,8 +47,32 @@ void UMonsterAnimInstance::AnimNotify_AttackEnd()
 
 void UMonsterAnimInstance::AnimNotify_Attack()
 {
+	//UE_LOG(LogTemp, Warning, TEXT("AnimNotify_AttackCalled"));
 	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
 	if (IsValid(Monster)) {
 		Monster->Attack();
+	}
+}
+
+void UMonsterAnimInstance::AnimNotify_HitStart()
+{
+	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
+	if (IsValid(Monster)) {
+		Monster->SetCanAttack(false);
+		if (AAIController* AIController = Cast<AAIController>(Monster->GetController()))
+		{
+			AIController->UnPossess(); // 몬스터 컨트롤 연결
+		}
+	}
+}
+
+void UMonsterAnimInstance::AnimNotify_HitEnd()
+{
+	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
+	if (IsValid(Monster)) {
+		Monster->SetCanAttack(true);
+		//기존에 만들어뒀던 ai다시 장착
+		AAIController* AIController = Monster->GetAIController();
+		AIController->Possess(Monster); // 몬스터 컨트롤 연결
 	}
 }

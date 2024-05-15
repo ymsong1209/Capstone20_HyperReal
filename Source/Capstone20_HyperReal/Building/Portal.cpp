@@ -36,6 +36,7 @@ APortal::APortal()
 		Decal->SetDecalMaterial(DecalMaterial.Object);
 	}
 	else{
+		UE_LOG(LogTemp, Warning, TEXT("DecalMaterial not found"));
 	}
 	
 	// Collider 생성

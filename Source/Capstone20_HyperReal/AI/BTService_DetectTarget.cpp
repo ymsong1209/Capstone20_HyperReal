@@ -21,6 +21,15 @@ void UBTService_DetectTarget::InitializeFromAsset(UBehaviorTree& Asset)
 	CachedOwnerComp = nullptr;
 }
 
+void UBTService_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+	CachedOwnerComp = &OwnerComp;
+
+	TracePlayer(OwnerComp);
+}
+
+
 void UBTService_DetectTarget::TracePlayer(UBehaviorTreeComponent& OwnerComp)
 {
 	AAIController* Controller = Cast<AMonsterAIController>(OwnerComp.GetAIOwner());
@@ -43,7 +52,15 @@ void UBTService_DetectTarget::TracePlayer(UBehaviorTreeComponent& OwnerComp)
 	}
 	
 	AActor* TargetActor = Cast<AActor>(Player);
-	Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), TargetActor);
+	bool canattack = Monster->GetCanAttack();
+	if(canattack)
+	{
+		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), TargetActor);
+	}
+	else
+	{
+		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), nullptr);
+	}
 	Monster->SetActorTickInterval(0.f);
 }
 
@@ -102,13 +119,4 @@ void UBTService_DetectTarget::ClearTimerAndSetInterval()
 	Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), nullptr);
 	UE_LOG(LogTemp, Display, TEXT("Target set to null after 2 seconds"));
 	Monster->SetActorTickInterval(0.5f);
-}
-
-void UBTService_DetectTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
-{
-	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
-	CachedOwnerComp = &OwnerComp;
-	
-	TracePlayer(OwnerComp);
-	
 }

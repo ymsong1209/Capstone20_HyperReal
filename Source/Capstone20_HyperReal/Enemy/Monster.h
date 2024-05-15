@@ -23,7 +23,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	UWidgetComponent* WidgetComponent;
 	class UMonsterAnimInstance* mAnim;
-
+	class AMonsterAIController* mAIController;
 	class AMonsterSpawnPoint* mSpawnPoint;
 
 	class ABuilding* mBuilding;
@@ -32,6 +32,7 @@ protected:
 
 	bool mAttackEnd;
 	bool bIsInvincible;
+	bool bCanAttack;
 public:
 	bool GetAttackEnd() const
 	{
@@ -60,7 +61,12 @@ public:
 	{
 		mAttackEnd = End;
 	}
+
+	void SetCanAttack(bool _attack){bCanAttack = _attack;}
+	bool GetCanAttack(){return bCanAttack;}
 	void SetHPBar(float fRate);
+
+	AMonsterAIController* GetAIController() const {return mAIController;}
 	
 
 protected:

@@ -54,34 +54,19 @@ AMonster::AMonster()
 
 	AIControllerClass = AMonsterAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	
 
 	mAttackEnd = false;
 	bIsInvincible = false;
+	bCanAttack = true;
 }
-
-void AMonster::SetHPBar(float fRate)
-{
-
-	UUserWidget* UserWidget = Cast<UUserWidget>(WidgetComponent->GetUserWidgetObject());
-	if (UserWidget)
-	{
-		// MonsterHPProgressBar 이름의 ProgressBar 찾기
-		UProgressBar* MonsterHPProgressBar = Cast<UProgressBar>(UserWidget->GetWidgetFromName(TEXT("MonsterHPProgressBar")));
-		if (MonsterHPProgressBar)
-		{
-			// 프로그래스바와 상호작용 (예: 값 설정, 스타일 변경 등)
-			MonsterHPProgressBar->SetPercent(fRate); // 체력을 75%로 설정
-			// 추가적인 로직 수행
-		}
-	}
-}
-
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	mAnim = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+	mAIController = Cast<AMonsterAIController>(GetController());
 
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if (GameInst) {
@@ -139,11 +124,11 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 	}
 
 	//플레이어가 몬스터의 인식 범위 밖에서 때릴 경우, 플레이어 추적해야함
-	if (AAIController* AIController = Cast<AAIController>(Controller)) {
-		if (UBlackboardComponent* BlackboardComp = AIController->GetBlackboardComponent()) {
-			BlackboardComp->SetValueAsObject(TEXT("Target"), DamageCauser);
-		}
-	}
+	// if (AAIController* AIController = Cast<AAIController>(Controller)) {
+	// 	if (UBlackboardComponent* BlackboardComp = AIController->GetBlackboardComponent()) {
+	// 		BlackboardComp->SetValueAsObject(TEXT("Target"), DamageCauser);
+	// 	}
+	// }
 	SetActorTickInterval(0.f);
 	
 	return Damage;
@@ -151,6 +136,7 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 
 void AMonster::HandleDeath()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Monster Death"));
 	mAnim->ChangeAnimType(EMonsterAnim::Death);
 	//monster랑 연결된 Ai를 끊음
 	if (AAIController* AIController = Cast<AAIController>(GetController()))
@@ -177,3 +163,21 @@ void AMonster::DeathEnd()
 void AMonster::Attack()
 {
 }
+
+void AMonster::SetHPBar(float fRate)
+{
+
+	UUserWidget* UserWidget = Cast<UUserWidget>(WidgetComponent->GetUserWidgetObject());
+	if (UserWidget)
+	{
+		// MonsterHPProgressBar 이름의 ProgressBar 찾기
+		UProgressBar* MonsterHPProgressBar = Cast<UProgressBar>(UserWidget->GetWidgetFromName(TEXT("MonsterHPProgressBar")));
+		if (MonsterHPProgressBar)
+		{
+			// 프로그래스바와 상호작용 (예: 값 설정, 스타일 변경 등)
+			MonsterHPProgressBar->SetPercent(fRate); // 체력을 75%로 설정
+			// 추가적인 로직 수행
+		}
+	}
+}
+

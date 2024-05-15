@@ -3,6 +3,7 @@
 
 #include "SwordMan.h"
 #include "MonsterAnimInstance.h"
+#include "MonsterAIController.h"
 
 
 // Sets default values
@@ -50,6 +51,18 @@ void ASwordMan::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+float ASwordMan::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	float damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	mAnim->ChangeAnimType(EMonsterAnim::Hit);
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	{
+		AIController->UnPossess(); // 몬스터 컨트롤 해제
+	}
+	return damage;
 }
 
 void ASwordMan::Attack()
