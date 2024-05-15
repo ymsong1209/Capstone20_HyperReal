@@ -3,8 +3,7 @@
 
 #include "SwordMan.h"
 #include "MonsterAnimInstance.h"
-#include "MonsterAIController.h"
-
+#include "../damageType/AirborneDamageType.h"
 
 // Sets default values
 ASwordMan::ASwordMan()
@@ -57,11 +56,21 @@ float ASwordMan::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACont
 	AActor* DamageCauser)
 {
 	float damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-	mAnim->ChangeAnimType(EMonsterAnim::Hit);
-	if (AAIController* AIController = Cast<AAIController>(GetController()))
+
+	//에어본 상태가 아닐때만 애니메이션 변경
+	if(!bIsAirborne)
 	{
-		AIController->UnPossess(); // 몬스터 컨트롤 해제
+		if (DamageEvent.DamageTypeClass == UAirborneDamageType::StaticClass())
+		{
+			mAnim->ChangeAnimType(EMonsterAnim::Airborne);
+			StartAirborne();
+		}
+		else
+		{
+			mAnim->ChangeAnimType(EMonsterAnim::Hit);
+		}
 	}
+	
 	return damage;
 }
 
