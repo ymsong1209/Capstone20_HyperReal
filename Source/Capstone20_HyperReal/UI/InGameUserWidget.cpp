@@ -107,7 +107,10 @@ void UInGameUserWidget::SetHP(int32 HP, int32 HPMax)
 {
 	mCharacterHUD->SetHPPercent(HP / (float)HPMax);
 }
-
+void UInGameUserWidget::SetSP(int32 SP, int32 SPMax)
+{
+	mCharacterHUD->SetSPPercent(SP / (float)SPMax);
+}
 void UInGameUserWidget::CalSkillCoolTime(int idx, float fRate)
 {
 	if (skillImages[idx] && skillImages[idx]->GetDynamicMaterial())
