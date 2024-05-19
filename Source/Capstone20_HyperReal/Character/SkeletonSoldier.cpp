@@ -22,6 +22,7 @@
 #include "../Enemy/Monster.h"
 #include "GhostTrail.h"
 #include "../DamageType/AirborneDamageType.h"
+#include "../UI/InGameUserWidget.h"
 
 ASkeletonSoldier::ASkeletonSoldier() :
 	m_ChargingMontage(nullptr),
@@ -147,6 +148,7 @@ ASkeletonSoldier::ASkeletonSoldier() :
 	}
 
 	m_fAttackImpulse = 1200.f;
+	m_strDataTableKey = TEXT("Soldier");
 }
 
 void ASkeletonSoldier::BeginPlay()
@@ -166,7 +168,6 @@ void ASkeletonSoldier::BeginPlay()
 
 	if (IsValid(m_pLeapAttackRangeDecal))
 	{
-		UE_LOG(LogTemp, Log, TEXT("Hidden Leap Attack Range Decal"));
 		m_pLeapAttackRangeDecal->SetRelativeLocation(FVector(0.f, 0.f, -80.f));
 		m_pLeapAttackRangeDecal->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
 		m_pLeapAttackRangeDecal->SetRelativeScale3D(FVector(0.5f, 2.6f, 2.6f));
@@ -174,11 +175,77 @@ void ASkeletonSoldier::BeginPlay()
 	}
 
 	m_NSEffect01->Deactivate();
+
+	// UI 설정
+	if (m_pHUDWidget)
+	{
+		UTexture2D* SkillAIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon4.icon4'")));
+
+		if (SkillAIcon)
+		{
+			m_pHUDWidget->SetSkillImage(0, SkillAIcon);
+			m_pHUDWidget->SetSkillBackImage(0, SkillAIcon);
+		}
+
+		UTexture2D* SkillSIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon1.icon1'")));
+		if (SkillSIcon)
+		{
+			m_pHUDWidget->SetSkillImage(1, SkillSIcon);
+			m_pHUDWidget->SetSkillBackImage(1, SkillSIcon);
+		}
+
+		UTexture2D* SkillDIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon2.icon2'")));
+		if (SkillDIcon)
+		{
+			m_pHUDWidget->SetSkillImage(2, SkillDIcon);
+			m_pHUDWidget->SetSkillBackImage(2, SkillDIcon);
+		}
+
+		UTexture2D* SkillFIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon3.icon3'")));
+		if (SkillFIcon)
+		{
+			m_pHUDWidget->SetSkillImage(3, SkillFIcon);
+			m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
+		}
+	}
 }
 
 void ASkeletonSoldier::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// UI 설정
+	//if (m_pHUDWidget)
+	//{
+	//	UTexture2D* SkillAIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon4.icon4'")));
+
+	//	if (SkillAIcon)
+	//	{
+	//		m_pHUDWidget->SetSkillImage(0, SkillAIcon);
+	//		m_pHUDWidget->SetSkillBackImage(0, SkillAIcon);
+	//	}
+
+	//	UTexture2D* SkillSIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon1.icon1'")));
+	//	if (SkillSIcon)
+	//	{
+	//		m_pHUDWidget->SetSkillImage(1, SkillSIcon);
+	//		m_pHUDWidget->SetSkillBackImage(1, SkillSIcon);
+	//	}
+
+	//	UTexture2D* SkillDIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon2.icon2'")));
+	//	if (SkillDIcon)
+	//	{
+	//		m_pHUDWidget->SetSkillImage(2, SkillDIcon);
+	//		m_pHUDWidget->SetSkillBackImage(2, SkillDIcon);
+	//	}
+
+	//	UTexture2D* SkillFIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon3.icon3'")));
+	//	if (SkillFIcon)
+	//	{
+	//		m_pHUDWidget->SetSkillImage(3, SkillFIcon);
+	//		m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
+	//	}
+	//}
 
 	switch (m_eUsingSkill)
 	{

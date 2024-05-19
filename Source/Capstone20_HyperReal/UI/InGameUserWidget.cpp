@@ -29,15 +29,15 @@ void UInGameUserWidget::NativePreConstruct()
 	skillicon = Cast<UImage>(GetWidgetFromName(TEXT("skillicon1")));
 
 	const int32 NumImages = 4;
-	skillImages.Reserve(NumImages);  // ¼º´É ÃÖÀûÈ­¸¦ À§ÇØ ¹è¿­ Å©±â ¹Ì¸® ¼³Á¤
+	skillImages.Reserve(NumImages);  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­ Å©ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 	skillBackImages.Reserve(NumImages);
 
 	for (int32 i = 1; i <= NumImages; i++)
 	{
-		// À§Á¬ ÀÌ¸§ »ý¼º: skillicon1, skillicon2, ..., skillicon5
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½: skillicon1, skillicon2, ..., skillicon5
 		FString WidgetName = FString::Printf(TEXT("skillicon%d"), i);
 
-		// À§Á¬ ÀÌ¸§À¸·Î UImage Ã£±â
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ UImage Ã£ï¿½ï¿½
 		UImage* ImageWidget = Cast<UImage>(GetWidgetFromName(*WidgetName));
 		if (ImageWidget)
 		{
@@ -83,21 +83,13 @@ void UInGameUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	if (skillicon && skillicon->GetDynamicMaterial()) {
 		//UE_LOG(LogTemp, Display, TEXT("dynamiccalled"));
-		rate += InDeltaTime * 0.6f;
-		if (rate >= 1.f)
-			rate = 0;
-		skillImages[0]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
-		skillImages[1]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
-		skillImages[2]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
-		skillImages[3]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
-		UTexture* NewTexture = Cast<UTexture>(StaticLoadObject(UTexture::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon1.icon1'")));
-		skillImages[0]->GetDynamicMaterial()->SetTextureParameterValue(FName("SkillImage"), NewTexture);
-		NewTexture = Cast<UTexture>(StaticLoadObject(UTexture::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon2.icon2'")));
-		skillImages[1]->GetDynamicMaterial()->SetTextureParameterValue(FName("SkillImage"), NewTexture);
-		NewTexture = Cast<UTexture>(StaticLoadObject(UTexture::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon3.icon3'")));
-		skillImages[2]->GetDynamicMaterial()->SetTextureParameterValue(FName("SkillImage"), NewTexture);
-		NewTexture = Cast<UTexture>(StaticLoadObject(UTexture::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon4.icon4'")));
-		skillImages[3]->GetDynamicMaterial()->SetTextureParameterValue(FName("SkillImage"), NewTexture);
+		//rate += InDeltaTime * 0.6f;
+		//if (rate >= 1.f)
+		//	rate = 0;
+		//skillImages[0]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
+		//skillImages[1]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
+		//skillImages[2]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
+		//skillImages[3]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
 	}
 	else {
 		//UE_LOG(LogTemp, Warning, TEXT("skillicon does not have a dynamic material"));
@@ -124,6 +116,14 @@ void UInGameUserWidget::SetSkillImage(int idx, UTexture* tex)
 	if (skillImages[idx] && skillImages[idx]->GetDynamicMaterial())
 	{
 		skillImages[idx]->GetDynamicMaterial()->SetTextureParameterValue(FName("SkillImage"), tex);
+	}
+}
+
+void UInGameUserWidget::SetSkillBackImage(int idx, UTexture2D* tex)
+{
+	if (skillImages[idx])
+	{
+		skillBackImages[idx]->SetBrushFromTexture(tex);
 	}
 }
 

@@ -20,14 +20,6 @@ ASJWGameModeBase::ASJWGameModeBase()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
-	//// set default controller to our Blueprinted controller
-	//static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerBPClass(TEXT("/Game/A_SJWContent/Character/BP_ClickMoveController"));
-	//if (PlayerControllerBPClass.Class != nullptr)
-	//{
-	//	PlayerControllerClass = PlayerControllerBPClass.Class;
-	//}
-
-	// set default controller to our Blueprinted controller
 	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerBPClass(TEXT("Blueprint'/Game/A_SJWContent/Character/BP_SoldierController.BP_SoldierController_C'"));
 	if (PlayerControllerBPClass.Class != nullptr)
 	{
