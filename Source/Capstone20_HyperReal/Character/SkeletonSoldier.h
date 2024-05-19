@@ -59,6 +59,7 @@ public:
 	// Leap 공격 범위용 데칼
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
 	UDecalComponent* m_pLeapAttackRangeDecal;
+	FTimerHandle WidgetInitializationTimerHandle;
 
 private:
 	float m_fChargeStartTime;
@@ -129,6 +130,7 @@ private:
 	void AttackSmashCut();
 
 	void SpawnHitEffect(FVector _vLoc, FRotator _vRot);
+	void InitializeDynamicMaterial();
 
 public:
 	void ChargeAttackEnd();

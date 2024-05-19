@@ -218,6 +218,8 @@ void ASkeletonSoldier::BeginPlay()
 	//		m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
 	//	}
 	//}
+	GetWorld()->GetTimerManager().SetTimer(WidgetInitializationTimerHandle, this, &ASkeletonSoldier::InitializeDynamicMaterial, 0.01f, false);
+
 }
 
 void ASkeletonSoldier::Tick(float DeltaTime)
@@ -225,37 +227,37 @@ void ASkeletonSoldier::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// UI 설정
-	if (m_pHUDWidget)
-	{
-		UTexture2D* SkillAIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon4.icon4'")));
-
-		if (SkillAIcon)
-		{
-			m_pHUDWidget->SetSkillImage(0, SkillAIcon);
-			m_pHUDWidget->SetSkillBackImage(0, SkillAIcon);
-		}
-
-		UTexture2D* SkillSIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon1.icon1'")));
-		if (SkillSIcon)
-		{
-			m_pHUDWidget->SetSkillImage(1, SkillSIcon);
-			m_pHUDWidget->SetSkillBackImage(1, SkillSIcon);
-		}
-
-		UTexture2D* SkillDIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon2.icon2'")));
-		if (SkillDIcon)
-		{
-			m_pHUDWidget->SetSkillImage(2, SkillDIcon);
-			m_pHUDWidget->SetSkillBackImage(2, SkillDIcon);
-		}
-
-		UTexture2D* SkillFIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon3.icon3'")));
-		if (SkillFIcon)
-		{
-			m_pHUDWidget->SetSkillImage(3, SkillFIcon);
-			m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
-		}
-	}
+	//if (m_pHUDWidget)
+	//{
+	//	UTexture2D* SkillAIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon4.icon4'")));
+	//
+	//	if (SkillAIcon)
+	//	{
+	//		m_pHUDWidget->SetSkillImage(0, SkillAIcon);
+	//		m_pHUDWidget->SetSkillBackImage(0, SkillAIcon);
+	//	}
+	//
+	//	UTexture2D* SkillSIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon1.icon1'")));
+	//	if (SkillSIcon)
+	//	{
+	//		m_pHUDWidget->SetSkillImage(1, SkillSIcon);
+	//		m_pHUDWidget->SetSkillBackImage(1, SkillSIcon);
+	//	}
+	//
+	//	UTexture2D* SkillDIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon2.icon2'")));
+	//	if (SkillDIcon)
+	//	{
+	//		m_pHUDWidget->SetSkillImage(2, SkillDIcon);
+	//		m_pHUDWidget->SetSkillBackImage(2, SkillDIcon);
+	//	}
+	//
+	//	UTexture2D* SkillFIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon3.icon3'")));
+	//	if (SkillFIcon)
+	//	{
+	//		m_pHUDWidget->SetSkillImage(3, SkillFIcon);
+	//		m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
+	//	}
+	//}
 
 	switch (m_eUsingSkill)
 	{
@@ -946,4 +948,39 @@ void ASkeletonSoldier::SpawnHitEffect(FVector _vLoc, FRotator _vRot)
 	AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(_vLoc, _vRot, param);
 
 	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/Hack_And_Slash_FX/VFX_Niagara/Impacts/NS_Demon_Slash_Impact.NS_Demon_Slash_Impact'"));
+}
+void ASkeletonSoldier::InitializeDynamicMaterial()
+{
+	// UI 설정
+	if (m_pHUDWidget)
+	{
+		UTexture2D* SkillAIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon4.icon4'")));
+
+		if (SkillAIcon)
+		{
+			m_pHUDWidget->SetSkillImage(0, SkillAIcon);
+			m_pHUDWidget->SetSkillBackImage(0, SkillAIcon);
+		}
+
+		UTexture2D* SkillSIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon1.icon1'")));
+		if (SkillSIcon)
+		{
+			m_pHUDWidget->SetSkillImage(1, SkillSIcon);
+			m_pHUDWidget->SetSkillBackImage(1, SkillSIcon);
+		}
+
+		UTexture2D* SkillDIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon2.icon2'")));
+		if (SkillDIcon)
+		{
+			m_pHUDWidget->SetSkillImage(2, SkillDIcon);
+			m_pHUDWidget->SetSkillBackImage(2, SkillDIcon);
+		}
+
+		UTexture2D* SkillFIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon3.icon3'")));
+		if (SkillFIcon)
+		{
+			m_pHUDWidget->SetSkillImage(3, SkillFIcon);
+			m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
+		}
+	}
 }
