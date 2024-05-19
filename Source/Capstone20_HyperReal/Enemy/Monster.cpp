@@ -10,6 +10,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "../Building/Building.h"
+#include "Capstone20_HyperReal/Character/PlayerCharacter.h"
+#include "../InGameModeBase.h"
+#include "../UI/InGameUserWidget.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -99,6 +102,7 @@ void AMonster::BeginPlay()
 			UE_LOG(LogTemp, Error, TEXT("No Info"));
 		}
 	}
+	
 }
 
 // Called every frame
@@ -157,6 +161,21 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 	mInfo.HP -= (int32)Damage;
 
 	if (mInfo.HP <= 0) {
+		//player에게 몬스터의 돈을 줌
+		APlayerCharacter* Player = Cast<APlayerCharacter>(DamageCauser);
+		Player->AddGold(mInfo.Gold);
+		
+		//돈 UI 업데이트
+		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+		if(GameMode)
+		{
+			UInGameUserWidget* widget = GameMode->GetInGameWidget();
+			if (widget)
+			{
+				widget->SetEarnGold(Player->GetInfo().LevelAccGold);
+			}
+		}
+		
 		HandleDeath();
 		//죽었을 경우 -1.f반환
 		Damage = -1.f;
@@ -169,7 +188,9 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 	// 	}
 	// }
 	SetActorTickInterval(0.f);
-	
+
+	float rate = static_cast<float>(mInfo.HP) / static_cast<float>(mInfo.MaxHP);
+	SetHPBar(rate);
 	return Damage;
 }
 
@@ -177,6 +198,9 @@ void AMonster::HandleDeath()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Monster Death"));
 	mAnim->ChangeAnimType(EMonsterAnim::Death);
+	
+
+	
 	//monster랑 연결된 Ai를 끊음
 	if (AAIController* AIController = Cast<AAIController>(GetController()))
 	{

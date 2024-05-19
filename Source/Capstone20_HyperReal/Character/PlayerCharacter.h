@@ -50,6 +50,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	UInputAction* SkillFAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	UInputAction* EscapeAction;
+	
 	// 공격 애니메이션 몽타주 저장
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TArray<UAnimMontage*> m_arrAttackMontage;
@@ -106,6 +109,8 @@ private:
 	float m_fDefaultAccel;
 	float m_fAccGhostTime;
 	bool  m_bInvincible;
+private:
+	class APortal* m_pPortal;
 
 public:
 	bool OnAttack() const { return m_bOnAttack; };
@@ -156,9 +161,13 @@ public:
 
 	FVector GetMousePosition();
 
+	virtual void EscapeFunction();
+
 public:
 	// 감속하거나 가속할 배율 입력
 	void ChangeWalkSpeed(float _value);
+	void AddGold(int _gold){m_Info.LevelAccGold += _gold;};
+	void SetPortal(class APortal* _portal){m_pPortal = _portal;};
 
 private:
 	void InitPlayerData();

@@ -100,6 +100,7 @@ public:
 	virtual void Attack() override;
 	virtual void SkillEnd() override;
 	virtual void SpawnGhostTrail() override;
+	virtual void EscapeFunction() override;
 
 private:
 	// 차지 공격

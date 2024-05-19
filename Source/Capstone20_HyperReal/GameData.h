@@ -44,10 +44,11 @@ public:
 	int32		SP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32		hasGold;
+	int32		TotalGold;
 
+	//현재 레벨에서 벌어들인 골드
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32		curLevelGold;
+	int32		LevelAccGold;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float		ASkillRatio;
@@ -183,7 +184,11 @@ public:
 	int32		Exp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32		Gold;
+	int32		TotalGold;
+
+	//현재 레벨에서 벌어들인 골드
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		LevelAccGold;
 };
 
 USTRUCT(BlueprintType)
@@ -343,10 +348,5 @@ class CAPSTONE20_HYPERREAL_API UGameData : public UObject
 {
 	GENERATED_BODY()
 	
-public:
-	bool IsWidgetVisible(UWidget* Widget)
-	{
-		ESlateVisibility Visibility = Widget->GetVisibility();
-		return Visibility == ESlateVisibility::Visible;
-	}
+
 };

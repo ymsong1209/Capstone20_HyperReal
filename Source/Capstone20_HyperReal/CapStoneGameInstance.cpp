@@ -60,6 +60,17 @@ const FBuildingDataTableInfo* UCapStoneGameInstance::FindBuildingInfo(const FStr
 	}
 }
 
+void UCapStoneGameInstance::UpdatePlayerGold(const FString& PlayerName, int _gold)
+{
+	if (mPlayerInfoTable) {
+		FPlayerDataTableInfo* table =  mPlayerInfoTable->FindRow<FPlayerDataTableInfo>(*PlayerName, TEXT(""));
+		table->TotalGold += _gold;
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("No PlayerInfoTable"));
+	}
+}
+
 void UCapStoneGameInstance::Init()
 {
 }

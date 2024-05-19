@@ -23,6 +23,7 @@
 #include "GhostTrail.h"
 #include "../DamageType/AirborneDamageType.h"
 #include "../UI/InGameUserWidget.h"
+#include "../InGameModeBase.h"
 
 ASkeletonSoldier::ASkeletonSoldier() :
 	m_ChargingMontage(nullptr),
@@ -113,6 +114,14 @@ ASkeletonSoldier::ASkeletonSoldier() :
 	{
 		SkillFAction = InputF.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputEscape(TEXT("/Script/EnhancedInput.InputAction'/Game/A_SJWContent/Input/Action/IA_ESC.IA_ESC'"));
+	if (InputEscape.Succeeded())
+	{
+		EscapeAction = InputEscape.Object;
+	}
+
+	
 	
 	// 데칼 머티리얼 로딩
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MILeapRange(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/MT_LeapAttackRange.MT_LeapAttackRange'"));
@@ -327,6 +336,9 @@ void ASkeletonSoldier::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// F 버튼에 언데드 퓨리 바인딩
 		pInput->BindAction(SkillFAction, ETriggerEvent::Started, this, &ASkeletonSoldier::UndeadFury);
+
+		// ESC 버튼 누르면 일시정지 혹은 창 종료
+		pInput->BindAction(EscapeAction, ETriggerEvent::Started, this, &ASkeletonSoldier::EscapeFunction);
 	}
 }
 
@@ -419,6 +431,10 @@ void ASkeletonSoldier::SpawnGhostTrail()
 	pGhost->SetColorParam(vLerpColor);
 }
 
+void ASkeletonSoldier::EscapeFunction()
+{
+	Super::EscapeFunction();
+}
 void ASkeletonSoldier::ChargeStart()
 {
 	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || (m_faccSkillDCool < m_fSkillDCool))

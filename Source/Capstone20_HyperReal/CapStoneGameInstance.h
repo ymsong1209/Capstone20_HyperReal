@@ -27,6 +27,8 @@ public:
 	const FMonsterDataTableInfo* FindMonsterInfo(const FString& _Name);
 	const FPlayerDataTableInfo* FindPlayerInfo(const FString& _Name);
 	const FBuildingDataTableInfo* FindBuildingInfo(const FString& _Name);
+
+	void UpdatePlayerGold(const FString& PlayerName, int _gold);
 public:
 	virtual void Init();
 

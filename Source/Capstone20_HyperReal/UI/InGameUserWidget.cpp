@@ -6,7 +6,8 @@
 #include "Materials/Material.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Engine/Texture.h"
-#include "../GameData.h"
+#include "../CapStoneGameInstance.h"
+#include "../Character/PlayerCharacter.h"
 void UInGameUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -65,9 +66,9 @@ void UInGameUserWidget::NativePreConstruct()
 void UInGameUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	SetPrevGold(1000);
-	SetEarnGold(500);
-	SetDestoryRate(25.7f);
+	//TODO : datatable에서 세팅해와야함.
+	SetPrevGold(0);
+	SetEarnGold(0);
 	mRewardWidget->setDestroyBuildingCount(10);
 	mRewardWidget->setRewardMoney(400);
 	mRewardWidget->SetVisibility(ESlateVisibility::Collapsed);
@@ -81,19 +82,19 @@ void UInGameUserWidget::NativeDestruct()
 void UInGameUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	if (skillicon && skillicon->GetDynamicMaterial()) {
-		//UE_LOG(LogTemp, Display, TEXT("dynamiccalled"));
-		rate += InDeltaTime * 0.6f;
-		if (rate >= 1.f)
-			rate = 0;
-		skillImages[0]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
-		skillImages[1]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
-		skillImages[2]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
-		skillImages[3]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
-	}
-	else {
-		//UE_LOG(LogTemp, Warning, TEXT("skillicon does not have a dynamic material"));
-	}
+	// if (skillicon && skillicon->GetDynamicMaterial()) {
+	// 	//UE_LOG(LogTemp, Display, TEXT("dynamiccalled"));
+	// 	rate += InDeltaTime * 0.6f;
+	// 	if (rate >= 1.f)
+	// 		rate = 0;
+	// 	skillImages[0]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
+	// 	skillImages[1]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
+	// 	skillImages[2]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
+	// 	skillImages[3]->GetDynamicMaterial()->SetScalarParameterValue(FName("Percent"), rate);
+	// }
+	// else {
+	// 	//UE_LOG(LogTemp, Warning, TEXT("skillicon does not have a dynamic material"));
+	// }
 }
 void UInGameUserWidget::SetHP(int32 HP, int32 HPMax)
 {
@@ -139,7 +140,7 @@ void UInGameUserWidget::SetEarnGold(int gold)
 	mEarnGold->SetText(FText::FromString(str));
 }
 
-void UInGameUserWidget::SetDestoryRate(float fRate)
+void UInGameUserWidget::SetDestroyRate(float fRate)
 {
 	int iRate=FMath::FloorToInt(fRate);
 	FString str=FString::FromInt(iRate) + "%";
@@ -152,6 +153,23 @@ void UInGameUserWidget::OpenRewardUI(int gold, int building, int enemy)
 	mRewardWidget->setRewardMoney(gold);
 	mRewardWidget->setDestroyBuildingCount(building);
 	mRewardWidget->setKillEnemyCount(enemy);
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (PlayerCharacter)
+	{
+		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+		if (GameInst)
+		{
+			GameInst->UpdatePlayerGold(PlayerCharacter->GetInfo().Name,PlayerCharacter->GetInfo().LevelAccGold);
+		}
+	}
+}
+
+void UInGameUserWidget::CloseRewardUI()
+{
+	mRewardWidget->SetVisibility(ESlateVisibility::Collapsed);
+	mRewardWidget->setRewardMoney(0);
+	mRewardWidget->setDestroyBuildingCount(0);
+	mRewardWidget->setKillEnemyCount(0);
 }
 
 

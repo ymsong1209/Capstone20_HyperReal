@@ -79,7 +79,7 @@ void ABuilding::BeginPlay()
 			UE_LOG(LogTemp, Error, TEXT("No Info"));
 		}
 	}
-	SetDestroyRateText(97);
+	SetDestroyRateText(100);
 }
 
 // Called every frame
@@ -183,6 +183,9 @@ float ABuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	}
 	SpawnHitParticles();
 	HitShake();
+
+	int rate = static_cast<int>(static_cast<float>(mInfo.HP) * 100 / static_cast<float>(mInfo.MaxHP));
+	SetDestroyRateText(rate);
 	return Damage;
 }
 

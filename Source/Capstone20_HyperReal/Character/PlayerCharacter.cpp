@@ -21,6 +21,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
+#include "../Building/Portal.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() :
@@ -293,7 +294,26 @@ FVector APlayerCharacter::GetMousePosition()
 	return CachedDestination;
 }
 
-void APlayerCharacter::ChangeWalkSpeed(float _value)
+void APlayerCharacter::EscapeFunction()
+{
+	AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+	if(GameMode)
+	{
+		UInGameUserWidget* widget = GameMode->GetInGameWidget();
+		if (widget && widget->IsVisible())
+		{
+			widget->CloseRewardUI();
+		}
+	}
+	
+	if(m_pPortal)
+	{
+		m_pPortal->TransitionToNextLevel(this);
+	}
+}
+
+
+	void APlayerCharacter::ChangeWalkSpeed(float _value)
 {
 	GetCharacterMovement()->MaxWalkSpeed = (m_fDefaultSpeed * _value) * m_Info.MoveSpeed;
 	GetCharacterMovement()->MaxAcceleration = (m_fDefaultAccel * _value) * m_Info.MoveSpeed;
@@ -327,7 +347,8 @@ void APlayerCharacter::InitPlayerData()
 			m_Info.FSkillRatio = Info->FSkillRatio;
 			m_Info.Level = 1;
 			m_Info.Exp = 0;
-			m_Info.Gold = 10000;
+			m_Info.TotalGold = 10000;
+			m_Info.LevelAccGold = 0;
 
 			// 초기 속도에 속도 배율을 곱하도록 변경
 			ChangeWalkSpeed(1.f);

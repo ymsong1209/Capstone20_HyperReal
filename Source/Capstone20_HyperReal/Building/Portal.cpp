@@ -7,6 +7,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "../Character/PlayerCharacter.h"
+#include "../InGameModeBase.h"
+#include "../UI/InGameUserWidget.h"
 
 APortal::APortal()
 {
@@ -69,20 +71,38 @@ void APortal::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 		if (PlayerController)
 		{
 			PlayerCharacter->SetInvincible(true);
-			//플레이어와 플레이어컨트롤러의 연결을 끊음.
-			//PlayerController->DisableInput(PlayerController);
-			
-			// Start fade to black
-			PlayerController->PlayerCameraManager->StartCameraFade(0.f, 1.f, 1.f, FColor::Black, false, true);
+			PlayerCharacter->SetPortal(this);
 
-			// After fade complete, transition to next level
-			FTimerHandle UnusedHandle;
-			GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &APortal::TransitionToNextLevel, 1.f, false);
+			AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+			if(GameMode)
+			{
+				UInGameUserWidget* widget = GameMode->GetInGameWidget();
+				if (widget)
+				{
+					int gold = PlayerCharacter->m_Info.LevelAccGold;
+					int building = 0;
+					int enemy = 0;
+					widget->OpenRewardUI(gold, building, enemy);
+				}
+			}
 		}
 	}
 }
 
-void APortal::TransitionToNextLevel()
+void APortal::TransitionToNextLevel(AActor* OtherActor)
+{
+	// Check if the OtherActor is a player character
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+	APlayerController* PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
+	// Start fade to black
+	PlayerController->PlayerCameraManager->StartCameraFade(0.f, 1.f, 1.f, FColor::Black, false, true);
+
+	// After fade complete, transition to next level
+	FTimerHandle UnusedHandle;
+	GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &APortal::OpenLevel, 1.f, false);
+}
+
+void APortal::OpenLevel()
 {
 	UGameplayStatics::OpenLevel(this, FName("KHIStartMap"));
 }

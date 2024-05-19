@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../GameInfo.h"
 #include "Containers/Array.h"
 #include "CharacterHUDWidget.h"
 #include "RewardWidget.h"
@@ -52,7 +52,8 @@ public:
 	void SetSkillBackImage(int idx, UTexture2D* tex);
 	void SetPrevGold(int gold);
 	void SetEarnGold(int gold);
-	void SetDestoryRate(float fRate);
+	void SetDestroyRate(float fRate);
 
 	void OpenRewardUI(int gold,int building,int enemy);
+	void CloseRewardUI();
 };

@@ -30,5 +30,4 @@ UCLASS()
 class CAPSTONE20_HYPERREAL_API UGameInfo : public UObject
 {
 	GENERATED_BODY()
-	
 };

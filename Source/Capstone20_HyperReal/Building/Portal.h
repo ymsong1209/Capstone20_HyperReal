@@ -27,9 +27,10 @@ public:
 	// Function to handle the overlap
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
-
+	
 	// Function to transition to the next level
-	void TransitionToNextLevel();
+	void TransitionToNextLevel(AActor* OtherActor);
+	void OpenLevel();
 	
 public:	
 	// Sets default values for this actor's properties

@@ -58,7 +58,7 @@ float ASwordMan::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACont
 	float damage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
 	//에어본 상태가 아닐때만 애니메이션 변경
-	if(!bIsAirborne)
+	if(!bIsAirborne && !bIsInvincible)
 	{
 		if (DamageEvent.DamageTypeClass == UAirborneDamageType::StaticClass())
 		{
