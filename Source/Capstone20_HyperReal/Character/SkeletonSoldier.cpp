@@ -149,6 +149,16 @@ ASkeletonSoldier::ASkeletonSoldier() :
 
 	m_fAttackImpulse = 1200.f;
 	m_strDataTableKey = TEXT("Soldier");
+
+	m_fSkillACool = 8.f;
+	m_fSkillSCool = 10.f;
+	m_fSkillDCool = 6.f;
+	m_fSkillFCool = 8.f;
+
+	m_faccSkillACool = m_fSkillACool;
+	m_faccSkillSCool = m_fSkillSCool;
+	m_faccSkillDCool = m_fSkillDCool;
+	m_faccSkillFCool = m_fSkillFCool;
 }
 
 void ASkeletonSoldier::BeginPlay()
@@ -175,44 +185,6 @@ void ASkeletonSoldier::BeginPlay()
 	}
 
 	m_NSEffect01->Deactivate();
-
-	// UI 설정
-	if (m_pHUDWidget)
-	{
-		UTexture2D* SkillAIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon4.icon4'")));
-
-		if (SkillAIcon)
-		{
-			m_pHUDWidget->SetSkillImage(0, SkillAIcon);
-			m_pHUDWidget->SetSkillBackImage(0, SkillAIcon);
-		}
-
-		UTexture2D* SkillSIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon1.icon1'")));
-		if (SkillSIcon)
-		{
-			m_pHUDWidget->SetSkillImage(1, SkillSIcon);
-			m_pHUDWidget->SetSkillBackImage(1, SkillSIcon);
-		}
-
-		UTexture2D* SkillDIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon2.icon2'")));
-		if (SkillDIcon)
-		{
-			m_pHUDWidget->SetSkillImage(2, SkillDIcon);
-			m_pHUDWidget->SetSkillBackImage(2, SkillDIcon);
-		}
-
-		UTexture2D* SkillFIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon3.icon3'")));
-		if (SkillFIcon)
-		{
-			m_pHUDWidget->SetSkillImage(3, SkillFIcon);
-			m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
-		}
-	}
-}
-
-void ASkeletonSoldier::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
 	// UI 설정
 	//if (m_pHUDWidget)
@@ -246,6 +218,44 @@ void ASkeletonSoldier::Tick(float DeltaTime)
 	//		m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
 	//	}
 	//}
+}
+
+void ASkeletonSoldier::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// UI 설정
+	if (m_pHUDWidget)
+	{
+		UTexture2D* SkillAIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon4.icon4'")));
+
+		if (SkillAIcon)
+		{
+			m_pHUDWidget->SetSkillImage(0, SkillAIcon);
+			m_pHUDWidget->SetSkillBackImage(0, SkillAIcon);
+		}
+
+		UTexture2D* SkillSIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon1.icon1'")));
+		if (SkillSIcon)
+		{
+			m_pHUDWidget->SetSkillImage(1, SkillSIcon);
+			m_pHUDWidget->SetSkillBackImage(1, SkillSIcon);
+		}
+
+		UTexture2D* SkillDIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon2.icon2'")));
+		if (SkillDIcon)
+		{
+			m_pHUDWidget->SetSkillImage(2, SkillDIcon);
+			m_pHUDWidget->SetSkillBackImage(2, SkillDIcon);
+		}
+
+		UTexture2D* SkillFIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon3.icon3'")));
+		if (SkillFIcon)
+		{
+			m_pHUDWidget->SetSkillImage(3, SkillFIcon);
+			m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
+		}
+	}
 
 	switch (m_eUsingSkill)
 	{
@@ -409,7 +419,7 @@ void ASkeletonSoldier::SpawnGhostTrail()
 
 void ASkeletonSoldier::ChargeStart()
 {
-	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None))
+	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || (m_faccSkillDCool < m_fSkillDCool))
 		return;
 
 	GetCharacterMovement()->StopMovementImmediately();
@@ -480,6 +490,8 @@ void ASkeletonSoldier::ChargeAttack()
 	if (m_eUsingSkill != EPlayerSkill::SkillD)
 		return;
 
+	m_faccSkillDCool = 0.f;
+
 	float fElapsedTime = GetWorld()->GetTimeSeconds() - m_fChargeStartTime;
 
 	m_iChargeAttackCount = FMath::FloorToInt32(fElapsedTime / m_fChargingTick) + 1;
@@ -496,7 +508,7 @@ void ASkeletonSoldier::ChargeAttack()
 void ASkeletonSoldier::Whirlwind()
 {
 	// 아무 스킬도 안쓰고 있었으면 휠윈드 실행
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillACool >= m_fSkillACool))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillA;
 
@@ -542,7 +554,7 @@ void ASkeletonSoldier::AttackWhirlwind()
 	{
 		for (int32 i = 0; i < HitArray.Num(); ++i)
 		{
-			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
+			if (HitArray[i].GetActor()->TakeDamage(m_Info.Attack * m_Info.ASkillRatio, FDamageEvent(),
 				GetController(), this) != -1.f)
 			{
 				SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
@@ -569,7 +581,7 @@ void ASkeletonSoldier::AttackWhirlwind()
 
 void ASkeletonSoldier::LeapAttack()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillSCool >= m_fSkillSCool))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillS;
 
@@ -599,6 +611,8 @@ void ASkeletonSoldier::AttackLeapAttack()
 {
 	SetActorEnableCollision(true);
 
+	m_faccSkillSCool = 0.f;
+
 	// Camera shake
 	GetController<AClickMoveController>()->ClientStartCameraShake(USmashCameraShake::StaticClass());
 
@@ -620,7 +634,7 @@ void ASkeletonSoldier::AttackLeapAttack()
 	{
 		for (int32 i = 0; i < HitArray.Num(); ++i)
 		{
-			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
+			if (HitArray[i].GetActor()->TakeDamage(m_Info.Attack * m_Info.ASkillRatio, FDamageEvent(),
 				GetController(), this) != -1.f)
 			{
 				SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
@@ -647,9 +661,10 @@ void ASkeletonSoldier::AttackLeapAttack()
 
 void ASkeletonSoldier::UndeadFury()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillFCool >= m_fSkillFCool))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillF;
+		m_faccSkillFCool = 0.f;
 
 		if (!m_pAnim->Montage_IsPlaying(m_UndeadFuryMontage))
 		{
@@ -703,6 +718,8 @@ void ASkeletonSoldier::WhirlwindEnd()
 	GetWorldTimerManager().ClearTimer(m_hAttackWhirlwindHandle);
 	GetWorldTimerManager().ClearTimer(m_hWhirlwindHandle);
 
+	m_faccSkillACool = 0.f;
+
 	if (m_pRWeapon)
 		m_pRWeapon->EndTrail();
 }
@@ -734,7 +751,7 @@ void ASkeletonSoldier::EjectChargeSlash()
 	FActorSpawnParameters param;
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	ASoldierChargeSlash* pSlash = GetWorld()->SpawnActor<ASoldierChargeSlash>(vLoc, GetActorRotation(), param);
-	pSlash->SetDamage(100.f);
+	pSlash->SetDamage(m_Info.Attack * m_Info.DSkillRatio);
 	pSlash->SetOwnerController(GetController());
 }
 
@@ -807,7 +824,7 @@ void ASkeletonSoldier::AttackCrossCut()
 	{
 		SpawnHitEffect(Hit.Value.ImpactPoint, Hit.Value.ImpactNormal.Rotation());
 		
-		if (Hit.Key->TakeDamage(1.f, FDamageEvent(), GetController(), this) != -1.f)
+		if (Hit.Key->TakeDamage(m_Info.Attack, FDamageEvent(), GetController(), this) != -1.f)
 		{
 			//AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
 
@@ -839,7 +856,7 @@ void ASkeletonSoldier::AttackUpperCut()
 		{
 			SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
 
-			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
+			if (HitArray[i].GetActor()->TakeDamage(m_Info.Attack, FDamageEvent(),
 				GetController(), this) != -1.f)
 			{
 				// 공중으로 뛰울 수 있으면 뛰우도록 해야함
@@ -892,7 +909,7 @@ void ASkeletonSoldier::AttackSmashCut()
 			FDamageEvent DamageEvent;
 			DamageEvent.DamageTypeClass = UAirborneDamageType::StaticClass();
 			
-			if (HitArray[i].GetActor()->TakeDamage(1.f, DamageEvent,
+			if (HitArray[i].GetActor()->TakeDamage(m_Info.Attack * 1.2f, DamageEvent,
 				GetController(), this) != -1.f)
 			{
 				// 몬스터라면 약간 앞으로 밀쳐내기

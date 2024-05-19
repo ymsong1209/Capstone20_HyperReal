@@ -137,6 +137,31 @@ void APlayerCharacter::Tick(float DeltaTime)
 			SpawnGhostTrail();
 		}
 	}
+
+	// 스킬 쿨타입 계산 밑 UI 적용
+	if (m_faccSkillACool < m_fSkillACool)
+	{
+		m_faccSkillACool += DeltaTime;
+		m_pHUDWidget->CalSkillCoolTime(0,  m_faccSkillACool / m_fSkillACool);
+	}
+
+	if (m_faccSkillSCool < m_fSkillSCool)
+	{
+		m_faccSkillSCool += DeltaTime;
+		m_pHUDWidget->CalSkillCoolTime(1, m_faccSkillSCool / m_fSkillSCool);
+	}
+
+	if (m_faccSkillDCool < m_fSkillDCool)
+	{
+		m_faccSkillDCool += DeltaTime;
+		m_pHUDWidget->CalSkillCoolTime(2, m_faccSkillDCool / m_fSkillDCool);
+	}
+
+	if (m_faccSkillFCool < m_fSkillFCool)
+	{
+		m_faccSkillFCool += DeltaTime;
+		m_pHUDWidget->CalSkillCoolTime(3, m_faccSkillFCool / m_fSkillFCool);
+	}
 }
 
 // Called to bind functionality to input
@@ -270,8 +295,8 @@ FVector APlayerCharacter::GetMousePosition()
 
 void APlayerCharacter::ChangeWalkSpeed(float _value)
 {
-	GetCharacterMovement()->MaxWalkSpeed = (m_fDefaultSpeed * _value);
-	GetCharacterMovement()->MaxAcceleration = (m_fDefaultAccel * _value);
+	GetCharacterMovement()->MaxWalkSpeed = (m_fDefaultSpeed * _value) * m_Info.MoveSpeed;
+	GetCharacterMovement()->MaxAcceleration = (m_fDefaultAccel * _value) * m_Info.MoveSpeed;
 }
 
 void APlayerCharacter::InitPlayerData()
@@ -305,7 +330,7 @@ void APlayerCharacter::InitPlayerData()
 			m_Info.Gold = 10000;
 
 			// 초기 속도에 속도 배율을 곱하도록 변경
-			GetCharacterMovement()->MaxWalkSpeed = 600.f * Info->MoveSpeed;
+			ChangeWalkSpeed(1.f);
 
 			AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
 
