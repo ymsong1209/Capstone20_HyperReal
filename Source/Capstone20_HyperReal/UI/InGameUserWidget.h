@@ -46,6 +46,7 @@ public:
 	}
 public:
 	void SetHP(int32 HP, int32 HPMax);
+	void SetSP(int32 SP, int32 SPMax);
 	void CalSkillCoolTime(int idx, float fRate);
 	void SetSkillImage(int idx, UTexture* tex);
 	void SetPrevGold(int gold);

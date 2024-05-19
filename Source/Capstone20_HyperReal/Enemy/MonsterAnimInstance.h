@@ -17,6 +17,7 @@ enum class EMonsterAnim : uint8
 	Death,
 	Hit,
 	Stun,
+	Airborne,
 	Skill1,
 	Skill2,
 	Skill3,

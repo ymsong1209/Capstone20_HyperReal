@@ -21,6 +21,7 @@
 #include "../Projectile/SoldierChargeSlash.h"
 #include "../Enemy/Monster.h"
 #include "GhostTrail.h"
+#include "../DamageType/AirborneDamageType.h"
 
 ASkeletonSoldier::ASkeletonSoldier() :
 	m_ChargingMontage(nullptr),
@@ -737,7 +738,7 @@ void ASkeletonSoldier::AttackCrossCut()
 	for (const auto& Hit : HitResultMap)
 	{
 		SpawnHitEffect(Hit.Value.ImpactPoint, Hit.Value.ImpactNormal.Rotation());
-
+		
 		if (Hit.Key->TakeDamage(1.f, FDamageEvent(), GetController(), this) != -1.f)
 		{
 			//AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
@@ -818,7 +819,12 @@ void ASkeletonSoldier::AttackSmashCut()
 		{
 			SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
 
-			if (HitArray[i].GetActor()->TakeDamage(1.f, FDamageEvent(),
+			// 에어본 대미지 타입 사용
+			UAirborneDamageType* AirborneDamageType = NewObject<UAirborneDamageType>();
+			FDamageEvent DamageEvent;
+			DamageEvent.DamageTypeClass = UAirborneDamageType::StaticClass();
+			
+			if (HitArray[i].GetActor()->TakeDamage(1.f, DamageEvent,
 				GetController(), this) != -1.f)
 			{
 				// 몬스터라면 약간 앞으로 밀쳐내기

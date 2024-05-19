@@ -33,34 +33,19 @@ protected:
 	bool mAttackEnd;
 	bool bIsInvincible;
 	bool bCanAttack;
+
+	bool  bIsAirborne;
+	float fAirborneTime;
+	float fMaxAirborneTime;
+	float fInitialZ;
 public:
-	bool GetAttackEnd() const
-	{
-		return mAttackEnd;
-	}
-	
+	bool GetAttackEnd() const { return mAttackEnd; }
 	class UMonsterAnimInstance* GetAnimInstance() const { return mAnim; }
-	
-	const FMonsterInfo& GetMonsterInfo() const {
-		return mInfo;
-	}
-
-	void SetSpawnPoint(class AMonsterSpawnPoint* Point) {
-		mSpawnPoint = Point;
-	}
-
-	void SetOwnerBuilding(class ABuilding* Buliding) {
-		mBuilding = Buliding;
-	}
-
-	ABuilding* GetOwnerBuilding() {
-		return mBuilding;
-	}
-
-	void SetAttackEnd(bool End)
-	{
-		mAttackEnd = End;
-	}
+	const FMonsterInfo& GetMonsterInfo() const { return mInfo; }
+	void SetSpawnPoint(class AMonsterSpawnPoint* Point) { mSpawnPoint = Point; }
+	void SetOwnerBuilding(class ABuilding* Building) { mBuilding = Building; }
+	ABuilding* GetOwnerBuilding() { return mBuilding; }
+	void SetAttackEnd(bool End) { mAttackEnd = End; }
 
 	void SetCanAttack(bool _attack){bCanAttack = _attack;}
 	bool GetCanAttack(){return bCanAttack;}
@@ -81,6 +66,7 @@ public:
 public:
 	void HandleDeath();
 	void DeathEnd();
+	void StartAirborne();
 
 public:
 	virtual void Attack();

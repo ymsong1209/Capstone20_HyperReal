@@ -55,10 +55,14 @@ AMonster::AMonster()
 	AIControllerClass = AMonsterAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	
-
 	mAttackEnd = false;
 	bIsInvincible = false;
 	bCanAttack = true;
+
+	bIsAirborne = false;
+	fAirborneTime = 0.0f;
+	fMaxAirborneTime = 1.0f;
+	fInitialZ = 0.0f;
 }
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
@@ -101,6 +105,41 @@ void AMonster::BeginPlay()
 void AMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (bIsAirborne)
+	{
+		fAirborneTime += DeltaTime;
+		float HalfMaxTime = fMaxAirborneTime / 2.0f;
+
+		if (fAirborneTime <= HalfMaxTime)
+		{
+			// 상승
+			float Alpha = fAirborneTime / HalfMaxTime;
+			FVector NewLocation = GetMesh()->GetRelativeLocation();
+			NewLocation.Z = fInitialZ + FMath::Lerp(0.0f, 200.0f, Alpha);  // 200.0f는 상승 높이
+			GetMesh()->SetRelativeLocation(NewLocation);
+		}
+		else if (fAirborneTime <= fMaxAirborneTime)
+		{
+			// 하강
+			float Alpha = (fAirborneTime - HalfMaxTime) / HalfMaxTime;
+			FVector NewLocation = GetMesh()->GetRelativeLocation();
+			NewLocation.Z = fAirborneTime + FMath::Lerp(200.0f, 0.0f, Alpha);  // 200.0f는 상승 높이
+			GetMesh()->SetRelativeLocation(NewLocation);
+		}
+		else
+		{
+			// 에어본 상태 종료
+			bIsAirborne = false;
+			fAirborneTime = 0.0f;
+			FVector NewLocation = GetMesh()->GetRelativeLocation();
+			NewLocation.Z = fAirborneTime;
+			GetMesh()->SetRelativeLocation(NewLocation);
+			if (mAIController)
+			{
+				mAIController->Possess(this);
+			}
+		}
+	}
 }
 
 //-1.f return시 몬스터 사망
@@ -158,6 +197,18 @@ void AMonster::DeathEnd()
 {
 	//mSpawnPoint->MonsterDeath();
 	Destroy();
+}
+
+void AMonster::StartAirborne()
+{
+	bIsAirborne = true;
+	fAirborneTime = 0.0f;
+	fInitialZ = GetMesh()->GetRelativeLocation().Z;
+	if (GetAIController())
+	{
+		mAIController = GetAIController();
+		GetAIController()->UnPossess();
+	}
 }
 
 void AMonster::Attack()
