@@ -66,7 +66,7 @@ void AClickMoveController::OnClickMoveTriggered()
 	FHitResult Hit;
 	bool bHitSuccessful = false;
 
-	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel9, true, Hit);
 
 	// If we hit a surface, cache the location
 	if (bHitSuccessful)

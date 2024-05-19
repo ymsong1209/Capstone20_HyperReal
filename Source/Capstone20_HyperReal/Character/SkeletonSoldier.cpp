@@ -165,7 +165,6 @@ void ASkeletonSoldier::BeginPlay()
 
 	if (IsValid(m_pLeapAttackRangeDecal))
 	{
-		UE_LOG(LogTemp, Log, TEXT("Hidden Leap Attack Range Decal"));
 		m_pLeapAttackRangeDecal->SetRelativeLocation(FVector(0.f, 0.f, -80.f));
 		m_pLeapAttackRangeDecal->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
 		m_pLeapAttackRangeDecal->SetRelativeScale3D(FVector(0.5f, 2.6f, 2.6f));

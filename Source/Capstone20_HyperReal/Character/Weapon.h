@@ -21,11 +21,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
 	UMaterialInterface* m_pBlinkOverlayInterface;
 
-protected:
 	// 무기 표현용 스켈레탈 매쉬(트레일을 구현하기 위함)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	class USkeletalMeshComponent* m_WeaponMesh;
 
+protected:
 	UMaterialInstanceDynamic* m_MIDBlinkOverlay;
 
 public:
