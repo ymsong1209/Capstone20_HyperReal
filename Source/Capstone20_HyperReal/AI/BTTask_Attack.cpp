@@ -91,6 +91,8 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 			FVector Dir = TargetLoc - MonsterLoc;
 			Dir.Normalize();
 			Monster->SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
+			Monster->GetAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}
 
