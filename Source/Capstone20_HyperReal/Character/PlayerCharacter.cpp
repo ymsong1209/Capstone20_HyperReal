@@ -14,6 +14,9 @@
 #include "PlayerAnimInstance.h"
 #include "ClickMoveController.h"
 #include "GhostTrail.h"
+#include "../CapStoneGameInstance.h"
+#include "../InGameModeBase.h"
+#include "../UI/InGameUserWidget.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -114,10 +117,9 @@ void APlayerCharacter::BeginPlay()
 	{
 		m_NSEffect01->SetRenderCustomDepth(true);
 	}
-
-	if (m_pBlinkOverlayInterface)
-	{
-	}
+	
+	// 데이터 테이블 키 맵핑
+	InitPlayerData();
 }
 
 // Called every frame
@@ -148,16 +150,31 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	{
 		// 우클릭을 기본 공격에 바인딩 추후 triggerd 로 바꾸는게 좀더 자연스러울듯함
 		pInput->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacter::Attack);
-
-		// 스킬은 직업 마다 다를 수 있으므로 재정의해서 구현
 	}
 }
 
 float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	float fDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
 	//무적일 경우엔 -1.f반환
-	if(m_bInvincible) return -1.f;
-	return 0.0f;
+	if(m_bInvincible) 
+		return -1.f;
+	
+	fDamage = Damage - m_Info.Armor;
+	fDamage = fDamage < 1.f ? 1.f : fDamage;
+
+	m_Info.HP -= (int32)fDamage;
+	
+	if (m_pHUDWidget)
+		m_pHUDWidget->SetHP(m_Info.HP, m_Info.MaxHP);
+
+	if (m_Info.HP <= 0) {
+		//HandleDeath();
+		fDamage = -1.f;
+	}
+
+	return fDamage;
 }
 
 void APlayerCharacter::Attack()
@@ -255,4 +272,53 @@ void APlayerCharacter::ChangeWalkSpeed(float _value)
 {
 	GetCharacterMovement()->MaxWalkSpeed = (m_fDefaultSpeed * _value);
 	GetCharacterMovement()->MaxAcceleration = (m_fDefaultAccel * _value);
+}
+
+void APlayerCharacter::InitPlayerData()
+{
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+
+	if (GameInst)
+	{
+		const FPlayerDataTableInfo* Info = GameInst->FindPlayerInfo(m_strDataTableKey);
+
+		if (Info)
+		{
+			m_Info.Name = Info->Name;
+			m_Info.Job = Info->Job;
+			m_Info.Attack = Info->Attack;
+			m_Info.Armor = Info->Armor;
+			m_Info.MaxHP = Info->HP;
+			m_Info.HP = Info->HP;
+			m_Info.MaxSP = Info->SP;
+			m_Info.SP = Info->SP;
+			m_Info.AttackSpeed = Info->AttackSpeed;
+			m_Info.MoveSpeed = Info->MoveSpeed;
+			m_Info.CriticalRatio = Info->CriticalRatio;
+			m_Info.CriticalDamage = Info->CriticalDamage;
+			m_Info.ASkillRatio = Info->ASkillRatio;
+			m_Info.SSkillRatio = Info->SSkillRatio;
+			m_Info.DSkillRatio = Info->DSkillRatio;
+			m_Info.FSkillRatio = Info->FSkillRatio;
+			m_Info.Level = 1;
+			m_Info.Exp = 0;
+			m_Info.Gold = 10000;
+
+			// 초기 속도에 속도 배율을 곱하도록 변경
+			GetCharacterMovement()->MaxWalkSpeed = 600.f * Info->MoveSpeed;
+
+			AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+
+			if (GameMode)
+			{
+				m_pHUDWidget = GameMode->GetInGameWidget();
+
+				if (m_pHUDWidget)
+				{
+					m_pHUDWidget->SetHP(m_Info.HP, m_Info.MaxHP);
+					m_pHUDWidget->SetSP(m_Info.SP, m_Info.MaxSP);
+				}
+			}
+		}
+	}
 }

@@ -49,6 +49,7 @@ public:
 	void SetSP(int32 SP, int32 SPMax);
 	void CalSkillCoolTime(int idx, float fRate);
 	void SetSkillImage(int idx, UTexture* tex);
+	void SetSkillBackImage(int idx, UTexture2D* tex);
 	void SetPrevGold(int gold);
 	void SetEarnGold(int gold);
 	void SetDestoryRate(float fRate);

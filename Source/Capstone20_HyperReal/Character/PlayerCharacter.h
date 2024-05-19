@@ -10,6 +10,7 @@ class UPlayerAnimInstance;
 class UInputMappingContext;
 class UInputAction;
 class FActionInputInstance;
+class UInGameUserWidget;
 
 UCLASS()
 class CAPSTONE20_HYPERREAL_API APlayerCharacter : public ACharacter
@@ -19,6 +20,11 @@ class CAPSTONE20_HYPERREAL_API APlayerCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	FPlayerInfo m_Info;
+
+	FString m_strDataTableKey;
 
 	/** Returns TopDownCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
@@ -81,6 +87,20 @@ protected:
 
 	UMaterialInstanceDynamic* m_MIDBlinkOverlay;
 
+	UInGameUserWidget* m_pHUDWidget;
+
+	float m_faccSkillACool;
+	float m_fSkillACool;
+
+	float m_faccSkillSCool;
+	float m_fSkillSCool;
+
+	float m_faccSkillDCool;
+	float m_fSkillDCool;
+
+	float m_faccSkillFCool;
+	float m_fSkillFCool;
+
 private:
 	float m_fDefaultSpeed;
 	float m_fDefaultAccel;
@@ -100,6 +120,8 @@ public:
 
 	bool IsInvincible() const {return m_bInvincible;}
 	void SetInvincible(bool _invincible){m_bInvincible = _invincible;}
+	
+	const FPlayerInfo& GetInfo() { return m_Info; }
 
 protected:
 	// Called when the game starts or when spawned
@@ -137,4 +159,7 @@ public:
 public:
 	// 감속하거나 가속할 배율 입력
 	void ChangeWalkSpeed(float _value);
+
+private:
+	void InitPlayerData();
 };

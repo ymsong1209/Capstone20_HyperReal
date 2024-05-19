@@ -52,7 +52,7 @@ void AKHIPlayGameModeBase::BeginPlay()
 		if (mInGameWidget)
 			mInGameWidget->AddToViewport();
 
-		// RemoveFromViewport : ºäÆ÷Æ®¿¡¼­ Á¦°Å
+		// RemoveFromViewport : ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	}
 
 	FInputModeGameAndUI mode;
