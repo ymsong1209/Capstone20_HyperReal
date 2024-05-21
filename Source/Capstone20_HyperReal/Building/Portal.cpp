@@ -83,6 +83,7 @@ void APortal::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 					int building = 0;
 					int enemy = 0;
 					widget->OpenRewardUI(gold, building, enemy);
+					UGameplayStatics::SetGamePaused(GetWorld(), true);
 				}
 			}
 		}

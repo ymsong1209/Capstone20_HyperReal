@@ -17,6 +17,7 @@
 #include "../CapStoneGameInstance.h"
 #include "../InGameModeBase.h"
 #include "../UI/InGameUserWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -303,6 +304,7 @@ void APlayerCharacter::EscapeFunction()
 		if (widget && widget->IsVisible())
 		{
 			widget->CloseRewardUI();
+			UGameplayStatics::SetGamePaused(GetWorld(), false);
 		}
 	}
 	
