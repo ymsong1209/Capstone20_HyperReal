@@ -141,28 +141,28 @@ void APlayerCharacter::Tick(float DeltaTime)
 	}
 
 	// 스킬 쿨타입 계산 밑 UI 적용
-	if (m_faccSkillACool < m_fSkillACool)
+	if (m_faccSkillACool < m_Info.ASkillmaxcooltime)
 	{
 		m_faccSkillACool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(0,  m_faccSkillACool / m_fSkillACool);
+		m_pHUDWidget->CalSkillCoolTime(0,  m_faccSkillACool / m_Info.ASkillmaxcooltime);
 	}
 
-	if (m_faccSkillSCool < m_fSkillSCool)
+	if (m_faccSkillSCool < m_Info.SSkillmaxcooltime)
 	{
 		m_faccSkillSCool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(1, m_faccSkillSCool / m_fSkillSCool);
+		m_pHUDWidget->CalSkillCoolTime(1, m_faccSkillSCool / m_Info.SSkillmaxcooltime);
 	}
 
-	if (m_faccSkillDCool < m_fSkillDCool)
+	if (m_faccSkillDCool < m_Info.DSkillmaxcooltime)
 	{
 		m_faccSkillDCool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(2, m_faccSkillDCool / m_fSkillDCool);
+		m_pHUDWidget->CalSkillCoolTime(2, m_faccSkillDCool / m_Info.DSkillmaxcooltime);
 	}
 
-	if (m_faccSkillFCool < m_fSkillFCool)
+	if (m_faccSkillFCool < m_Info.FSkillmaxcooltime)
 	{
 		m_faccSkillFCool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(3, m_faccSkillFCool / m_fSkillFCool);
+		m_pHUDWidget->CalSkillCoolTime(3, m_faccSkillFCool / m_Info.FSkillmaxcooltime);
 	}
 }
 
@@ -347,10 +347,21 @@ void APlayerCharacter::InitPlayerData()
 			m_Info.SSkillRatio = Info->SSkillRatio;
 			m_Info.DSkillRatio = Info->DSkillRatio;
 			m_Info.FSkillRatio = Info->FSkillRatio;
+
+			m_Info.ASkillmaxcooltime = Info->ASkillMaxCooltime;
+			m_Info.SSkillmaxcooltime = Info->SSkillMaxCooltime;
+			m_Info.DSkillmaxcooltime = Info->DSkillMaxCooltime;
+			m_Info.FSkillmaxcooltime = Info->FSkillMaxCooltime;
+			m_faccSkillACool = m_Info.ASkillmaxcooltime;
+			m_faccSkillSCool = m_Info.SSkillmaxcooltime;
+			m_faccSkillDCool = m_Info.DSkillmaxcooltime;
+			m_faccSkillFCool = m_Info.FSkillmaxcooltime;
+
 			m_Info.Level = 1;
 			m_Info.Exp = 0;
 			m_Info.TotalGold = 10000;
 			m_Info.LevelAccGold = 0;
+
 
 			// 초기 속도에 속도 배율을 곱하도록 변경
 			ChangeWalkSpeed(1.f);

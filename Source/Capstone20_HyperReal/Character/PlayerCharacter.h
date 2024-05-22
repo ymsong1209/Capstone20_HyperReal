@@ -93,16 +93,12 @@ protected:
 	UInGameUserWidget* m_pHUDWidget;
 
 	float m_faccSkillACool;
-	float m_fSkillACool;
 
 	float m_faccSkillSCool;
-	float m_fSkillSCool;
 
 	float m_faccSkillDCool;
-	float m_fSkillDCool;
 
 	float m_faccSkillFCool;
-	float m_fSkillFCool;
 
 private:
 	float m_fDefaultSpeed;

@@ -54,6 +54,8 @@ public:
 		m_Damage = Damage;
 	}
 
+	float GetDamage() { return m_Damage; }
+
 	void SetOwnerController(AController* Controller)
 	{
 		m_OwnerController = Controller;

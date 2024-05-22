@@ -28,6 +28,7 @@ ASoldierChargeSlash::ASoldierChargeSlash()
 	m_Projectile->ProjectileGravityScale = 0.f;
 
 	m_fMaxDistance = 700.f;
+	m_Damage = 0.f;
 }
 
 void ASoldierChargeSlash::BeginPlay()

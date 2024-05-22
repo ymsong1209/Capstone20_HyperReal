@@ -121,8 +121,6 @@ ASkeletonSoldier::ASkeletonSoldier() :
 		EscapeAction = InputEscape.Object;
 	}
 
-	
-	
 	// 데칼 머티리얼 로딩
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MILeapRange(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/MT_LeapAttackRange.MT_LeapAttackRange'"));
 	if (MILeapRange.Succeeded())
@@ -158,16 +156,6 @@ ASkeletonSoldier::ASkeletonSoldier() :
 
 	m_fAttackImpulse = 1200.f;
 	m_strDataTableKey = TEXT("Soldier");
-
-	m_fSkillACool = 8.f;
-	m_fSkillSCool = 10.f;
-	m_fSkillDCool = 6.f;
-	m_fSkillFCool = 8.f;
-
-	m_faccSkillACool = m_fSkillACool;
-	m_faccSkillSCool = m_fSkillSCool;
-	m_faccSkillDCool = m_fSkillDCool;
-	m_faccSkillFCool = m_fSkillFCool;
 }
 
 void ASkeletonSoldier::BeginPlay()
@@ -228,7 +216,6 @@ void ASkeletonSoldier::BeginPlay()
 	//	}
 	//}
 	GetWorld()->GetTimerManager().SetTimer(WidgetInitializationTimerHandle, this, &ASkeletonSoldier::InitializeDynamicMaterial, 0.01f, false);
-
 }
 
 void ASkeletonSoldier::Tick(float DeltaTime)
@@ -437,7 +424,7 @@ void ASkeletonSoldier::EscapeFunction()
 }
 void ASkeletonSoldier::ChargeStart()
 {
-	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || (m_faccSkillDCool < m_fSkillDCool))
+	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || (m_faccSkillDCool < m_Info.DSkillmaxcooltime))
 		return;
 
 	GetCharacterMovement()->StopMovementImmediately();
@@ -452,9 +439,9 @@ void ASkeletonSoldier::ChargeStart()
 		m_iChargeAttackCount = 0;
 	}
 
+	m_pRWeapon->SwitchBlinkOverlay(true);
 	m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(1.f, 1.f, 1.f));
 	m_pRWeapon->GetMIDOverlay()->SetScalarParameterValue(TEXT("BlinkSpeed"), 2.f);
-	m_pRWeapon->SwitchBlinkOverlay(true);
 }
 
 void ASkeletonSoldier::Charging()
@@ -493,7 +480,7 @@ void ASkeletonSoldier::Charging()
 			m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(0.7f, 1.f, 0.f));
 			break;
 		case 2:
-			m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(1.f, 0.f, 0.f));
+			m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(0.f, 0.f, 1.f));
 			break;
 		}
 	}
@@ -526,7 +513,7 @@ void ASkeletonSoldier::ChargeAttack()
 void ASkeletonSoldier::Whirlwind()
 {
 	// 아무 스킬도 안쓰고 있었으면 휠윈드 실행
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillACool >= m_fSkillACool))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillACool >= m_Info.ASkillmaxcooltime))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillA;
 
@@ -599,7 +586,7 @@ void ASkeletonSoldier::AttackWhirlwind()
 
 void ASkeletonSoldier::LeapAttack()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillSCool >= m_fSkillSCool))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillSCool >= m_Info.SSkillmaxcooltime))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillS;
 
@@ -679,7 +666,7 @@ void ASkeletonSoldier::AttackLeapAttack()
 
 void ASkeletonSoldier::UndeadFury()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillFCool >= m_fSkillFCool))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillFCool >= m_Info.FSkillmaxcooltime))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillF;
 		m_faccSkillFCool = 0.f;
@@ -769,7 +756,7 @@ void ASkeletonSoldier::EjectChargeSlash()
 	FActorSpawnParameters param;
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	ASoldierChargeSlash* pSlash = GetWorld()->SpawnActor<ASoldierChargeSlash>(vLoc, GetActorRotation(), param);
-	pSlash->SetDamage(m_Info.Attack * m_Info.DSkillRatio);
+	pSlash->SetDamage((float)(m_Info.Attack * m_Info.DSkillRatio));
 	pSlash->SetOwnerController(GetController());
 }
 

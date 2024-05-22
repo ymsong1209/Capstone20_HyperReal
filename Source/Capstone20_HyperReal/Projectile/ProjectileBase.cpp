@@ -4,7 +4,10 @@
 #include "ProjectileBase.h"
 
 // Sets default values
-AProjectileBase::AProjectileBase()
+AProjectileBase::AProjectileBase() :
+	m_OwnerController(nullptr),
+	m_Damage(0.f),
+	m_Target(nullptr)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;

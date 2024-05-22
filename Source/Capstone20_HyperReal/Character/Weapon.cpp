@@ -22,7 +22,6 @@ AWeapon::AWeapon()	:
 	if (MIBlinkOverlay.Succeeded())
 	{
 		m_pBlinkOverlayInterface = MIBlinkOverlay.Object;
-		m_MIDBlinkOverlay = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), m_pBlinkOverlayInterface);
 	}
 }
 
@@ -34,6 +33,11 @@ void AWeapon::BeginPlay()
 	// ESP 효과용 커스텀 뎁스 패스 활성화 코드
 	m_WeaponMesh->SetRenderCustomDepth(true);
 	m_WeaponMesh->CustomDepthStencilValue = 100;
+
+	if (m_pBlinkOverlayInterface)
+	{
+		m_MIDBlinkOverlay = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), m_pBlinkOverlayInterface);
+	}
 }
 
 void AWeapon::SwitchBlinkOverlay(bool _bSwitch)
