@@ -124,6 +124,8 @@ public:
 	
 	const FPlayerInfo& GetInfo() { return m_Info; }
 
+	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

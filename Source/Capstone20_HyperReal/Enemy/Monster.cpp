@@ -13,6 +13,7 @@
 #include "Capstone20_HyperReal/Character/PlayerCharacter.h"
 #include "../InGameModeBase.h"
 #include "../UI/InGameUserWidget.h"
+#include "../DamageType/AirborneDamageType.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -34,7 +35,6 @@ AMonster::AMonster()
 	if (WidgetClass.Succeeded())
 	{
 		WidgetComponent->SetWidgetClass(WidgetClass.Class);
-		//
 	}
 
 	WidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 80.0f));
@@ -53,6 +53,13 @@ AMonster::AMonster()
 	//	// Apply the rotation to the widget component
 	//	WidgetComponent->SetWorldRotation(LookAtRotation);
 	//}
+
+	mHead = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Head"));
+	mHead->SetupAttachment(GetMesh());
+	mHead->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	mHead->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
+	mHead->bReceivesDecals = false;
+	
 	mSpawnPoint = nullptr;
 
 	AIControllerClass = AMonsterAIController::StaticClass();
@@ -72,7 +79,14 @@ void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	mAnim = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (mHeadMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mHeadMeshes.Num() - 1);
+		mHead->SetSkeletalMesh(mHeadMeshes[RandomIndex]);
+	}
+	
+	mBodyAnim = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+	mHeadAnim = Cast<UMonsterAnimInstance>(mHead->GetAnimInstance());
 	mAIController = Cast<AMonsterAIController>(GetController());
 
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
@@ -95,7 +109,7 @@ void AMonster::BeginPlay()
 			mInfo.Level = Info->Level;
 			mInfo.Exp = Info->Exp;
 			mInfo.Gold = Info->Gold;
-
+			
 			GetCharacterMovement()->MaxWalkSpeed = Info->MoveSpeed;
 		}
 		else {
@@ -136,7 +150,7 @@ void AMonster::Tick(float DeltaTime)
 			bIsAirborne = false;
 			fAirborneTime = 0.0f;
 			FVector NewLocation = GetMesh()->GetRelativeLocation();
-			NewLocation.Z = fAirborneTime;
+			NewLocation.Z = fInitialZ;
 			GetMesh()->SetRelativeLocation(NewLocation);
 			if (mAIController)
 			{
@@ -175,7 +189,7 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 				widget->SetEarnGold(Player->GetInfo().LevelAccGold);
 			}
 		}
-		
+		HandleHitAnimation(DamageEvent);
 		HandleDeath();
 		//죽었을 경우 -1.f반환
 		Damage = -1.f;
@@ -194,12 +208,27 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 	return Damage;
 }
 
+void AMonster::HandleHitAnimation(FDamageEvent const& DamageEvent)
+{
+	//에어본으로 변경할 수 있으면 에어본 상태로 변경
+	if(bCanAirborne && !bIsAirborne && !bIsInvincible && DamageEvent.DamageTypeClass == UAirborneDamageType::StaticClass())
+	{
+		if(mHeadAnim) mHeadAnim->ChangeAnimType(EMonsterAnim::Airborne);
+		mBodyAnim->ChangeAnimType(EMonsterAnim::Airborne);
+		StartAirborne();
+	}
+	else
+	{
+		if(mHeadAnim) mHeadAnim->ChangeAnimType(EMonsterAnim::Hit);
+		mBodyAnim->ChangeAnimType(EMonsterAnim::Hit);
+	}
+}
+
 void AMonster::HandleDeath()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Monster Death"));
-	mAnim->ChangeAnimType(EMonsterAnim::Death);
-	
-
+	if(mHeadAnim) mHeadAnim->ChangeAnimType(EMonsterAnim::Death);
+	mBodyAnim->ChangeAnimType(EMonsterAnim::Death);
 	
 	//monster랑 연결된 Ai를 끊음
 	if (AAIController* AIController = Cast<AAIController>(GetController()))
@@ -234,6 +263,8 @@ void AMonster::StartAirborne()
 		GetAIController()->UnPossess();
 	}
 }
+
+
 
 void AMonster::Attack()
 {

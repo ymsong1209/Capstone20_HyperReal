@@ -1,16 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
-#include "CoreMinimal.h"
-#include "Monster.h"
+#include "Infantry.h"
 #include "SwordMan.generated.h"
 
 /**
- * 
+ * 근거리 한손무기 보병 클래스
  */
 UCLASS()
-class CAPSTONE20_HYPERREAL_API ASwordMan : public AMonster
+class CAPSTONE20_HYPERREAL_API ASwordMan : public AInfantry
 {
 	GENERATED_BODY()
 

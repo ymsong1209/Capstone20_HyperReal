@@ -5,7 +5,6 @@
 #include "../GameInfo.h"
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
-#include "Components/ProgressBar.h"
 #include "Monster.generated.h"
 
 UCLASS()
@@ -16,14 +15,19 @@ class CAPSTONE20_HYPERREAL_API AMonster : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AMonster();
-
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FMonsterInfo mInfo;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	UWidgetComponent* WidgetComponent;
-	class UMonsterAnimInstance* mAnim;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,  meta = (AllowPrivateAccess = "true"))
+	USkeletalMeshComponent* mHead;
+	
+	class UMonsterAnimInstance* mBodyAnim;
+	class UMonsterAnimInstance* mHeadAnim;
 	class AMonsterAIController* mAIController;
+
+	//몬스터를 특정 위치에서 소환하고 싶은 경우
 	class AMonsterSpawnPoint* mSpawnPoint;
 
 	class ABuilding* mBuilding;
@@ -34,13 +38,21 @@ protected:
 	bool bIsInvincible;
 	bool bCanAttack;
 
+	//에어본 시킬 수 있는 몬스터인지
+	bool  bCanAirborne;
+	//에어본 상태인지
 	bool  bIsAirborne;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TArray<USkeletalMesh*>	mHeadMeshes;
+private:
 	float fAirborneTime;
 	float fMaxAirborneTime;
 	float fInitialZ;
 public:
 	bool GetAttackEnd() const { return mAttackEnd; }
-	class UMonsterAnimInstance* GetAnimInstance() const { return mAnim; }
+	class UMonsterAnimInstance* GetBodyAnimInstance() const { return mBodyAnim; }
+	class UMonsterAnimInstance* GetHeadAnimInstance() const { return mHeadAnim; }
 	const FMonsterInfo& GetMonsterInfo() const { return mInfo; }
 	void SetSpawnPoint(class AMonsterSpawnPoint* Point) { mSpawnPoint = Point; }
 	void SetOwnerBuilding(class ABuilding* Building) { mBuilding = Building; }
@@ -66,6 +78,9 @@ public:
 public:
 	void HandleDeath();
 	void DeathEnd();
+	
+private:
+	void HandleHitAnimation(FDamageEvent const& DamageEvent);
 	void StartAirborne();
 
 public:

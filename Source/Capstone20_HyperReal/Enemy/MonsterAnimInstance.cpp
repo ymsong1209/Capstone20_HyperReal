@@ -6,9 +6,13 @@
 #include "MonsterAIController.h"
 
 UMonsterAnimInstance::UMonsterAnimInstance()
+	:mAnimType(EMonsterAnim::Idle),
+	mGround(true),
+	fPlayRate(1.f)
 {
-	mAnimType = EMonsterAnim::Idle;
 }
+
+
 
 void UMonsterAnimInstance::NativeInitializeAnimation()
 {
@@ -25,6 +29,15 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		UCharacterMovementComponent* Movement = Monster->GetCharacterMovement();
 
 		mGround = Movement->IsMovingOnGround();
+	}
+}
+
+void UMonsterAnimInstance::SetPlayRate(float NewPlayRate)
+{
+	fPlayRate = NewPlayRate;
+	if (UAnimSequence* AnimSequence = Cast<UAnimSequence>(GetCurrentActiveMontage()))
+	{
+		AnimSequence->RateScale = fPlayRate;
 	}
 }
 

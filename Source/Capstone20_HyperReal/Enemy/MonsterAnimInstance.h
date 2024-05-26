@@ -33,22 +33,21 @@ public:
 	UMonsterAnimInstance();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation",meta = (AllowPrivateAccess = "true"))
 	EMonsterAnim mAnimType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	bool mGround;
 
-public:
-	EMonsterAnim GetAnimType() const
-	{
-		return mAnimType;
-	}
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	float fPlayRate;
+	
 
-	UFUNCTION(BlueprintCallable)
-	void ChangeAnimType(EMonsterAnim _Type){ 
-		mAnimType = _Type;
-	}
+public:
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+	void SetPlayRate(float NewPlayRate);
+
+	
 
 public:
 	virtual void NativeInitializeAnimation();
@@ -69,5 +68,11 @@ public:
 	
 	UFUNCTION()
 	void AnimNotify_HitEnd();
+
+public:
+	EMonsterAnim GetAnimType() const{return mAnimType;}
+	UFUNCTION(BlueprintCallable)
+	void ChangeAnimType(EMonsterAnim _Type){mAnimType = _Type;}
+
 
 };

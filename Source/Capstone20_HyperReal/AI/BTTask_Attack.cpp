@@ -23,7 +23,8 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	AActor* Target = Cast<AActor>(OwnerComp.GetAIOwner()->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
 	if (!Target) {
-		Monster->GetAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
+		Monster->GetBodyAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
+		if(Monster->GetHeadAnimInstance()) Monster->GetHeadAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
 		OwnerComp.GetAIOwner()->StopMovement();
 		return EBTNodeResult::Succeeded;
 	}
@@ -36,7 +37,8 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	Dir.Normalize();
 	Monster->SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
 		
-	Monster->GetAnimInstance()->ChangeAnimType(EMonsterAnim::Attack);
+	Monster->GetBodyAnimInstance()->ChangeAnimType(EMonsterAnim::Attack);
+	if(Monster->GetHeadAnimInstance()) Monster->GetHeadAnimInstance()->ChangeAnimType(EMonsterAnim::Attack);
 
 	return EBTNodeResult::InProgress;
 }
@@ -61,7 +63,8 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 
 	AActor* Target = Cast<AActor>(OwnerComp.GetAIOwner()->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
 	if (!Target) {
-		Monster->GetAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
+		Monster->GetBodyAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
+		if(Monster->GetHeadAnimInstance()) Monster->GetHeadAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
 		OwnerComp.GetAIOwner()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		return;
@@ -82,7 +85,8 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	{
 		//공격 범위를 벗어나면 failed return
 		if (Distance > Monster->GetMonsterInfo().AttackDistance) {
-			Monster->GetAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
+			Monster->GetBodyAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
+			if(Monster->GetHeadAnimInstance()) Monster->GetHeadAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		}
 		else
@@ -91,7 +95,8 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 			FVector Dir = TargetLoc - MonsterLoc;
 			Dir.Normalize();
 			Monster->SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
-			Monster->GetAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
+			Monster->GetBodyAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
+			if(Monster->GetHeadAnimInstance()) Monster->GetHeadAnimInstance()->ChangeAnimType(EMonsterAnim::Idle);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}

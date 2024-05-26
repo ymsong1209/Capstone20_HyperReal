@@ -9,9 +9,6 @@
 
 AScout::AScout()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	// 코드로 캐릭터 메쉬 세팅
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/Toony_Tiny_RTS_Set_UE5/Meshes/Characters_Prebuilt/Units/SK_Scout.SK_Scout'"));
 	if (MeshAsset.Succeeded())
@@ -28,7 +25,7 @@ AScout::AScout()
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 
 	// animationBP 레퍼런스 받을때 _C를 사용해야함
-	static ConstructorHelpers::FClassFinder<UMonsterAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SYMContent/Monster/ABP_Scout.ABP_Scout_C'"));
+	static ConstructorHelpers::FClassFinder<UMonsterAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SYMContent/Monster/Scout/ABP_Scout.ABP_Scout_C'"));
 	if (AnimClass.Succeeded()) {
 		GetMesh()->SetAnimInstanceClass(AnimClass.Class);
 	}
