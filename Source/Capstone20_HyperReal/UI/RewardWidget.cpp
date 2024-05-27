@@ -47,3 +47,4 @@ void URewardWidget::setKillEnemyCount(int count)
 {
 	KillEnemyCount->SetText(FText::FromString(FString::FromInt(count)));
 }
+

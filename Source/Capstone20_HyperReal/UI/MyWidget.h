@@ -3,22 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MyWidget.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/TextBlock.h"
-#include "RewardWidget.generated.h"
+#include "MyWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CAPSTONE20_HYPERREAL_API URewardWidget : public UUserWidget
+class CAPSTONE20_HYPERREAL_API UMyWidget : public UUserWidget
 {
 	GENERATED_BODY()
-private:
-	UTextBlock* RewardMoney;
-	UTextBlock* DestroyBuildingCount;
-	UTextBlock* KillEnemyCount;
 protected:
 	virtual void NativeOnInitialized();
 	virtual void NativePreConstruct();
@@ -27,7 +21,6 @@ protected:
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 public:
-	void setRewardMoney(int gold);
-	void setDestroyBuildingCount(int count);
-	void setKillEnemyCount(int count);
+	virtual void CloseUI() {};
+	
 };

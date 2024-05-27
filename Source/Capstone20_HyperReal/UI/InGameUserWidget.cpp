@@ -18,6 +18,7 @@ void UInGameUserWidget::NativePreConstruct()
 	Super::NativePreConstruct();
 	mCharacterHUD = Cast<UCharacterHUDWidget>(GetWidgetFromName(TEXT("UI_CharacterHUD")));
 	mRewardWidget = Cast<URewardWidget>(GetWidgetFromName(TEXT("RewardWidget")));
+	mBasecampWidget = Cast<UBasecampWidget>(GetWidgetFromName(TEXT("BaseCampWidget")));
 	mPrevGold = Cast<UTextBlock>(GetWidgetFromName(TEXT("PrevMoney")));
 	mEarnGold = Cast<UTextBlock>(GetWidgetFromName(TEXT("earnMoney")));
 	mDestoryRate = Cast<UTextBlock>(GetWidgetFromName(TEXT("DestroyRate")));
@@ -72,6 +73,7 @@ void UInGameUserWidget::NativeConstruct()
 	mRewardWidget->setDestroyBuildingCount(10);
 	mRewardWidget->setRewardMoney(400);
 	mRewardWidget->SetVisibility(ESlateVisibility::Collapsed);
+	mBasecampWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UInGameUserWidget::NativeDestruct()
@@ -170,7 +172,59 @@ void UInGameUserWidget::CloseRewardUI()
 	mRewardWidget->setRewardMoney(0);
 	mRewardWidget->setDestroyBuildingCount(0);
 	mRewardWidget->setKillEnemyCount(0);
+	//basecamp 위젯 활성화하기
+	mBasecampWidget->SetVisibility(ESlateVisibility::Visible);
+	PushWidget(mBasecampWidget);
 }
+
+void UInGameUserWidget::CloseUI()
+{
+	if (ActivateWidgets.Num()==0)
+	{
+		CloseRewardUI();
+	}
+	else
+	{
+		UMyWidget* widget = TopWidget();
+		PopWidget();
+		widget->CloseUI();
+	}
+	
+	
+}
+
+void UInGameUserWidget::PushWidget(UMyWidget* widget)
+{
+	if (widget)
+	{
+		ActivateWidgets.Add(widget);
+	}
+}
+
+UMyWidget* UInGameUserWidget::PopWidget()
+{
+	if (ActivateWidgets.Num() == 0)
+	{
+		return nullptr;
+	}
+
+	UMyWidget* TopWidget = ActivateWidgets.Last();
+	ActivateWidgets.RemoveAt(ActivateWidgets.Num() - 1);
+
+	return TopWidget;
+}
+
+UMyWidget* UInGameUserWidget::TopWidget()
+{
+	if (ActivateWidgets.Num() == 0)
+	{
+		return nullptr;
+	}
+
+	return ActivateWidgets.Last();
+}
+
+
 
 
 
