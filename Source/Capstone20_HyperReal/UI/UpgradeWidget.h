@@ -1,0 +1,91 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "MyWidget.h"
+#include "Components/Button.h"
+#include "Components/TextBlock.h"
+#include "Components/ProgressBar.h"
+#include "Components/Image.h"
+#include "Blueprint/UserWidget.h"
+#include "UpgradeWidget.generated.h"
+
+UENUM(BlueprintType)
+enum class UpgradeState : uint8
+{
+	None,
+	Attack,
+	HP,
+	Soul,
+	End
+};
+/**
+ * 
+ */
+UCLASS()
+class CAPSTONE20_HYPERREAL_API UUpgradeWidget : public UMyWidget
+{
+	GENERATED_BODY()
+private:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UButton* backButton;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UButton* AttackIconButton;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UButton* HPIconButton;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UButton* SoulIconButton;
+
+	bool secondphase;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UImage* targetIconImage;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UTextBlock* InfoText;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UImage* MoneyIconImage;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UTextBlock* MyMoneyText;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UButton* UpgradeButton;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UProgressBar* progressBar;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UImage* progressBarBorder;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UTextBlock* UpgradeCostText;
+	/// <summary>
+	/// //////////////////
+	/// </summary>
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UImage* frame1;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UImage* frame2;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UImage* frame3;
+
+	UpgradeState state;
+
+protected:
+	virtual void NativeOnInitialized();
+	virtual void NativePreConstruct();
+	virtual void NativeConstruct();
+	virtual void NativeDestruct();
+
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
+public:
+	
+	UFUNCTION()
+	void AttackIconButtonClick();
+	UFUNCTION()
+	void HPIconButtonClick();
+	UFUNCTION()
+	void SoulIconButtonClick();
+	UFUNCTION()
+	virtual void CloseButtonUI() ;
+	virtual void CloseUI() override;
+	void RestoreFisrtPhase();
+	void StartSecondPhase();
+	void Upgrade();
+	
+};

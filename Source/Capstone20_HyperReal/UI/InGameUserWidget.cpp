@@ -73,7 +73,8 @@ void UInGameUserWidget::NativeConstruct()
 	mRewardWidget->setDestroyBuildingCount(10);
 	mRewardWidget->setRewardMoney(400);
 	mRewardWidget->SetVisibility(ESlateVisibility::Collapsed);
-	mBasecampWidget->SetVisibility(ESlateVisibility::Collapsed);
+	mBasecampWidget->SetVisibility(ESlateVisibility::Visible);
+	PushWidget(mBasecampWidget);
 }
 
 void UInGameUserWidget::NativeDestruct()

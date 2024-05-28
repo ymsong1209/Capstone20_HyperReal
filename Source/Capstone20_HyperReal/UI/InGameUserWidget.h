@@ -21,7 +21,7 @@ UCLASS()
 class CAPSTONE20_HYPERREAL_API UInGameUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
-private:
+public:
 	TArray<UMyWidget*> ActivateWidgets;
 protected:
 	UCharacterHUDWidget* mCharacterHUD;

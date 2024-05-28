@@ -13,7 +13,7 @@ void UBasecampWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 
-	//UpgradeWidget = Cast<UCharacterHUDWidget>(GetWidgetFromName(TEXT("UpgradeWidget")));
+	UpgradeWidget = Cast<UUpgradeWidget>(GetWidgetFromName(TEXT("UpgradeWidget")));
 	//MagicWidget = Cast<URewardWidget>(GetWidgetFromName(TEXT("MagicWidget")));
 	//MaintainWidget = Cast<UBasecampWidget>(GetWidgetFromName(TEXT("MaintainWidget")));
 
@@ -32,7 +32,7 @@ void UBasecampWidget::NativePreConstruct()
 void UBasecampWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	//UpgradeWidget->SetVisibility(ESlateVisibility::Collapsed);
+	UpgradeWidget->SetVisibility(ESlateVisibility::Collapsed);
 	//MagicWidget->SetVisibility(ESlateVisibility::Collapsed);
 	//MaintainWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
@@ -51,14 +51,14 @@ void UBasecampWidget::UpgradeButtonClick()
 {
 	if (UpgradeWidget)
 	{
-		MaintainWidget->SetVisibility(ESlateVisibility::Visible);
+		UpgradeWidget->SetVisibility(ESlateVisibility::Visible);
 		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
 		if (GameMode)
 		{
 			UInGameUserWidget* widget = GameMode->GetInGameWidget();
 			if (widget && widget->IsVisible())
 			{
-				//widget->PushWidget(UpgradeWidget);
+				widget->PushWidget(UpgradeWidget);
 			}
 		}
 	}
@@ -69,7 +69,7 @@ void UBasecampWidget::MagicButtonClick()
 {
 	if (MagicWidget)
 	{
-		MaintainWidget->SetVisibility(ESlateVisibility::Visible);
+		MagicWidget->SetVisibility(ESlateVisibility::Visible);
 		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
 		if (GameMode)
 		{

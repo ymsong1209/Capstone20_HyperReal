@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "MyWidget.h"
 #include "Components/Button.h"
+#include "UpgradeWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "BasecampWidget.generated.h"
 /**
@@ -25,7 +26,7 @@ protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UButton* mNextStageButton;
 
-	UUserWidget* UpgradeWidget;
+	UUpgradeWidget* UpgradeWidget;
 	UUserWidget* MagicWidget;
 	UUserWidget* MaintainWidget;
 
