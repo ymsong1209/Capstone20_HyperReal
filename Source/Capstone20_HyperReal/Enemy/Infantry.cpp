@@ -15,22 +15,23 @@ AInfantry::AInfantry()
 
 	mWeaponR = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponR"));
 	mWeaponR->SetupAttachment(GetMesh(), TEXT("Weapon_Socket_R"));
-	// if(mWeaponR->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("Weapon_Socket_R")))
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("WeaponR attached"));
-	// }
-
+	mWeaponR->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	mWeaponR->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
+	
 	mWeaponL = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponL"));
 	mWeaponL->SetupAttachment(GetMesh(), TEXT("Weapon_Socket_L"));
-	//mWeaponL->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("Weapon_Socket_L"));
+	mWeaponL->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	mWeaponL->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 	
 	mShield = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Shield"));
 	mShield->SetupAttachment(GetMesh(), TEXT("Shield"));
-	//mShield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("Shield_Socket"));
+	mShield->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	mShield->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 
 	mBackpack = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Backpack"));
 	mBackpack->SetupAttachment(GetMesh(), TEXT("Backpack"));
-	//mBackpack->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("Backpack_Socket"));
+	mBackpack->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	mBackpack->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 
 	//보병은 기본적으로 airborne이 가능하다.
 	bCanAirborne = true;

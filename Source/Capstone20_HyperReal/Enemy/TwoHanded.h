@@ -2,20 +2,20 @@
 
 #pragma once
 #include "Infantry.h"
-#include "SwordMan.generated.h"
+#include "TwoHanded.generated.h"
 
 /**
- * 근거리 한손무기 보병 클래스
+ * 
  */
 UCLASS()
-class CAPSTONE20_HYPERREAL_API ASwordMan : public AInfantry
+class CAPSTONE20_HYPERREAL_API ATwoHanded : public AInfantry
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ASwordMan();
-
+	ATwoHanded();
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -26,5 +26,4 @@ public:
 
 public:
 	virtual void Attack() override;
-	
 };

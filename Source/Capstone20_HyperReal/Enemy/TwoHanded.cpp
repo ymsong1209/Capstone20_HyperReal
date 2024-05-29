@@ -1,15 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "SwordMan.h"
+#include "TwoHanded.h"
 #include "MonsterAnimInstance.h"
 
-// Sets default values
-ASwordMan::ASwordMan()
+ATwoHanded::ATwoHanded()
 {
 	// 코드로 캐릭터 메쉬 세팅
 	// preview에서 swordman으로 보일 것이고, beginplay에서 랜덤하게 캐릭터가 바뀜.
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/Toony_Tiny_RTS_Set_UE5/Meshes/Characters_Prebuilt/Units/SK_Swordman.SK_Swordman'"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Script/Engine.SkeletalMesh'/Game/Toony_Tiny_RTS_Set_UE5/Meshes/Characters_Prebuilt/Units/SK_HeavySwordman.SK_HeavySwordman'"));
 	if (MeshAsset.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
@@ -19,7 +16,7 @@ ASwordMan::ASwordMan()
 	}
 	
 	// animationBP 레퍼런스 받을때 _C를 사용해야함
-	static ConstructorHelpers::FClassFinder<UMonsterAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SYMContent/Monster/SwordMan/ABP_SwordMan.ABP_SwordMan_C'"));
+	static ConstructorHelpers::FClassFinder<UMonsterAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SYMContent/Monster/TwoHanded/ABP_TwoHanded.ABP_TwoHanded'"));
 	if (AnimClass.Succeeded()) {
 		GetMesh()->SetAnimInstanceClass(AnimClass.Class);
 		mHead->SetAnimInstanceClass(AnimClass.Class);
@@ -28,25 +25,20 @@ ASwordMan::ASwordMan()
 		UE_LOG(LogTemp, Warning, TEXT("AnimClass Setting Failed"));
 	}
 		
-	mDataTableKey = TEXT("SwordMan");
+	mDataTableKey = TEXT("TwoHanded");
 }
 
-// Called when the game starts or when spawned
-void ASwordMan::BeginPlay()
+void ATwoHanded::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
-// Called every frame
-void ASwordMan::Tick(float DeltaTime)
+void ATwoHanded::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-
-void ASwordMan::Attack()
+void ATwoHanded::Attack()
 {
 	Super::Attack();
 	FVector Start = GetActorLocation() + GetActorForwardVector();
@@ -61,16 +53,6 @@ void ASwordMan::Attack()
 
 	if(Hit)
 	{
-		// FActorSpawnParameters param;
-		// param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		//
-		// AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(
-		// 	result.ImpactPoint,
-		// 	result.ImpactNormal.Rotation()(), param);
-		//
-		// Effect->SetParticle(TEXT(""));
-		// Effect->SetSound(TEXT(""));
-
 		if(result.GetActor()->TakeDamage(mInfo.Attack, FDamageEvent(),
 			GetController(), this) == -1.f)
 		{

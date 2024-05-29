@@ -86,6 +86,7 @@ public:
 	virtual void CloseUI() override;
 	void RestoreFisrtPhase();
 	void StartSecondPhase();
+	UFUNCTION()
 	void Upgrade();
 	
 };

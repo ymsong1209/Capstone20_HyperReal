@@ -6,7 +6,7 @@
 ATowerA::ATowerA()
 {
 	mDataTableKey = "TowerA";
-	mMesh->SetRelativeScale3D(FVector(0.7f, 0.7f, 0.7f));
+	mMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 }
 
 void ATowerA::BeginPlay()
@@ -29,7 +29,7 @@ float ATowerA::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 		if (mCurPhase < mMeshes.Num() && mMeshes[mCurPhase])
 		{
 			mMesh->SetStaticMesh(mMeshes[mCurPhase]);
-			mMesh->SetRelativeScale3D(FVector(0.7f, 0.7f, 0.7f));
+			mMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 		}
 	}
 
