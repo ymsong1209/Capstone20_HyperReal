@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+О╩©// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "UpgradeWidget.h"
@@ -80,9 +80,8 @@ void UUpgradeWidget::AttackIconButtonClick()
 			MyMoneyText->SetText(FText::FromString(str));
 		}
 	}
-	FString	t = "Testcode";
-	InfoText->SetText(FText::FromString(t));
-	//га╥н╠в╥╧╫╨ ╧ы ╧в ╟╜х╜╨Я©К ╪Ёа╓
+	InfoText->SetText(FText::FromString(TEXT("ЙЁ╣Й╡╘К═╔ Й╟∙М≥■")));
+	//М■└К║°Й╥╦К═┬Л┼╓ К╟■ К╟▐ Й╟∙М≥■К╧└Л ╘ Л└╓Л═∙
 
 	
 }

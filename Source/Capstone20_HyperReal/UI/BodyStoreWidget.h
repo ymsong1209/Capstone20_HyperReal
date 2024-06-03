@@ -5,32 +5,39 @@
 #include "CoreMinimal.h"
 #include "MyWidget.h"
 #include "Components/Button.h"
-#include "UpgradeWidget.h"
-#include "BodyStoreWidget.h"
-#include "Blueprint/UserWidget.h"
-#include "BasecampWidget.generated.h"
+#include "Components/TextBlock.h"
+#include "Components/ProgressBar.h"
+#include "BodyStoreWidget.generated.h"
+
 /**
  * 
  */
 UCLASS()
-class CAPSTONE20_HYPERREAL_API UBasecampWidget : public UMyWidget
+class CAPSTONE20_HYPERREAL_API UBodyStoreWidget : public UMyWidget
 {
 	GENERATED_BODY()
 private:
-protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UButton* mUpgradeButton;
+	UButton* backButton;
+	
+	
+	
+	
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UButton* mMagicButton;
+	UTextBlock* MyMoneyText;
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UButton* mMaintainButton;
+	UButton* UpgradeButton;
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UButton* mNextStageButton;
+	UProgressBar* progressBar;
+	
 
-	UUpgradeWidget* UpgradeWidget;
-	UUserWidget* MagicWidget;
-	UBodyStoreWidget* MaintainWidget;
-
+	int curCost;
+	int MaxCost;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UTextBlock* UpgradeCostCurText;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UTextBlock* UpgradeCostMaxText;
+	
 protected:
 	virtual void NativeOnInitialized();
 	virtual void NativePreConstruct();
@@ -38,16 +45,11 @@ protected:
 	virtual void NativeDestruct();
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
-
 public:
 	UFUNCTION()
-	void UpgradeButtonClick();
-	UFUNCTION()
-	void MagicButtonClick();
-	UFUNCTION()
-	void MaintainButtonClick();
-	UFUNCTION()
-	void NextStageButtonClick();
+	virtual void CloseButtonUI();
 	virtual void CloseUI() override;
+	UFUNCTION()
+	void Upgrade();
 	
 };
