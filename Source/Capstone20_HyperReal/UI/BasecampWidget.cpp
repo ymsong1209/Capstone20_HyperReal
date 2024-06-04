@@ -14,7 +14,7 @@ void UBasecampWidget::NativePreConstruct()
 	Super::NativePreConstruct();
 
 	UpgradeWidget = Cast<UUpgradeWidget>(GetWidgetFromName(TEXT("UpgradeWidget")));
-	//MagicWidget = Cast<URewardWidget>(GetWidgetFromName(TEXT("MagicWidget")));
+	MagicWidget = Cast<UMagicWidget>(GetWidgetFromName(TEXT("MagicWidget")));
 	MaintainWidget = Cast<UBodyStoreWidget>(GetWidgetFromName(TEXT("BodyRestoreWidget")));
 
 	mUpgradeButton = Cast<UButton>(GetWidgetFromName(TEXT("UpgradeButton")));
@@ -33,7 +33,7 @@ void UBasecampWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	UpgradeWidget->SetVisibility(ESlateVisibility::Collapsed);
-	//MagicWidget->SetVisibility(ESlateVisibility::Collapsed);
+	MagicWidget->SetVisibility(ESlateVisibility::Collapsed);
 	MaintainWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
@@ -76,7 +76,7 @@ void UBasecampWidget::MagicButtonClick()
 			UInGameUserWidget* widget = GameMode->GetInGameWidget();
 			if (widget && widget->IsVisible())
 			{
-				//widget->PushWidget(MagicWidget);
+				widget->PushWidget(MagicWidget);
 			}
 		}
 	}

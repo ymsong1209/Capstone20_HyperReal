@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "UpgradeWidget.h"
 #include "BodyStoreWidget.h"
+#include "MagicWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "BasecampWidget.generated.h"
 /**
@@ -28,7 +29,7 @@ protected:
 	UButton* mNextStageButton;
 
 	UUpgradeWidget* UpgradeWidget;
-	UUserWidget* MagicWidget;
+	UMagicWidget* MagicWidget;
 	UBodyStoreWidget* MaintainWidget;
 
 protected:
