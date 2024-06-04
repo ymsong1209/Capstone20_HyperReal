@@ -28,6 +28,7 @@ void UUpgradeWidget::NativePreConstruct()
 	progressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Progress")));;
 	progressBarBorder = Cast<UImage>(GetWidgetFromName(TEXT("ProgressBorder")));;
 	UpgradeCostText = Cast<UTextBlock>(GetWidgetFromName(TEXT("UpgradeCost")));;
+	PhaseText = Cast<UTextBlock>(GetWidgetFromName(TEXT("Phase")));;
 
 	frame1 = Cast<UImage>(GetWidgetFromName(TEXT("frame11")));;
 	frame2 = Cast<UImage>(GetWidgetFromName(TEXT("frame22")));;
@@ -82,7 +83,7 @@ void UUpgradeWidget::AttackIconButtonClick()
 	}
 	InfoText->SetText(FText::FromString(TEXT("공격력 강화")));
 	//프로그레스 바 및 강화비용 설정
-
+	PhaseText->SetText(FText::FromString(TEXT("I단계")));
 	
 }
 
@@ -90,12 +91,54 @@ void UUpgradeWidget::HPIconButtonClick()
 {
 	secondphase = true;
 	StartSecondPhase();
+	state = UpgradeState::HP;
+	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Basecamp/UpgradeUI/HPIcon.HPIcon'"));
+	UTexture2D* NewTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *imageName));
+	if (NewTexture)
+	{
+		targetIconImage->SetBrushFromTexture(NewTexture);
+	}
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (PlayerCharacter)
+	{
+		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+		if (GameInst)
+		{
+			int gold = PlayerCharacter->GetInfo().LevelAccGold + PlayerCharacter->GetInfo().TotalGold;
+			FString str = FString::FromInt(gold);
+			MyMoneyText->SetText(FText::FromString(str));
+		}
+	}
+	InfoText->SetText(FText::FromString(TEXT("체력 촉진")));
+	//프로그레스 바 및 강화비용 설정
+	PhaseText->SetText(FText::FromString(TEXT("I단계")));
 }
 
 void UUpgradeWidget::SoulIconButtonClick()
 {
 	secondphase = true;
 	StartSecondPhase();
+	state = UpgradeState::HP;
+	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Basecamp/UpgradeUI/SoulIcon.SoulIcon'"));
+	UTexture2D* NewTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *imageName));
+	if (NewTexture)
+	{
+		targetIconImage->SetBrushFromTexture(NewTexture);
+	}
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (PlayerCharacter)
+	{
+		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+		if (GameInst)
+		{
+			int gold = PlayerCharacter->GetInfo().LevelAccGold + PlayerCharacter->GetInfo().TotalGold;
+			FString str = FString::FromInt(gold);
+			MyMoneyText->SetText(FText::FromString(str));
+		}
+	}
+	InfoText->SetText(FText::FromString(TEXT("영혼력 증대")));
+	//프로그레스 바 및 강화비용 설정
+	PhaseText->SetText(FText::FromString(TEXT("I단계")));
 }
 
 void UUpgradeWidget::CloseButtonUI()
@@ -138,9 +181,10 @@ void UUpgradeWidget::RestoreFisrtPhase()
 	AttackIconButton->SetVisibility(ESlateVisibility::Visible);
 	HPIconButton->SetVisibility(ESlateVisibility::Visible);
 	SoulIconButton->SetVisibility(ESlateVisibility::Visible);
-	frame1->SetVisibility(ESlateVisibility::Collapsed);
-	frame2->SetVisibility(ESlateVisibility::Collapsed);
-	frame3->SetVisibility(ESlateVisibility::Collapsed);
+	frame1->SetVisibility(ESlateVisibility::Visible);
+	frame2->SetVisibility(ESlateVisibility::Visible);
+	frame3->SetVisibility(ESlateVisibility::Visible);
+	PhaseText->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UUpgradeWidget::StartSecondPhase()
@@ -153,6 +197,7 @@ void UUpgradeWidget::StartSecondPhase()
 	progressBar->SetVisibility(ESlateVisibility::Visible);
 	progressBarBorder->SetVisibility(ESlateVisibility::Visible);
 	UpgradeCostText->SetVisibility(ESlateVisibility::Visible);
+	PhaseText->SetVisibility(ESlateVisibility::Visible);
 
 	AttackIconButton->SetVisibility(ESlateVisibility::Collapsed);
 	HPIconButton->SetVisibility(ESlateVisibility::Collapsed);

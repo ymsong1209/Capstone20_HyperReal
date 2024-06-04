@@ -18,19 +18,19 @@ class CAPSTONE20_HYPERREAL_API UBodyStoreWidget : public UMyWidget
 	GENERATED_BODY()
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UButton* backButton;
+	UButton* HP_backButton;
 	
 	
 	
 	
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UTextBlock* MyMoneyText;
+	UTextBlock* HP_MyMoneyText;
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UButton* UpgradeButton;
+	UButton* HPUpgradeButton;
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UProgressBar* progressBar;
+	UProgressBar* RestoreprogressBar;
 	
-
+	
 	int curCost;
 	int MaxCost;
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -47,7 +47,7 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 public:
 	UFUNCTION()
-	virtual void CloseButtonUI();
+	void CloseButtonUI();
 	virtual void CloseUI() override;
 	UFUNCTION()
 	void Upgrade();

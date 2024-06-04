@@ -15,7 +15,7 @@ void UBasecampWidget::NativePreConstruct()
 
 	UpgradeWidget = Cast<UUpgradeWidget>(GetWidgetFromName(TEXT("UpgradeWidget")));
 	//MagicWidget = Cast<URewardWidget>(GetWidgetFromName(TEXT("MagicWidget")));
-	MaintainWidget = Cast<UBodyStoreWidget>(GetWidgetFromName(TEXT("MaintainWidget")));
+	MaintainWidget = Cast<UBodyStoreWidget>(GetWidgetFromName(TEXT("BodyRestoreWidget")));
 
 	mUpgradeButton = Cast<UButton>(GetWidgetFromName(TEXT("UpgradeButton")));
 	mMagicButton = Cast<UButton>(GetWidgetFromName(TEXT("MagicButton")));
@@ -34,7 +34,7 @@ void UBasecampWidget::NativeConstruct()
 	Super::NativeConstruct();
 	UpgradeWidget->SetVisibility(ESlateVisibility::Collapsed);
 	//MagicWidget->SetVisibility(ESlateVisibility::Collapsed);
-	//MaintainWidget->SetVisibility(ESlateVisibility::Collapsed);
+	MaintainWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UBasecampWidget::NativeDestruct()

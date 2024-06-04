@@ -12,27 +12,27 @@ void UBodyStoreWidget::NativeOnInitialized()
 void UBodyStoreWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	backButton = Cast<UButton>(GetWidgetFromName(TEXT("BackButton123")));
-
-	MyMoneyText = Cast<UTextBlock>(GetWidgetFromName(TEXT("MyMoney")));;
-	UpgradeButton = Cast<UButton>(GetWidgetFromName(TEXT("PlusButton")));;
-	progressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Progress")));;
+	HP_backButton = Cast<UButton>(GetWidgetFromName(TEXT("BodyBackButton123")));
+	//
+	HP_MyMoneyText = Cast<UTextBlock>(GetWidgetFromName(TEXT("BodyMyMoney")));;
+	HPUpgradeButton = Cast<UButton>(GetWidgetFromName(TEXT("BodyPlusButton")));;
+	RestoreprogressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("BodyProgress")));;
 	UpgradeCostCurText = Cast<UTextBlock>(GetWidgetFromName(TEXT("UpgradeCurCost")));;
 	UpgradeCostMaxText = Cast<UTextBlock>(GetWidgetFromName(TEXT("UpgradeMaxCost")));;
-
-
-
-	backButton->OnClicked.AddDynamic(this, &UBodyStoreWidget::CloseButtonUI);
-	UpgradeButton->OnClicked.AddDynamic(this, &UBodyStoreWidget::Upgrade);
+	//
+	//
+	//
+	HP_backButton->OnClicked.AddDynamic(this, &UBodyStoreWidget::CloseButtonUI);
+	HPUpgradeButton->OnClicked.AddDynamic(this, &UBodyStoreWidget::Upgrade);
 }
 
 void UBodyStoreWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	MyMoneyText->SetText(FText::FromString(TEXT("1200")));
+	HP_MyMoneyText->SetText(FText::FromString(TEXT("1200")));
 	UpgradeCostCurText->SetText(FText::FromString(TEXT("100")));
 	UpgradeCostMaxText->SetText(FText::FromString(TEXT("200")));
-	progressBar->SetPercent(0.5f);
+	RestoreprogressBar->SetPercent(0.5f);
 }
 
 void UBodyStoreWidget::NativeDestruct()
