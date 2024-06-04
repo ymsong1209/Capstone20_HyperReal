@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -54,6 +54,9 @@ private:
 	UImage* progressBarBorder;
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UTextBlock* UpgradeCostText;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UTextBlock* PhaseText;
 	/// <summary>
 	/// //////////////////
 	/// </summary>
@@ -82,7 +85,7 @@ public:
 	UFUNCTION()
 	void SoulIconButtonClick();
 	UFUNCTION()
-	virtual void CloseButtonUI() ;
+	void CloseButtonUI() ;
 	virtual void CloseUI() override;
 	void RestoreFisrtPhase();
 	void StartSecondPhase();
