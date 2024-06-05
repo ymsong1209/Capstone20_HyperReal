@@ -55,6 +55,7 @@ void UMonsterAnimInstance::AnimNotify_AttackEnd()
 	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
 	if (IsValid(Monster)) {
 		Monster->SetAttackEnd(true);
+		UE_LOG(LogTemp,Display,TEXT("AttackEnd"));
 	}
 }
 

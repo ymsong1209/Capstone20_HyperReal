@@ -2,13 +2,13 @@
 
 #pragma once
 #include "Monster.h"
-#include "Infantry.generated.h"
+#include "Cavalry.generated.h"
 
 /**
- * 기본 보병 클래스
+ * 
  */
 UCLASS()
-class CAPSTONE20_HYPERREAL_API AInfantry : public AMonster
+class CAPSTONE20_HYPERREAL_API ACavalry : public AMonster
 {
 	GENERATED_BODY()
 protected:
@@ -17,28 +17,32 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,  meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent*	mWeaponL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,  meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent*	mQuiver;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,  meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent*	mShield;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent*	mBackpack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,  meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* mHead;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,  meta = (AllowPrivateAccess = "true"))
+	USkeletalMeshComponent* mBody;
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<USkeletalMesh*>	mBodyMeshes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TArray<UStaticMesh*>	mWeaponRMeshes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TArray<UStaticMesh*>	mWeaponLMeshes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<UStaticMesh*>	mBackpackMeshes;
+	TArray<UStaticMesh*>	mQuiverMeshes;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TArray<UStaticMesh*>	mShieldMeshes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TArray<USkeletalMesh*>	mHorseMeshes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TArray<USkeletalMesh*>	mHeadMeshes;
-	
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TArray<USkeletalMesh*>	mBodyMeshes;
 public:
 	// Sets default values for this character's properties
-	AInfantry();
+	ACavalry();
 
 protected:
 	// Called when the game starts or when spawned
@@ -54,6 +58,4 @@ public:
 	
 public:
 	virtual void Attack() override;
-	
-	
 };

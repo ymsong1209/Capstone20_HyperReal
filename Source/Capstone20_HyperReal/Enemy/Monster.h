@@ -7,6 +7,8 @@
 #include "Components/WidgetComponent.h"
 #include "Monster.generated.h"
 
+enum class EMonsterAnim : uint8;
+
 UCLASS()
 class CAPSTONE20_HYPERREAL_API AMonster : public ACharacter
 {
@@ -20,11 +22,10 @@ protected:
 	FMonsterInfo mInfo;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	UWidgetComponent* WidgetComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,  meta = (AllowPrivateAccess = "true"))
-	USkeletalMeshComponent* mHead;
 	
-	class UMonsterAnimInstance* mBodyAnim;
-	class UMonsterAnimInstance* mHeadAnim;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TArray<class UMonsterAnimInstance*> AnimInstances;
+	
 	class AMonsterAIController* mAIController;
 
 	//몬스터를 특정 위치에서 소환하고 싶은 경우
@@ -42,17 +43,15 @@ protected:
 	bool  bCanAirborne;
 	//에어본 상태인지
 	bool  bIsAirborne;
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<USkeletalMesh*>	mHeadMeshes;
+
 private:
 	float fAirborneTime;
 	float fMaxAirborneTime;
 	float fInitialZ;
 public:
 	bool GetAttackEnd() const { return mAttackEnd; }
-	class UMonsterAnimInstance* GetBodyAnimInstance() const { return mBodyAnim; }
-	class UMonsterAnimInstance* GetHeadAnimInstance() const { return mHeadAnim; }
+	TArray<class UMonsterAnimInstance*> GetAnimInstances() const { return AnimInstances; }
+	void SetAnimation(EMonsterAnim AnimType);
 	const FMonsterInfo& GetMonsterInfo() const { return mInfo; }
 	void SetSpawnPoint(class AMonsterSpawnPoint* Point) { mSpawnPoint = Point; }
 	void SetOwnerBuilding(class ABuilding* Building) { mBuilding = Building; }

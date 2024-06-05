@@ -7,8 +7,6 @@
 #include "MonsterSpawnPoint.h"
 #include "MonsterAIController.h"
 #include "Camera/PlayerCameraManager.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "../Building/Building.h"
 #include "Capstone20_HyperReal/Character/PlayerCharacter.h"
 #include "../InGameModeBase.h"
@@ -38,27 +36,8 @@ AMonster::AMonster()
 	}
 
 	WidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 80.0f));
-	//WidgetComponent->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
 	WidgetComponent->SetRelativeScale3D(FVector(0.1f, 0.4f, 0.5f));
 	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	//APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(this, 0);
-	//if (CameraManager)
-	//{
-	//	FVector CameraLocation = CameraManager->GetCameraLocation();
-	//	FVector WidgetLocation = WidgetComponent->GetComponentLocation();
-	//
-	//	// Calculate the rotation from the widget to the camera
-	//	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(WidgetLocation, CameraLocation);
-	//
-	//	// Apply the rotation to the widget component
-	//	WidgetComponent->SetWorldRotation(LookAtRotation);
-	//}
-
-	mHead = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Head"));
-	mHead->SetupAttachment(GetMesh());
-	mHead->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	mHead->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
-	mHead->bReceivesDecals = false;
 	
 	mSpawnPoint = nullptr;
 
@@ -78,15 +57,7 @@ AMonster::AMonster()
 void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (mHeadMeshes.Num() > 0)
-	{
-		int32 RandomIndex = FMath::RandRange(0, mHeadMeshes.Num() - 1);
-		mHead->SetSkeletalMesh(mHeadMeshes[RandomIndex]);
-	}
-	
-	mBodyAnim = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
-	mHeadAnim = Cast<UMonsterAnimInstance>(mHead->GetAnimInstance());
+
 	mAIController = Cast<AMonsterAIController>(GetController());
 
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
@@ -173,6 +144,7 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 	Damage = Damage < 1.f ? 1.f : Damage;
 
 	mInfo.HP -= (int32)Damage;
+	HandleHitAnimation(DamageEvent);
 
 	if (mInfo.HP <= 0) {
 		//player에게 몬스터의 돈을 줌
@@ -189,7 +161,7 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 				widget->SetEarnGold(Player->GetInfo().LevelAccGold);
 			}
 		}
-		HandleHitAnimation(DamageEvent);
+		
 		HandleDeath();
 		//죽었을 경우 -1.f반환
 		Damage = -1.f;
@@ -213,22 +185,37 @@ void AMonster::HandleHitAnimation(FDamageEvent const& DamageEvent)
 	//에어본으로 변경할 수 있으면 에어본 상태로 변경
 	if(bCanAirborne && !bIsAirborne && !bIsInvincible && DamageEvent.DamageTypeClass == UAirborneDamageType::StaticClass())
 	{
-		if(mHeadAnim) mHeadAnim->ChangeAnimType(EMonsterAnim::Airborne);
-		mBodyAnim->ChangeAnimType(EMonsterAnim::Airborne);
+		for(UMonsterAnimInstance* AnimInstance : AnimInstances)
+		{
+			if(AnimInstance)
+			{
+				AnimInstance->ChangeAnimType(EMonsterAnim::Airborne);
+			}
+		}
 		StartAirborne();
 	}
 	else
 	{
-		if(mHeadAnim) mHeadAnim->ChangeAnimType(EMonsterAnim::Hit);
-		mBodyAnim->ChangeAnimType(EMonsterAnim::Hit);
+		for(UMonsterAnimInstance* AnimInstance : AnimInstances)
+		{
+			if(AnimInstance)
+			{
+				AnimInstance->ChangeAnimType(EMonsterAnim::Hit);
+			}
+		}
 	}
 }
 
 void AMonster::HandleDeath()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Monster Death"));
-	if(mHeadAnim) mHeadAnim->ChangeAnimType(EMonsterAnim::Death);
-	mBodyAnim->ChangeAnimType(EMonsterAnim::Death);
+	for(UMonsterAnimInstance* AnimInstance : AnimInstances)
+	{
+		if(AnimInstance)
+		{
+			AnimInstance->ChangeAnimType(EMonsterAnim::Death);
+		}
+	}
 	
 	//monster랑 연결된 Ai를 끊음
 	if (AAIController* AIController = Cast<AAIController>(GetController()))
@@ -268,6 +255,17 @@ void AMonster::StartAirborne()
 
 void AMonster::Attack()
 {
+}
+
+void AMonster::SetAnimation(EMonsterAnim AnimType)
+{
+	for(UMonsterAnimInstance* AnimInstance : AnimInstances)
+	{
+		if(AnimInstance)
+		{
+			AnimInstance->ChangeAnimType(AnimType);
+		}
+	}
 }
 
 void AMonster::SetHPBar(float fRate)
