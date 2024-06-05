@@ -23,6 +23,8 @@ private:
 	UPROPERTY()
 	UDataTable* mBuildingInfoTable;
 
+	class PlayerUpdateManager* m_UpdateManager;
+
 public:
 	const FMonsterDataTableInfo* FindMonsterInfo(const FString& _Name);
 	const FPlayerDataTableInfo* FindPlayerInfo(const FString& _Name);
@@ -34,4 +36,7 @@ public:
 
 public:
 	UCapStoneGameInstance();
+
+public:
+	void UpgradePlayerStat(const FString& _Name, EPlayerUpgradeType _eType);
 };

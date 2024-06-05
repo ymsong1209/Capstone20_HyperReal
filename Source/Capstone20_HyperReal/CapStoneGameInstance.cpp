@@ -2,7 +2,7 @@
 
 
 #include "CapStoneGameInstance.h"
-
+#include "Manager/PlayerUpdateManager.h"
 
 UCapStoneGameInstance::UCapStoneGameInstance()
 {
@@ -24,6 +24,16 @@ UCapStoneGameInstance::UCapStoneGameInstance()
 	if (PlayerTableAsset.Succeeded()) {
 		mPlayerInfoTable = PlayerTableAsset.Object;
 	}
+
+	// 만약 저장데이터가 있었다면 다른 처리를 통해 스탯 정보를 불러와야함
+
+	m_UpdateManager = new PlayerUpdateManager();
+	m_UpdateManager->SetPlayerDataTable(mPlayerInfoTable);
+}
+
+void UCapStoneGameInstance::UpgradePlayerStat(const FString& _Name, EPlayerUpgradeType _eType)
+{
+	m_UpdateManager->UpgradePlayerStat(_Name, _eType);
 }
 
 const FMonsterDataTableInfo* UCapStoneGameInstance::FindMonsterInfo(const FString& _Name)
@@ -46,7 +56,6 @@ const FPlayerDataTableInfo* UCapStoneGameInstance::FindPlayerInfo(const FString&
 		UE_LOG(LogTemp, Error, TEXT("No PlayerInfoTable"));
 		return nullptr;
 	}
-	
 }
 
 const FBuildingDataTableInfo* UCapStoneGameInstance::FindBuildingInfo(const FString& _Name)

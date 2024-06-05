@@ -19,6 +19,16 @@ enum class EPlayerJob : uint8
 	Magicion,
 	End
 };
+
+UENUM(BlueprintType)
+enum class EPlayerUpgradeType : uint8
+{
+	Attack,
+	Health,
+	Soul,
+	End
+};
+
 USTRUCT(BlueprintType)
 struct FPlayerDataTableInfo : public FTableRowBase
 {
@@ -85,6 +95,30 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float		CriticalDamage;
+
+	// 공격 강화 레벨
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		AttackLevel;
+
+	// 체력 강화 레벨
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		HealthLevel;
+
+	// 마나 강화 레벨
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		SoulLevel;
+
+	// 공격 강화 진행도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		AttackProgress;
+
+	// 체력 강화 진행도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		HealthProgress;
+
+	// 마나 강화 진행도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		SoulProgress;
 };
 
 USTRUCT(BlueprintType)
@@ -213,6 +247,30 @@ public:
 	//현재 레벨에서 벌어들인 골드
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32		LevelAccGold;
+
+	// 공격 강화 레벨
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		AttackLevel;
+
+	// 체력 강화 레벨
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		HealthLevel;
+
+	// 마나 강화 레벨
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		SoulLevel;
+
+	// 공격 강화 진행도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		AttackProgress;
+
+	// 체력 강화 진행도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		HealthProgress;
+
+	// 마나 강화 진행도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		SoulProgress;
 };
 
 USTRUCT(BlueprintType)

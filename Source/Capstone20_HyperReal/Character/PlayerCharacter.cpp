@@ -362,6 +362,14 @@ void APlayerCharacter::InitPlayerData()
 			m_Info.TotalGold = 10000;
 			m_Info.LevelAccGold = 0;
 
+			m_Info.AttackLevel = Info->AttackLevel;
+			m_Info.HealthLevel = Info->HealthLevel;
+			m_Info.SoulLevel = Info->SoulLevel;
+
+			m_Info.AttackProgress = Info->AttackProgress;
+			m_Info.HealthProgress = Info->HealthProgress;
+			m_Info.SoulProgress = Info->SoulProgress;
+
 
 			// 초기 속도에 속도 배율을 곱하도록 변경
 			ChangeWalkSpeed(1.f);
