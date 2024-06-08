@@ -183,77 +183,12 @@ void ASkeletonSoldier::BeginPlay()
 
 	m_NSEffect01->Deactivate();
 
-	// UI 설정
-	//if (m_pHUDWidget)
-	//{
-	//	UTexture2D* SkillAIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon4.icon4'")));
-
-	//	if (SkillAIcon)
-	//	{
-	//		m_pHUDWidget->SetSkillImage(0, SkillAIcon);
-	//		m_pHUDWidget->SetSkillBackImage(0, SkillAIcon);
-	//	}
-
-	//	UTexture2D* SkillSIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon1.icon1'")));
-	//	if (SkillSIcon)
-	//	{
-	//		m_pHUDWidget->SetSkillImage(1, SkillSIcon);
-	//		m_pHUDWidget->SetSkillBackImage(1, SkillSIcon);
-	//	}
-
-	//	UTexture2D* SkillDIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon2.icon2'")));
-	//	if (SkillDIcon)
-	//	{
-	//		m_pHUDWidget->SetSkillImage(2, SkillDIcon);
-	//		m_pHUDWidget->SetSkillBackImage(2, SkillDIcon);
-	//	}
-
-	//	UTexture2D* SkillFIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon3.icon3'")));
-	//	if (SkillFIcon)
-	//	{
-	//		m_pHUDWidget->SetSkillImage(3, SkillFIcon);
-	//		m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
-	//	}
-	//}
 	GetWorld()->GetTimerManager().SetTimer(WidgetInitializationTimerHandle, this, &ASkeletonSoldier::InitializeDynamicMaterial, 0.01f, false);
 }
 
 void ASkeletonSoldier::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// UI 설정
-	//if (m_pHUDWidget)
-	//{
-	//	UTexture2D* SkillAIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon4.icon4'")));
-	//
-	//	if (SkillAIcon)
-	//	{
-	//		m_pHUDWidget->SetSkillImage(0, SkillAIcon);
-	//		m_pHUDWidget->SetSkillBackImage(0, SkillAIcon);
-	//	}
-	//
-	//	UTexture2D* SkillSIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon1.icon1'")));
-	//	if (SkillSIcon)
-	//	{
-	//		m_pHUDWidget->SetSkillImage(1, SkillSIcon);
-	//		m_pHUDWidget->SetSkillBackImage(1, SkillSIcon);
-	//	}
-	//
-	//	UTexture2D* SkillDIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon2.icon2'")));
-	//	if (SkillDIcon)
-	//	{
-	//		m_pHUDWidget->SetSkillImage(2, SkillDIcon);
-	//		m_pHUDWidget->SetSkillBackImage(2, SkillDIcon);
-	//	}
-	//
-	//	UTexture2D* SkillFIcon = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Image/icon3.icon3'")));
-	//	if (SkillFIcon)
-	//	{
-	//		m_pHUDWidget->SetSkillImage(3, SkillFIcon);
-	//		m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
-	//	}
-	//}
 
 	switch (m_eUsingSkill)
 	{
@@ -422,6 +357,7 @@ void ASkeletonSoldier::EscapeFunction()
 {
 	Super::EscapeFunction();
 }
+
 void ASkeletonSoldier::ChargeStart()
 {
 	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || (m_faccSkillDCool < m_Info.DSkillmaxcooltime))
@@ -559,8 +495,7 @@ void ASkeletonSoldier::AttackWhirlwind()
 	{
 		for (int32 i = 0; i < HitArray.Num(); ++i)
 		{
-			if (HitArray[i].GetActor()->TakeDamage(m_Info.Attack * m_Info.ASkillRatio, FDamageEvent(),
-				GetController(), this) != -1.f)
+			if (GiveDamage(HitArray[i].GetActor(), GetPlayerInfo().ASkillRatio, EPlayerSkill::SkillA) != -1.f)
 			{
 				SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
 
@@ -639,8 +574,7 @@ void ASkeletonSoldier::AttackLeapAttack()
 	{
 		for (int32 i = 0; i < HitArray.Num(); ++i)
 		{
-			if (HitArray[i].GetActor()->TakeDamage(m_Info.Attack * m_Info.ASkillRatio, FDamageEvent(),
-				GetController(), this) != -1.f)
+			if (GiveDamage(HitArray[i].GetActor(), GetPlayerInfo().ASkillRatio, EPlayerSkill::SkillS) != -1.f)
 			{
 				SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
 
@@ -756,7 +690,7 @@ void ASkeletonSoldier::EjectChargeSlash()
 	FActorSpawnParameters param;
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	ASoldierChargeSlash* pSlash = GetWorld()->SpawnActor<ASoldierChargeSlash>(vLoc, GetActorRotation(), param);
-	pSlash->SetDamage((float)(m_Info.Attack * m_Info.DSkillRatio));
+	pSlash->SetDamage((float)(GetAttack() * GetPlayerInfo().DSkillRatio));
 	pSlash->SetOwnerController(GetController());
 }
 
@@ -829,7 +763,7 @@ void ASkeletonSoldier::AttackCrossCut()
 	{
 		SpawnHitEffect(Hit.Value.ImpactPoint, Hit.Value.ImpactNormal.Rotation());
 		
-		if (Hit.Key->TakeDamage(m_Info.Attack, FDamageEvent(), GetController(), this) != -1.f)
+		if (GiveDamage(Hit.Key, 1.f, EPlayerSkill::None) != -1.f)
 		{
 			//AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
 
@@ -861,8 +795,7 @@ void ASkeletonSoldier::AttackUpperCut()
 		{
 			SpawnHitEffect(HitArray[i].ImpactPoint, HitArray[i].ImpactNormal.Rotation());
 
-			if (HitArray[i].GetActor()->TakeDamage(m_Info.Attack, FDamageEvent(),
-				GetController(), this) != -1.f)
+			if (GiveDamage(HitArray[i].GetActor(), 1.f, EPlayerSkill::None) != -1.f)
 			{
 				// 공중으로 뛰울 수 있으면 뛰우도록 해야함
 				//AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
@@ -914,8 +847,7 @@ void ASkeletonSoldier::AttackSmashCut()
 			FDamageEvent DamageEvent;
 			DamageEvent.DamageTypeClass = UAirborneDamageType::StaticClass();
 			
-			if (HitArray[i].GetActor()->TakeDamage(m_Info.Attack * 1.2f, DamageEvent,
-				GetController(), this) != -1.f)
+			if (GiveDamage(HitArray[i].GetActor(), 1.2f, EPlayerSkill::None) != -1.f)
 			{
 				// 몬스터라면 약간 앞으로 밀쳐내기
 				AMonster* pEnemy = Cast<AMonster>(HitArray[i].GetActor());
@@ -952,6 +884,7 @@ void ASkeletonSoldier::SpawnHitEffect(FVector _vLoc, FRotator _vRot)
 
 	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/Hack_And_Slash_FX/VFX_Niagara/Impacts/NS_Demon_Slash_Impact.NS_Demon_Slash_Impact'"));
 }
+
 void ASkeletonSoldier::InitializeDynamicMaterial()
 {
 	// UI 설정
