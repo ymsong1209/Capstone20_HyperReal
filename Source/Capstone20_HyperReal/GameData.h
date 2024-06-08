@@ -29,6 +29,22 @@ enum class EPlayerUpgradeType : uint8
 	End
 };
 
+UENUM(BlueprintType)
+enum class ERuneType : uint8
+{
+	Rotation,
+	Lightning,
+	Extreme,
+	Demolition,
+	Dash,
+	Drain,
+	Haste,
+	Thorn,
+	Distortion,
+	Resurrection,
+	End
+};
+
 USTRUCT(BlueprintType)
 struct FPlayerDataTableInfo : public FTableRowBase
 {
@@ -95,6 +111,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float		CriticalDamage;
+
+	// 흡혈량
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		DrainRatio;
+
+	// 스킬 쿨타임 감소량
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		CoolDownRatio;
 
 	// 공격 강화 레벨
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -247,6 +271,14 @@ public:
 	//현재 레벨에서 벌어들인 골드
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32		LevelAccGold;
+
+	// 흡혈량
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		DrainRatio;
+
+	// 스킬 쿨타임 감소량
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		CoolDownRatio;
 
 	// 공격 강화 레벨
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))

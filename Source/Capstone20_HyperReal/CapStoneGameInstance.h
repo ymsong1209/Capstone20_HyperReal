@@ -23,7 +23,8 @@ private:
 	UPROPERTY()
 	UDataTable* mBuildingInfoTable;
 
-	class PlayerUpdateManager* m_UpdateManager;
+	UPROPERTY()
+	class UPlayerManager* m_PlayerManager;
 
 public:
 	const FMonsterDataTableInfo* FindMonsterInfo(const FString& _Name);
@@ -31,12 +32,15 @@ public:
 	const FBuildingDataTableInfo* FindBuildingInfo(const FString& _Name);
 
 	void UpdatePlayerGold(const FString& PlayerName, int _gold);
+
+	UPlayerManager* GetPlayerManager() { return m_PlayerManager; }
+
 public:
-	virtual void Init();
+	virtual void Init() override;
 
 public:
 	UCapStoneGameInstance();
 
 public:
-	void UpgradePlayerStat(const FString& _Name, EPlayerUpgradeType _eType);
+	void UpgradePlayerStat(EPlayerUpgradeType _eType);
 };

@@ -2,7 +2,7 @@
 
 
 #include "CapStoneGameInstance.h"
-#include "Manager/PlayerUpdateManager.h"
+#include "Manager/PlayerManager.h"
 
 UCapStoneGameInstance::UCapStoneGameInstance()
 {
@@ -24,16 +24,11 @@ UCapStoneGameInstance::UCapStoneGameInstance()
 	if (PlayerTableAsset.Succeeded()) {
 		mPlayerInfoTable = PlayerTableAsset.Object;
 	}
-
-	// 만약 저장데이터가 있었다면 다른 처리를 통해 스탯 정보를 불러와야함
-
-	m_UpdateManager = new PlayerUpdateManager();
-	m_UpdateManager->SetPlayerDataTable(mPlayerInfoTable);
 }
 
-void UCapStoneGameInstance::UpgradePlayerStat(const FString& _Name, EPlayerUpgradeType _eType)
+void UCapStoneGameInstance::UpgradePlayerStat(EPlayerUpgradeType _eType)
 {
-	m_UpdateManager->UpgradePlayerStat(_Name, _eType);
+	m_PlayerManager->UpgradePlayerStat(_eType);
 }
 
 const FMonsterDataTableInfo* UCapStoneGameInstance::FindMonsterInfo(const FString& _Name)
@@ -82,4 +77,11 @@ void UCapStoneGameInstance::UpdatePlayerGold(const FString& PlayerName, int _gol
 
 void UCapStoneGameInstance::Init()
 {
+	Super::Init();
+
+	// 만약 저장데이터가 있었다면 다른 처리를 통해 스탯 정보를 불러와야함
+	m_PlayerManager = GetSubsystem<UPlayerManager>();
+
+	if (m_PlayerManager)
+		m_PlayerManager->Init(TEXT("Soldier"));
 }

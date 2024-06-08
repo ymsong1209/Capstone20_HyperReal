@@ -22,6 +22,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
+#include "../Manager/PlayerManager.h"
 #include "../Building/Portal.h"
 
 // Sets default values
@@ -144,25 +145,25 @@ void APlayerCharacter::Tick(float DeltaTime)
 	if (m_faccSkillACool < m_Info.ASkillmaxcooltime)
 	{
 		m_faccSkillACool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(0,  m_faccSkillACool / m_Info.ASkillmaxcooltime);
+		m_pHUDWidget->CalSkillCoolTime(0,  m_faccSkillACool / GetPlayerInfo().ASkillmaxcooltime);
 	}
 
 	if (m_faccSkillSCool < m_Info.SSkillmaxcooltime)
 	{
 		m_faccSkillSCool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(1, m_faccSkillSCool / m_Info.SSkillmaxcooltime);
+		m_pHUDWidget->CalSkillCoolTime(1, m_faccSkillSCool / GetPlayerInfo().SSkillmaxcooltime);
 	}
 
 	if (m_faccSkillDCool < m_Info.DSkillmaxcooltime)
 	{
 		m_faccSkillDCool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(2, m_faccSkillDCool / m_Info.DSkillmaxcooltime);
+		m_pHUDWidget->CalSkillCoolTime(2, m_faccSkillDCool / GetPlayerInfo().DSkillmaxcooltime);
 	}
 
 	if (m_faccSkillFCool < m_Info.FSkillmaxcooltime)
 	{
 		m_faccSkillFCool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(3, m_faccSkillFCool / m_Info.FSkillmaxcooltime);
+		m_pHUDWidget->CalSkillCoolTime(3, m_faccSkillFCool / GetPlayerInfo().FSkillmaxcooltime);
 	}
 }
 
@@ -180,6 +181,77 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
+FPlayerInfo& APlayerCharacter::GetPlayerInfo()
+{
+	return Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance())->GetPlayerManager()->GetPlayerInfo();
+}
+
+int32 APlayerCharacter::GetHPMax()
+{
+	int32 iHPMax = GetPlayerInfo().MaxHP;
+
+	// 룬 아이템 등으로 추가 계수 계산
+	float fValue = 1.f;
+	iHPMax *= fValue;
+
+	return iHPMax;
+}
+
+int32 APlayerCharacter::GetSPMax()
+{
+	int32 iSPMax = GetPlayerInfo().MaxSP;
+
+	// 룬 아이템 등으로 추가 계수 계산
+	float fValue = 1.f;
+	iSPMax *= fValue;
+
+	return iSPMax;
+}
+
+int32 APlayerCharacter::GetAttack()
+{
+	int32 iAttack = GetPlayerInfo().Attack;
+
+	// 룬 아이템 등으로 추가 계수 계산
+	float fValue = 1.f;
+	iAttack *= fValue;
+
+	return iAttack;
+}
+
+int32 APlayerCharacter::GetArmor()
+{
+	int32 iArmor = GetPlayerInfo().Armor;
+
+	// 룬 아이템 등으로 추가 계수 계산
+	float fValue = 1.f;
+	iArmor *= fValue;
+
+	return iArmor;
+}
+
+float APlayerCharacter::GetAttackSpeed()
+{
+	int32 iAS = GetPlayerInfo().AttackSpeed;
+
+	// 룬 아이템 등으로 추가 계수 계산
+	float fValue = 1.f;
+	iAS *= fValue;
+
+	return iAS;
+}
+
+float APlayerCharacter::GetMoveSpeed()
+{
+	int32 iMS = GetPlayerInfo().MoveSpeed;
+
+	// 룬 아이템 등으로 추가 계수 계산
+	float fValue = 1.f;
+	iMS *= fValue;
+
+	return iMS;
+}
+
 float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float fDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
@@ -188,20 +260,35 @@ float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 	if(m_bInvincible) 
 		return -1.f;
 	
-	fDamage = Damage - m_Info.Armor;
+	fDamage = Damage - GetArmor();
 	fDamage = fDamage < 1.f ? 1.f : fDamage;
 
-	m_Info.HP -= (int32)fDamage;
+	GetPlayerInfo().HP -= (int32)fDamage;
 	
 	if (m_pHUDWidget)
-		m_pHUDWidget->SetHP(m_Info.HP, m_Info.MaxHP);
+		m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetHPMax());
 
-	if (m_Info.HP <= 0) {
+	if (GetPlayerInfo().HP <= 0) {
 		//HandleDeath();
 		fDamage = -1.f;
 	}
 
 	return fDamage;
+}
+
+float APlayerCharacter::GiveDamage(AActor* _Target, float _fAttackRatio, EPlayerSkill _type)
+{
+	float fResult = _Target->TakeDamage(GetAttack() * _fAttackRatio, FDamageEvent(), GetController(), this);
+
+	// 평타에 적용되는 룬 작동
+	if (_type == EPlayerSkill::None)
+	{
+
+	}
+
+	// 전체에 다 적용 되는 룬 작동
+
+	return fResult;
 }
 
 void APlayerCharacter::Attack()
@@ -315,77 +402,94 @@ void APlayerCharacter::EscapeFunction()
 }
 
 
-	void APlayerCharacter::ChangeWalkSpeed(float _value)
+void APlayerCharacter::ChangeWalkSpeed(float _value)
 {
-	GetCharacterMovement()->MaxWalkSpeed = (m_fDefaultSpeed * _value) * m_Info.MoveSpeed;
-	GetCharacterMovement()->MaxAcceleration = (m_fDefaultAccel * _value) * m_Info.MoveSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = (m_fDefaultSpeed * _value) * GetPlayerInfo().MoveSpeed;
+	GetCharacterMovement()->MaxAcceleration = (m_fDefaultAccel * _value) * GetPlayerInfo().MoveSpeed;
 }
 
 void APlayerCharacter::InitPlayerData()
 {
-	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	m_faccSkillACool = GetPlayerInfo().ASkillmaxcooltime;
+	m_faccSkillSCool = GetPlayerInfo().SSkillmaxcooltime;
+	m_faccSkillDCool = GetPlayerInfo().DSkillmaxcooltime;
+	m_faccSkillFCool = GetPlayerInfo().FSkillmaxcooltime;
 
-	if (GameInst)
+	ChangeWalkSpeed(1.f);
+
+	AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+
+	if (GameMode)
 	{
-		const FPlayerDataTableInfo* Info = GameInst->FindPlayerInfo(m_strDataTableKey);
+		m_pHUDWidget = GameMode->GetInGameWidget();
 
-		if (Info)
+		if (m_pHUDWidget)
 		{
-			m_Info.Name = Info->Name;
-			m_Info.Job = Info->Job;
-			m_Info.Attack = Info->Attack;
-			m_Info.Armor = Info->Armor;
-			m_Info.MaxHP = Info->HP;
-			m_Info.HP = Info->HP;
-			m_Info.MaxSP = Info->SP;
-			m_Info.SP = Info->SP;
-			m_Info.AttackSpeed = Info->AttackSpeed;
-			m_Info.MoveSpeed = Info->MoveSpeed;
-			m_Info.CriticalRatio = Info->CriticalRatio;
-			m_Info.CriticalDamage = Info->CriticalDamage;
-			m_Info.ASkillRatio = Info->ASkillRatio;
-			m_Info.SSkillRatio = Info->SSkillRatio;
-			m_Info.DSkillRatio = Info->DSkillRatio;
-			m_Info.FSkillRatio = Info->FSkillRatio;
-
-			m_Info.ASkillmaxcooltime = Info->ASkillMaxCooltime;
-			m_Info.SSkillmaxcooltime = Info->SSkillMaxCooltime;
-			m_Info.DSkillmaxcooltime = Info->DSkillMaxCooltime;
-			m_Info.FSkillmaxcooltime = Info->FSkillMaxCooltime;
-			m_faccSkillACool = m_Info.ASkillmaxcooltime;
-			m_faccSkillSCool = m_Info.SSkillmaxcooltime;
-			m_faccSkillDCool = m_Info.DSkillmaxcooltime;
-			m_faccSkillFCool = m_Info.FSkillmaxcooltime;
-
-			m_Info.Level = 1;
-			m_Info.Exp = 0;
-			m_Info.TotalGold = 10000;
-			m_Info.LevelAccGold = 0;
-
-			m_Info.AttackLevel = Info->AttackLevel;
-			m_Info.HealthLevel = Info->HealthLevel;
-			m_Info.SoulLevel = Info->SoulLevel;
-
-			m_Info.AttackProgress = Info->AttackProgress;
-			m_Info.HealthProgress = Info->HealthProgress;
-			m_Info.SoulProgress = Info->SoulProgress;
-
-
-			// 초기 속도에 속도 배율을 곱하도록 변경
-			ChangeWalkSpeed(1.f);
-
-			AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
-
-			if (GameMode)
-			{
-				m_pHUDWidget = GameMode->GetInGameWidget();
-
-				if (m_pHUDWidget)
-				{
-					m_pHUDWidget->SetHP(m_Info.HP, m_Info.MaxHP);
-					m_pHUDWidget->SetSP(m_Info.SP, m_Info.MaxSP);
-				}
-			}
+			m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetPlayerInfo().MaxHP);
+			m_pHUDWidget->SetSP(GetPlayerInfo().SP, GetPlayerInfo().MaxSP);
 		}
 	}
+
+	//if (GameInst)
+	//{
+	//	const FPlayerDataTableInfo* Info = GameInst->FindPlayerInfo(m_strDataTableKey);
+
+	//	if (Info)
+	//	{
+	//		m_Info.Name = Info->Name;
+	//		m_Info.Job = Info->Job;
+	//		m_Info.Attack = Info->Attack;
+	//		m_Info.Armor = Info->Armor;
+	//		m_Info.MaxHP = Info->HP;
+	//		m_Info.HP = Info->HP;
+	//		m_Info.MaxSP = Info->SP;
+	//		m_Info.SP = Info->SP;
+	//		m_Info.AttackSpeed = Info->AttackSpeed;
+	//		m_Info.MoveSpeed = Info->MoveSpeed;
+	//		m_Info.CriticalRatio = Info->CriticalRatio;
+	//		m_Info.CriticalDamage = Info->CriticalDamage;
+	//		m_Info.ASkillRatio = Info->ASkillRatio;
+	//		m_Info.SSkillRatio = Info->SSkillRatio;
+	//		m_Info.DSkillRatio = Info->DSkillRatio;
+	//		m_Info.FSkillRatio = Info->FSkillRatio;
+
+	//		m_Info.ASkillmaxcooltime = Info->ASkillMaxCooltime;
+	//		m_Info.SSkillmaxcooltime = Info->SSkillMaxCooltime;
+	//		m_Info.DSkillmaxcooltime = Info->DSkillMaxCooltime;
+	//		m_Info.FSkillmaxcooltime = Info->FSkillMaxCooltime;
+	//		m_faccSkillACool = m_Info.ASkillmaxcooltime;
+	//		m_faccSkillSCool = m_Info.SSkillmaxcooltime;
+	//		m_faccSkillDCool = m_Info.DSkillmaxcooltime;
+	//		m_faccSkillFCool = m_Info.FSkillmaxcooltime;
+
+	//		m_Info.Level = 1;
+	//		m_Info.Exp = 0;
+	//		m_Info.TotalGold = 10000;
+	//		m_Info.LevelAccGold = 0;
+
+	//		m_Info.AttackLevel = Info->AttackLevel;
+	//		m_Info.HealthLevel = Info->HealthLevel;
+	//		m_Info.SoulLevel = Info->SoulLevel;
+
+	//		m_Info.AttackProgress = Info->AttackProgress;
+	//		m_Info.HealthProgress = Info->HealthProgress;
+	//		m_Info.SoulProgress = Info->SoulProgress;
+
+	//		// 초기 속도에 속도 배율을 곱하도록 변경
+	//		ChangeWalkSpeed(1.f);
+
+	//		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+
+	//		if (GameMode)
+	//		{
+	//			m_pHUDWidget = GameMode->GetInGameWidget();
+
+	//			if (m_pHUDWidget)
+	//			{
+	//				m_pHUDWidget->SetHP(m_Info.HP, m_Info.MaxHP);
+	//				m_pHUDWidget->SetSP(m_Info.SP, m_Info.MaxSP);
+	//			}
+	//		}
+	//	}
+	//}	
 }

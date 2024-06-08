@@ -105,6 +105,7 @@ private:
 	float m_fDefaultAccel;
 	float m_fAccGhostTime;
 	bool  m_bInvincible;
+
 private:
 	class APortal* m_pPortal;
 
@@ -116,7 +117,7 @@ public:
 
 	EPlayerSkill GetUsingSkill() { return m_eUsingSkill; }
 
-	float GetAnimPlaySpeed() { return m_fAnimPlaySpeed; }
+	float GetAnimPlaySpeed() { return m_fAnimPlaySpeed * GetAttackSpeed(); }
 	void SetAnimPlaySpeed(float _fSpeed) { m_fAnimPlaySpeed = _fSpeed; }
 
 	bool IsInvincible() const {return m_bInvincible;}
@@ -124,7 +125,17 @@ public:
 	
 	const FPlayerInfo& GetInfo() { return m_Info; }
 
-	
+	FPlayerInfo& GetPlayerInfo();
+
+	// 기본 스탯 외 추가 옵션 계산용 Getter
+	int32 GetHPMax();
+	int32 GetSPMax();
+
+	int32 GetAttack();
+	int32 GetArmor();
+
+	float GetAttackSpeed();
+	float GetMoveSpeed();
 
 protected:
 	// Called when the game starts or when spawned
@@ -138,6 +149,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	virtual float GiveDamage(AActor* _Target, float _fAttackRatio, EPlayerSkill _type);
 
 private:
 	/** Top down camera */
@@ -164,8 +177,8 @@ public:
 public:
 	// 감속하거나 가속할 배율 입력
 	void ChangeWalkSpeed(float _value);
-	void AddGold(int _gold){m_Info.LevelAccGold += _gold;};
-	void SetPortal(class APortal* _portal){m_pPortal = _portal;};
+	void AddGold(int _gold) { m_Info.LevelAccGold += _gold; };
+	void SetPortal(class APortal* _portal) { m_pPortal = _portal; };
 
 private:
 	void InitPlayerData();
