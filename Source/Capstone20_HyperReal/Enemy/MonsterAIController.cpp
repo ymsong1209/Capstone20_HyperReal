@@ -24,6 +24,8 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
+	mbIsPossesed = true;
+	
 	//블랙보드지정
 	if (mAIBlackboard) {
 		UBlackboardComponent* BlackboardComp = Blackboard.Get();
@@ -43,4 +45,5 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 void AMonsterAIController::OnUnPossess()
 {
 	Super::OnUnPossess();
+	mbIsPossesed = false;
 }

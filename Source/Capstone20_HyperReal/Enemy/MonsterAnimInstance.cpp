@@ -4,6 +4,7 @@
 #include "MonsterAnimInstance.h"
 #include "Monster.h"
 #include "MonsterAIController.h"
+#include "ShaderPrintParameters.h"
 
 UMonsterAnimInstance::UMonsterAnimInstance()
 	:mAnimType(EMonsterAnim::Idle),
@@ -71,22 +72,30 @@ void UMonsterAnimInstance::AnimNotify_Attack()
 void UMonsterAnimInstance::AnimNotify_HitStart()
 {
 	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
-	if (IsValid(Monster)) {
-		Monster->SetCanAttack(false);
-		if (AAIController* AIController = Cast<AAIController>(Monster->GetController()))
-		{
-			AIController->UnPossess(); // 몬스터 컨트롤 연결
-		}
+	if (IsValid(Monster))Monster->SetCanAttack(false);
+	else return;
+	AMonsterAIController* AIController = Cast<AMonsterAIController>(Monster->GetController());
+	UE_LOG(LogTemp, Warning, TEXT("HitStart"));
+	if (AIController && AIController->IsPossesed())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UnPossesed"));
+		AIController->UnPossess(); // 몬스터 컨트롤 연결
 	}
 }
 
 void UMonsterAnimInstance::AnimNotify_HitEnd()
 {
 	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
-	if (IsValid(Monster)) {
-		Monster->SetCanAttack(true);
-		//기존에 만들어뒀던 ai다시 장착
-		AAIController* AIController = Monster->GetAIController();
+	if (IsValid(Monster))Monster->SetCanAttack(true);
+	else return;
+	
+	//기존에 만들어뒀던 ai다시 장착
+	AMonsterAIController* AIController = Monster->GetAIController();
+	UE_LOG(LogTemp, Warning, TEXT("HitEnd"));
+	if(AIController && !AIController->IsPossesed())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Possessed"));
 		AIController->Possess(Monster); // 몬스터 컨트롤 연결
 	}
+		
 }
