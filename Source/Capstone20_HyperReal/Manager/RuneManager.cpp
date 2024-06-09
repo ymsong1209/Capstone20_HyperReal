@@ -53,39 +53,133 @@ void URuneManager::Init()
 
 void URuneManager::GiveDamageTrigger(AActor* _pActor, float _fValue)
 {
-	for (URune* rune : m_arrRune)
+	for (int32 i = 0; i < (int32)ERuneType::End; i++)
 	{
-		if (IsValid(rune))
-			rune->GiveDamageTrigger(_pActor, _fValue);
+		if (m_arrRune[i] && m_arrRune[i]->GetLevel() > 0)
+		{
+			m_arrRune[i]->GiveDamageTrigger(_pActor, _fValue);
+		}
 	}
 }
 
 void URuneManager::NormalAttackTrigger(AActor* _pActor, float _fValue)
 {
-	
-
-
-	for (URune* rune : m_arrRune)
+	for (int32 i = 0; i < (int32)ERuneType::End; i++)
 	{
-		if(IsValid(rune))
-			rune->NormalAttackTrigger(_pActor, _fValue);
+		if (m_arrRune[i] && m_arrRune[i]->GetLevel() > 0)
+		{
+			m_arrRune[i]->NormalAttackTrigger(_pActor, _fValue);
+		}
 	}
 }
 
 void URuneManager::TakeDamageTrigger(AActor* _pActor, float _fValue)
 {
-	for (URune* rune : m_arrRune)
+	for (int32 i = 0; i < (int32)ERuneType::End; i++)
 	{
-		if (IsValid(rune))
-			rune->TakeDamageTrigger(_pActor, _fValue);
+		if (m_arrRune[i] && m_arrRune[i]->GetLevel() > 0)
+		{
+			m_arrRune[i]->TakeDamageTrigger(_pActor, _fValue);
+		}
 	}
 }
 
 void URuneManager::Activate(AActor* _pActor, float _fValue)
 {
-	for (URune* rune : m_arrRune)
+	for (int32 i = 0; i < (int32)ERuneType::End; i++)
 	{
-		if (IsValid(rune))
-			rune->TakeDamageTrigger(_pActor, _fValue);
+		if (m_arrRune[i] && m_arrRune[i]->GetLevel() > 0)
+		{
+			m_arrRune[i]->TakeDamageTrigger(_pActor, _fValue);
+		}
 	}
+}
+
+float URuneManager::GetHealthAdd()
+{
+	float fResult = 1.f;
+
+	for (int32 i = 0; i < (int32)ERuneType::End; i++)
+	{
+		if (m_arrRune[i] && m_arrRune[i]->GetLevel() > 0)
+		{
+			fResult *= m_arrRune[i]->GetHealthRatio();
+		}
+	}
+
+	return fResult;
+}
+
+float URuneManager::GetSoulAdd()
+{
+	float fResult = 1.f;
+
+	for (int32 i = 0; i < (int32)ERuneType::End; i++)
+	{
+		if (m_arrRune[i] && m_arrRune[i]->GetLevel() > 0)
+		{
+			fResult *= m_arrRune[i]->GetSoulRatio();
+		}
+	}
+
+	return fResult;
+}
+
+float URuneManager::GetAttackAdd()
+{
+	float fResult = 1.f;
+
+	for (int32 i = 0; i < (int32)ERuneType::End; i++)
+	{
+		if (m_arrRune[i] && m_arrRune[i]->GetLevel() > 0)
+		{
+			fResult *= m_arrRune[i]->GetAttackRatio();
+		}
+	}
+
+	return fResult;
+}
+
+float URuneManager::GetAttackSpeedAdd()
+{
+	float fResult = 1.f;
+
+	for (int32 i = 0; i < (int32)ERuneType::End; i++)
+	{
+		if (m_arrRune[i] && m_arrRune[i]->GetLevel() > 0)
+		{
+			fResult *= m_arrRune[i]->GetAttackSpeedRatio();
+		}
+	}
+
+	return fResult;
+}
+
+float URuneManager::GetMoveSpeedAdd()
+{
+	float fResult = 1.f;
+
+	for (int32 i = 0; i < (int32)ERuneType::End; i++)
+	{
+		if (m_arrRune[i] && m_arrRune[i]->GetLevel() > 0)
+		{
+			fResult *= m_arrRune[i]->GetMoveSpeedRatio();
+		}
+	}
+
+	return fResult;
+}
+
+float URuneManager::GetCoolDownAdd()
+{
+	float fResult = 1.f;
+
+	for (int32 i = 0; i < (int32)ERuneType::End; i++)
+	{
+		if (m_arrRune[i] && m_arrRune[i]->GetLevel() > 0)
+		{
+			fResult *= m_arrRune[i]->GetCoolDownRatio();
+		}
+	}
+	return fResult;
 }

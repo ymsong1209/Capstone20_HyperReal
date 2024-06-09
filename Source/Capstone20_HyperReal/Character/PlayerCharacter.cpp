@@ -143,28 +143,28 @@ void APlayerCharacter::Tick(float DeltaTime)
 	}
 
 	// 스킬 쿨타입 계산 밑 UI 적용
-	if (m_faccSkillACool < GetPlayerInfo().ASkillmaxcooltime)
+	if (m_faccSkillACool < GetPlayerInfo().ASkillmaxcooltime * GetCoolDown())
 	{
 		m_faccSkillACool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(0,  m_faccSkillACool / GetPlayerInfo().ASkillmaxcooltime);
+		m_pHUDWidget->CalSkillCoolTime(0,  m_faccSkillACool / (GetPlayerInfo().ASkillmaxcooltime * GetCoolDown()));
 	}
 
-	if (m_faccSkillSCool < GetPlayerInfo().SSkillmaxcooltime)
+	if (m_faccSkillSCool < GetPlayerInfo().SSkillmaxcooltime * GetCoolDown())
 	{
 		m_faccSkillSCool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(1, m_faccSkillSCool / GetPlayerInfo().SSkillmaxcooltime);
+		m_pHUDWidget->CalSkillCoolTime(1, m_faccSkillSCool / (GetPlayerInfo().SSkillmaxcooltime * GetCoolDown()));
 	}
 
-	if (m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime)
+	if (m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime * GetCoolDown())
 	{
 		m_faccSkillDCool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(2, m_faccSkillDCool / GetPlayerInfo().DSkillmaxcooltime);
+		m_pHUDWidget->CalSkillCoolTime(2, m_faccSkillDCool / (GetPlayerInfo().DSkillmaxcooltime * GetCoolDown()));
 	}
 
-	if (m_faccSkillFCool < GetPlayerInfo().FSkillmaxcooltime)
+	if (m_faccSkillFCool < GetPlayerInfo().FSkillmaxcooltime * GetCoolDown())
 	{
 		m_faccSkillFCool += DeltaTime;
-		m_pHUDWidget->CalSkillCoolTime(3, m_faccSkillFCool / GetPlayerInfo().FSkillmaxcooltime);
+		m_pHUDWidget->CalSkillCoolTime(3, m_faccSkillFCool / (GetPlayerInfo().FSkillmaxcooltime * GetCoolDown()));
 	}
 }
 
@@ -192,7 +192,7 @@ int32 APlayerCharacter::GetHPMax()
 	int32 iHPMax = GetPlayerInfo().MaxHP;
 
 	// 룬 아이템 등으로 추가 계수 계산
-	float fValue = 1.f;
+	float fValue = GetRuneManager()->GetHealthAdd();
 	iHPMax *= fValue;
 
 	return iHPMax;
@@ -203,7 +203,7 @@ int32 APlayerCharacter::GetSPMax()
 	int32 iSPMax = GetPlayerInfo().MaxSP;
 
 	// 룬 아이템 등으로 추가 계수 계산
-	float fValue = 1.f;
+	float fValue = GetRuneManager()->GetSoulAdd();
 	iSPMax *= fValue;
 
 	return iSPMax;
@@ -214,7 +214,7 @@ int32 APlayerCharacter::GetAttack()
 	int32 iAttack = GetPlayerInfo().Attack;
 
 	// 룬 아이템 등으로 추가 계수 계산
-	float fValue = 1.f;
+	float fValue = GetRuneManager()->GetAttackAdd();
 	iAttack *= fValue;
 
 	return iAttack;
@@ -233,24 +233,35 @@ int32 APlayerCharacter::GetArmor()
 
 float APlayerCharacter::GetAttackSpeed()
 {
-	int32 iAS = GetPlayerInfo().AttackSpeed;
+	float fAS = GetPlayerInfo().AttackSpeed;
 
 	// 룬 아이템 등으로 추가 계수 계산
-	float fValue = 1.f;
-	iAS *= fValue;
+	float fValue = GetRuneManager()->GetAttackSpeedAdd();
+	fAS *= fValue;
 
-	return iAS;
+	return fAS;
 }
 
 float APlayerCharacter::GetMoveSpeed()
 {
-	int32 iMS = GetPlayerInfo().MoveSpeed;
+	float fMS = GetPlayerInfo().MoveSpeed;
 
 	// 룬 아이템 등으로 추가 계수 계산
-	float fValue = 1.f;
-	iMS *= fValue;
+	float fValue = GetRuneManager()->GetMoveSpeedAdd();
+	fMS *= fValue;
 
-	return iMS;
+	return fMS;
+}
+
+float APlayerCharacter::GetCoolDown()
+{
+	float fCD = GetPlayerInfo().CoolDownRatio;
+
+	// 룬 아이템 등으로 추가 계수 계산
+	float fValue = GetRuneManager()->GetCoolDownAdd();
+	fCD += fValue;
+
+	return fCD;
 }
 
 URuneManager* APlayerCharacter::GetRuneManager()
@@ -269,9 +280,14 @@ float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 {
 	float fDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
+	GetRuneManager()->TakeDamageTrigger(DamageCauser, Damage);
+
 	//무적일 경우엔 -1.f반환
 	if(m_bInvincible) 
 		return -1.f;
+
+	if (GetPlayerInfo().HP > GetHPMax())
+		GetPlayerInfo().HP = GetHPMax();
 	
 	fDamage = Damage - GetArmor();
 	fDamage = fDamage < 1.f ? 1.f : fDamage;
@@ -293,6 +309,10 @@ float APlayerCharacter::GiveDamage(AActor* _Target, float _fAttackRatio, EPlayer
 {	
 	float fResult = _Target->TakeDamage(GetAttack() * _fAttackRatio, FDamageEvent(), GetController(), this);
 
+
+	UE_LOG(LogTemp, Log, TEXT("Attack : %d"), GetAttack());
+
+
 	// 데미지를 받을 수 있는 오브젝트 일 때만 적용
 	if (fResult != -1.f)
 	{
@@ -303,6 +323,7 @@ float APlayerCharacter::GiveDamage(AActor* _Target, float _fAttackRatio, EPlayer
 		}
 
 		// 전체에 다 적용 되는 룬 작동
+		GetRuneManager()->GiveDamageTrigger(_Target, GetAttack() * _fAttackRatio);
 	}
 
 	return fResult;
@@ -421,8 +442,19 @@ void APlayerCharacter::EscapeFunction()
 
 void APlayerCharacter::ChangeWalkSpeed(float _value)
 {
-	GetCharacterMovement()->MaxWalkSpeed = (m_fDefaultSpeed * _value) * GetPlayerInfo().MoveSpeed;
-	GetCharacterMovement()->MaxAcceleration = (m_fDefaultAccel * _value) * GetPlayerInfo().MoveSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = (m_fDefaultSpeed * _value) * GetMoveSpeed();
+	GetCharacterMovement()->MaxAcceleration = (m_fDefaultAccel * _value) * GetAttackSpeed();
+}
+
+void APlayerCharacter::Heal(float fValue)
+{
+	GetPlayerInfo().HP += fValue;
+	if(GetPlayerInfo().HP >= GetPlayerInfo().MaxHP)
+		GetPlayerInfo().HP = GetPlayerInfo().MaxHP;
+
+	UE_LOG(LogTemp, Log, TEXT("Heal Value : %f"), fValue);
+
+	m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetHPMax());
 }
 
 void APlayerCharacter::InitPlayerData()

@@ -5,6 +5,8 @@
 
 UResurrectionRune::UResurrectionRune()
 {
+	m_TexRune = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_SJWContent/Rune/revive.revive'")));
+
 	m_fEtc = 1.f;
 	m_strName = TEXT("부활");
 	m_strDesc = TEXT("1회에 한해 부활 가능");

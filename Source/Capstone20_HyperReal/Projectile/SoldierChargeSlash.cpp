@@ -48,7 +48,7 @@ void ASoldierChargeSlash::SlashBeginOverlap(UPrimitiveComponent* OverlappedCompo
 {
 	if (OtherActor)
 	{
-		if (OtherActor->TakeDamage(m_Damage, FDamageEvent(), m_OwnerController, this) == -1)
+		if (OtherActor->TakeDamage(m_Damage, FDamageEvent(), m_OwnerController, this) != -1)
 		{
 			AMonster* pMon = Cast<AMonster>(OtherActor);
 

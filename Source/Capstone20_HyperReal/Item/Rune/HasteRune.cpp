@@ -5,6 +5,8 @@
 
 UHasteRune::UHasteRune()
 {
+	m_TexRune = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_SJWContent/Rune/swift.swift'")));
+
 	m_fMoveSpeedRatio = 0.1f;
 	m_strName = TEXT("신속");
 	m_strDesc = TEXT("이동 속도가 상승");

@@ -137,6 +137,8 @@ public:
 	float GetAttackSpeed();
 	float GetMoveSpeed();
 
+	float GetCoolDown();
+
 	class URuneManager* GetRuneManager();
 
 protected:
@@ -179,6 +181,8 @@ public:
 	// 감속하거나 가속할 배율 입력
 	void ChangeWalkSpeed(float _value);
 	void SetPortal(class APortal* _portal) { m_pPortal = _portal; };
+
+	void Heal(float fValue);
 
 private:
 	void InitPlayerData();
