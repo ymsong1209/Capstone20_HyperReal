@@ -22,7 +22,6 @@ private:
 
 public:
 	void SetChainCount(int32 _iCount) { m_iChainCount = _iCount; }
-	virtual void SetTarget(AActor* Target) override;
 
 public:
 	// Sets default values for this actor's properties

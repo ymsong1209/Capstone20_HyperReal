@@ -5,6 +5,9 @@
 
 UExtremeRune::UExtremeRune()
 {
+	m_TexRune = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_SJWContent/Rune/radical.radical'")));
+
+	//m_iLevel = 0;
 	m_fAttackRatio = 0.35f;
 	m_fHealthRatio = -0.25f;
 	m_strName = TEXT("극단");

@@ -36,4 +36,12 @@ public:
 	void NormalAttackTrigger(AActor* _pActor = nullptr, float _fValue = 0.f);
 	void TakeDamageTrigger(AActor* _pActor = nullptr, float _fValue = 0.f);
 	void Activate(AActor* _pActor = nullptr, float _fValue = 0.f);
+
+public:
+	float GetHealthAdd();
+	float GetSoulAdd();
+	float GetAttackAdd();
+	float GetAttackSpeedAdd();
+	float GetMoveSpeedAdd();
+	float GetCoolDownAdd();
 };

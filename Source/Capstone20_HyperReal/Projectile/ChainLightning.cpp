@@ -23,19 +23,13 @@ AChainLightning::AChainLightning()
 	//m_Niagara->SetRelativeLocation(FVector(-50.f, 0.f, 0.f));
 	//m_Niagara->SetRelativeRotation(FRotator(0.f, 0.f, 90.f));
 
-	m_Projectile->InitialSpeed = 10000.f;
-	m_Projectile->MaxSpeed = 1000.f;
+	//m_Projectile->InitialSpeed = 10000.f;
+	//m_Projectile->MaxSpeed = 1000.f;
 	m_Projectile->ProjectileGravityScale = 0.f;
-	m_fRange = 300.f;
+	m_fRange = 1000.f;
 	m_fMaxDistance = -1.f;
 
 	m_iChainCount = 4;
-}
-
-void AChainLightning::SetTarget(AActor* Target)
-{
-	m_Target = Target;
-	m_arrTarget.Add(m_Target);
 }
 
 void AChainLightning::BeginPlay()
@@ -45,7 +39,7 @@ void AChainLightning::BeginPlay()
 
 void AChainLightning::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+	//Super::Tick(DeltaTime);
 
 	if (!IsValid(m_Target))
 	{
@@ -53,29 +47,28 @@ void AChainLightning::Tick(float DeltaTime)
 		return;
 	}
 
-	//FVector vDir = (m_Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+	FVector vDir = (m_Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+	SetActorRotation(vDir.Rotation());
 
-	//SetActorRotation(vDir.Rotation());
-
-	//FVector NewLoc = GetActorLocation() + (GetActorForwardVector() * m_Projectile->MaxSpeed * DeltaTime);
-	//SetActorLocation(NewLoc);
-
+	FVector NewLoc = (GetActorLocation() + (vDir * 2000.f * DeltaTime));
+	SetActorLocation(NewLoc);
 
 	// 타겟에 데미지 주고 새로운 타겟 설정
 	float fDist = FVector::Distance(m_Target->GetActorLocation(), GetActorLocation());
-	if (fDist <= 5.f)
+	if (fDist <= 10.f)
 	{
 		if (m_Target->TakeDamage(m_Damage, FDamageEvent(), m_OwnerController, this) != -1)
 		{
-			AMonster* pMon = Cast<AMonster>(m_Target);
+			//AMonster* pMon = Cast<AMonster>(m_Target);
 
-			FindNewTarget();
-
-			if (pMon)
-			{
-
-			}
+			//if (pMon)
+			//{
+			//}
 		}
+
+		AMonster* pMon = Cast<AMonster>(m_Target);
+		if (pMon)
+			FindNewTarget();
 	}
 }
 
@@ -89,7 +82,6 @@ void AChainLightning::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 
 			if (pMon)
 			{
-				UE_LOG(LogTemp, Log, TEXT("Attack Mon count : %d"), m_iChainCount);
 				FindNewTarget();
 			}
 		}
@@ -98,6 +90,8 @@ void AChainLightning::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 
 void AChainLightning::FindNewTarget()
 {
+	m_arrTarget.Add(m_Target);
+
 	if (--m_iChainCount <= 0)
 	{
 		m_Target = nullptr;
@@ -107,27 +101,22 @@ void AChainLightning::FindNewTarget()
 	TArray<AActor*> FoundMon;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMonster::StaticClass(), FoundMon);
 
-	//UE_LOG(LogTemp, Log, TEXT("Monster Count : %d Chain Count : %d"), FoundMon.Num(), m_iChainCount);
-	
-	float fMin = MAX_FLT;
+	float fMin = 1000000.f;
 	AActor* pNext = nullptr;
 
-	for (AActor* actor : FoundMon)
+	for (int32 i = 0; i < FoundMon.Num(); i++)
 	{
-		AMonster* pMon = Cast<AMonster>(actor);
+		AMonster* pMon = Cast<AMonster>(FoundMon[i]);
 
-		if (IsValid(pMon) && (m_arrTarget.Find(pMon) == INDEX_NONE))
+		if (m_arrTarget.Find(pMon) == INDEX_NONE)
 		{
 			float fDist = FVector::Distance(pMon->GetActorLocation(), GetActorLocation());
-			if (fDist <= fMin && fDist >= m_fRange)
+			if (fDist <= fMin && fDist <= m_fRange)
+			{
 				pNext = pMon;
+			}
 		}
 	}
 
-	if (pNext)
-	{
-		m_arrTarget.Add(pNext);
-		UE_LOG(LogTemp, Log, TEXT("ligtning find new target"));
-	}
 	m_Target = pNext;
 }

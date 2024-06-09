@@ -5,6 +5,8 @@
 
 UThornRune::UThornRune()
 {
+	m_TexRune = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_SJWContent/Rune/thorn.thorn'")));
+
 	m_fEtc = 10.f;
 	m_strName = TEXT("가시");
 	m_strDesc = TEXT("피격 시 근접한 적에게 피해");
@@ -13,5 +15,6 @@ UThornRune::UThornRune()
 
 void UThornRune::TakeDamageTrigger(AActor* _pActor, float _fValue)
 {
-	// 주변에 데미지 주기
+	// 활쟁이는 나중에 고민해봄
+	_pActor->TakeDamage(m_fEtc, FDamageEvent(), GetWorld()->GetFirstPlayerController(), GetWorld()->GetFirstPlayerController()->GetPawn());
 }

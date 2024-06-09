@@ -5,6 +5,8 @@
 
 UDashRune::UDashRune()
 {
+	m_TexRune = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_SJWContent/Rune/leap.leap'")));
+
 	m_strName = TEXT("도약");
 	m_strDesc = TEXT("대쉬 기술을 습득");
 	m_eRuneType = ERuneType::Dash;

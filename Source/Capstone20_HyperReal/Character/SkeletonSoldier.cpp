@@ -362,7 +362,7 @@ void ASkeletonSoldier::EscapeFunction()
 
 void ASkeletonSoldier::ChargeStart()
 {
-	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || (m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime))
+	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || (m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime * GetCoolDown()))
 		return;
 
 	GetCharacterMovement()->StopMovementImmediately();
@@ -451,7 +451,7 @@ void ASkeletonSoldier::ChargeAttack()
 void ASkeletonSoldier::Whirlwind()
 {
 	// 아무 스킬도 안쓰고 있었으면 휠윈드 실행
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillACool >= GetPlayerInfo().ASkillmaxcooltime))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillACool >= GetPlayerInfo().ASkillmaxcooltime * GetCoolDown()))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillA;
 
@@ -523,7 +523,7 @@ void ASkeletonSoldier::AttackWhirlwind()
 
 void ASkeletonSoldier::LeapAttack()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillSCool >= GetPlayerInfo().SSkillmaxcooltime))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillSCool >= GetPlayerInfo().SSkillmaxcooltime * GetCoolDown()))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillS;
 
@@ -602,7 +602,7 @@ void ASkeletonSoldier::AttackLeapAttack()
 
 void ASkeletonSoldier::UndeadFury()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillFCool >= GetPlayerInfo().FSkillmaxcooltime))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillFCool >= GetPlayerInfo().FSkillmaxcooltime * GetCoolDown()))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillF;
 		m_faccSkillFCool = 0.f;

@@ -137,6 +137,8 @@ public:
 	float GetAttackSpeed();
 	float GetMoveSpeed();
 
+	float GetCoolDown();
+
 	class URuneManager* GetRuneManager();
 
 protected:
@@ -180,6 +182,8 @@ public:
 	void ChangeWalkSpeed(float _value);
 	void AddGold(int _gold) { m_Info.LevelAccGold += _gold; };
 	void SetPortal(class APortal* _portal) { m_pPortal = _portal; };
+
+	void Heal(float fValue);
 
 private:
 	void InitPlayerData();
