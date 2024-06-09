@@ -47,11 +47,6 @@ AInfantry::AInfantry()
 void AInfantry::BeginPlay()
 {
 	Super::BeginPlay();
-	UMonsterAnimInstance* bodyAnim = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
-	UMonsterAnimInstance* headAnim = Cast<UMonsterAnimInstance>(mHead->GetAnimInstance());
-	
-	AnimInstances.Add(bodyAnim);
-	AnimInstances.Add(headAnim);
 	
 	if (mBodyMeshes.Num() > 0)
 	{
@@ -83,7 +78,11 @@ void AInfantry::BeginPlay()
 		mHead->SetSkeletalMesh(mHeadMeshes[RandomIndex]);
 	}
 
+	UMonsterAnimInstance* bodyAnim = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+	UMonsterAnimInstance* headAnim = Cast<UMonsterAnimInstance>(mHead->GetAnimInstance());
 	
+	AnimInstances.Add(bodyAnim);
+	AnimInstances.Add(headAnim);
 }
 
 void AInfantry::Tick(float DeltaTime)

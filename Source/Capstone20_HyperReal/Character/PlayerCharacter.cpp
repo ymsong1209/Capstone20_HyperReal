@@ -290,7 +290,7 @@ float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 }
 
 float APlayerCharacter::GiveDamage(AActor* _Target, float _fAttackRatio, EPlayerSkill _type)
-{
+{	
 	float fResult = _Target->TakeDamage(GetAttack() * _fAttackRatio, FDamageEvent(), GetController(), this);
 
 	// 데미지를 받을 수 있는 오브젝트 일 때만 적용

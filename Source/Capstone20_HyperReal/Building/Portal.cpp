@@ -9,6 +9,8 @@
 #include "../Character/PlayerCharacter.h"
 #include "../InGameModeBase.h"
 #include "../UI/InGameUserWidget.h"
+#include "../CapStoneGameInstance.h"
+#include "../Manager/PlayerManager.h"
 
 APortal::APortal()
 {
@@ -65,29 +67,26 @@ void APortal::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 {
 	// Check if the OtherActor is a player character
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
-	if (PlayerCharacter)
-	{
-		APlayerController* PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
-		if (PlayerController)
-		{
-			PlayerCharacter->SetInvincible(true);
-			PlayerCharacter->SetPortal(this);
+	if (!PlayerCharacter) return;
+	APlayerController* PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
+	if (!PlayerController) return;
+	
+	PlayerCharacter->SetInvincible(true);
+	PlayerCharacter->SetPortal(this);
 
-			AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
-			if(GameMode)
-			{
-				UInGameUserWidget* widget = GameMode->GetInGameWidget();
-				if (widget)
-				{
-					int gold = PlayerCharacter->m_Info.LevelAccGold;
-					int building = 0;
-					int enemy = 0;
-					widget->OpenRewardUI(gold, building, enemy);
-					UGameplayStatics::SetGamePaused(GetWorld(), true);
-				}
-			}
-		}
-	}
+	AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+	if(!GameMode) return;
+	
+	UInGameUserWidget* widget = GameMode->GetInGameWidget();
+	if (!widget) return;
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	if (!GameInst) return;
+	
+	int gold = GameInst->GetPlayerManager()->GetPlayerInfo().LevelAccGold;
+	int building = 0;
+	int enemy = 0;
+	widget->OpenRewardUI(gold, building, enemy);
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
 void APortal::TransitionToNextLevel(AActor* OtherActor)

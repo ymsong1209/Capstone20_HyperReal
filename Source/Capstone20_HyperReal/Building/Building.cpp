@@ -6,6 +6,8 @@
 #include "../CapStoneGameInstance.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "../Character/PlayerCharacter.h"
+#include "../Manager/RuneManager.h"
+#include "../Item/Rune/DemolitionRune.h"
 
 // Sets default values
 ABuilding::ABuilding() :
@@ -169,15 +171,24 @@ float ABuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 	{
 		Activate();
 	}
-
-	Damage = DamageAmount - mInfo.Armor;
+	
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	URuneManager* RuneManager = GameInst->GetRuneManager();
+	UDemolitionRune* DemolitionRune = Cast<UDemolitionRune>(RuneManager->GetRune(ERuneType::Demolition));
+	if(DemolitionRune)
+	{
+		//파괴의 룬이 있을 경우, 건물에 추가 대미지
+		Damage *= DemolitionRune->GetExtraValue();
+	}
+	
+	Damage -= mInfo.Armor;
 	Damage = Damage < 1.f ? 1.f : Damage;
 
 	mInfo.HP -= (int32)Damage;
 
 	if (mInfo.HP <= 0) {
 		//Todo : Chaos Crush적용
-		Death();
+		HandleDeath();
 		//죽었을 경우 -1.f반환
 		Damage = -1.f;
 	}
@@ -190,45 +201,12 @@ float ABuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 }
 
 //건물 죽음처리
-void ABuilding::Death()
+void ABuilding::HandleDeath()
 {
 	mbIsInvincible = true;
 	//KillAllMonsters();
 	Destroy();
 }
-
-// void ABuilding::SpawnHitParticles() const
-// {
-// 	
-// 	int SpawnCount = FMath::RandRange(2, 5);
-//
-// 	// 건물의 Bounding Box 크기를 구함
-// 	FBox Bounds = GetComponentsBoundingBox(true);
-// 	FVector Min = Bounds.Min;
-// 	FVector Max = Bounds.Max;
-//
-// 	for (int i = 0; i < SpawnCount; ++i)
-// 	{
-// 		// 건물 경계 부근에서 파티클이 나타나도록 위치를 랜덤으로 결정
-// 		FVector SpawnLocation = FVector(
-// 			FMath::RandRange(Min.X, Max.X),   
-// 			FMath::RandRange(Min.Y, Max.Y),   
-// 			FMath::RandRange(Min.Z, Max.Z)    
-// 		);
-//
-// 		// 파티클 시스템 스폰
-// 		if(mHitParticle)
-// 		{
-// 			UE_LOG(LogTemp, Error, TEXT("Particles spawned"));
-// 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), mHitParticle->Template, SpawnLocation, FRotator::ZeroRotator, true);
-// 		}
-// 		else
-// 		{
-// 			UE_LOG(LogTemp, Error, TEXT("No Particles"));
-// 		}
-// 	}
-// 		
-// }
 
 void ABuilding::SpawnHitParticles() const
 {

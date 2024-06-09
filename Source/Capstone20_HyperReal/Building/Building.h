@@ -68,7 +68,7 @@ public:
 	void SpawnMonster();
 	void RemoveMonster(class AMonster* monster);
 	void KillAllMonsters();
-	void Death();
+	void HandleDeath();
 	void SpawnHitParticles() const;
 	void HitShake();
 

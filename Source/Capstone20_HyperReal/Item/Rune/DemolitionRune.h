@@ -7,7 +7,7 @@
 #include "DemolitionRune.generated.h"
 
 /**
- * 
+ * 파괴의 룬
  */
 UCLASS()
 class CAPSTONE20_HYPERREAL_API UDemolitionRune : public URune

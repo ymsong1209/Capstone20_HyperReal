@@ -57,26 +57,6 @@ void ACavalry::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UMonsterAnimInstance* horseAnim = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
-	UMonsterAnimInstance* bodyAnim = Cast<UMonsterAnimInstance>(mBody->GetAnimInstance());
-	UMonsterAnimInstance* headAnim = Cast<UMonsterAnimInstance>(mHead->GetAnimInstance());
-
-	if(!horseAnim)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Horse Anim Instance is nullptr"));
-	}
-	if(!bodyAnim)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Body Anim Instance is nullptr"));
-	}
-	if(!headAnim)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Head Anim Instance is nullptr"));
-	}
-	AnimInstances.Add(horseAnim);
-	AnimInstances.Add(bodyAnim);
-	AnimInstances.Add(headAnim);
-	
 	if (mWeaponRMeshes.Num() > 0)
 	{
 		int32 RandomIndex = FMath::RandRange(0, mWeaponRMeshes.Num() - 1);
@@ -116,6 +96,26 @@ void ACavalry::BeginPlay()
 		int32 RandomIndex = FMath::RandRange(0, mBodyMeshes.Num() - 1);
 		mBody->SetSkeletalMesh(mBodyMeshes[RandomIndex]);
 	}
+
+	UMonsterAnimInstance* horseAnim = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+	UMonsterAnimInstance* bodyAnim = Cast<UMonsterAnimInstance>(mBody->GetAnimInstance());
+	UMonsterAnimInstance* headAnim = Cast<UMonsterAnimInstance>(mHead->GetAnimInstance());
+
+	if(!horseAnim)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Horse Anim Instance is nullptr"));
+	}
+	if(!bodyAnim)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Body Anim Instance is nullptr"));
+	}
+	if(!headAnim)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Head Anim Instance is nullptr"));
+	}
+	AnimInstances.Add(horseAnim);
+	AnimInstances.Add(bodyAnim);
+	AnimInstances.Add(headAnim);
 	
 }
 

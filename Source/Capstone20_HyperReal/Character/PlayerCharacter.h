@@ -178,7 +178,6 @@ public:
 public:
 	// 감속하거나 가속할 배율 입력
 	void ChangeWalkSpeed(float _value);
-	void AddGold(int _gold) { m_Info.LevelAccGold += _gold; };
 	void SetPortal(class APortal* _portal) { m_pPortal = _portal; };
 
 private:

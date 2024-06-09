@@ -18,6 +18,7 @@ ATwoHanded::ATwoHanded()
 	// animationBP 레퍼런스 받을때 _C를 사용해야함
 	static ConstructorHelpers::FClassFinder<UMonsterAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SYMContent/Monster/TwoHanded/ABP_TwoHanded.ABP_TwoHanded_C'"));
 	if (AnimClass.Succeeded()) {
+		
 		GetMesh()->SetAnimInstanceClass(AnimClass.Class);
 		mHead->SetAnimInstanceClass(AnimClass.Class);
 	}

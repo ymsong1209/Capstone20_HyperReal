@@ -3,6 +3,7 @@
 
 #include "Monster.h"
 #include "../CapStoneGameInstance.h"
+#include "../Manager/PlayerManager.h"
 #include "MonsterAnimInstance.h"
 #include "MonsterSpawnPoint.h"
 #include "MonsterAIController.h"
@@ -135,11 +136,11 @@ void AMonster::Tick(float DeltaTime)
 float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
+		
 	//무적 상태인 경우
 	if (bIsInvincible || Damage == -1.f)
 		return Damage;
-
+		
 	Damage = DamageAmount - mInfo.Armor;
 	Damage = Damage < 1.f ? 1.f : Damage;
 
@@ -148,8 +149,8 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 
 	if (mInfo.HP <= 0) {
 		//player에게 몬스터의 돈을 줌
-		//APlayerCharacter* Player = Cast<APlayerCharacter>(DamageCauser);
-		//Player->AddGold(mInfo.Gold);
+		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+		GameInst->GetPlayerManager()->GetPlayerInfo().LevelAccGold += mInfo.Gold;
 		
 		//돈 UI 업데이트
 		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
@@ -158,7 +159,7 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 			UInGameUserWidget* widget = GameMode->GetInGameWidget();
 			if (widget)
 			{
-				//widget->SetEarnGold(Player->GetInfo().LevelAccGold);
+				widget->SetEarnGold(GameInst->GetPlayerManager()->GetPlayerInfo().LevelAccGold);
 			}
 		}
 		
