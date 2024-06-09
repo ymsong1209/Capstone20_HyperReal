@@ -17,19 +17,3 @@ URune::URune()	:
 	m_fCoolTime(0.f)
 {
 }
-
-void URune::GiveDamageTrigger(AActor* _pActor)
-{
-}
-
-void URune::NormalAttackTrigger(AActor* _pActor)
-{
-}
-
-void URune::TakeDamageTrigger(AActor* _pActor)
-{
-}
-
-void URune::Activate(AActor* _pActor)
-{
-}

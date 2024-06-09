@@ -11,7 +11,7 @@ UDrainRune::UDrainRune()
 	m_eRuneType = ERuneType::Drain;
 }
 
-void UDrainRune::GiveDamageTrigger(AActor* _pActor)
+void UDrainRune::GiveDamageTrigger(AActor* _pActor, float _fValue)
 {
 	// 흡혈 호출
 }

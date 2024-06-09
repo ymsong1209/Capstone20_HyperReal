@@ -2,18 +2,46 @@
 
 
 #include "LightningRune.h"
+#include "TimerManager.h"
+#include "../../Projectile/ChainLightning.h"
 
-ULightningRune::ULightningRune()
+ULightningRune::ULightningRune()	:
+	m_bAble(true)
 {
-	m_fEtc = 10.f;
+	m_TexRune = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_SJWContent/Rune/thunder.thunder'")));
+
 	m_strName = TEXT("번개");
 	m_strDesc = TEXT("기본 공격 시 번개가 전이됨");
 	m_eRuneType = ERuneType::Lightning;
+
+	// 스태틱 데미지
+	m_fEtc = 10.f;
+	m_fCoolTime = 1.f;
 }
 
-void ULightningRune::NormalAttackTrigger(AActor* _pActor)
+void ULightningRune::NormalAttackTrigger(AActor* _pActor, float _fValue)
 {
-	// 체인 라이트닝 투사체 발사
+	if (!m_bAble)
+		return;
 
-	// 타이머 만들어서 쿨타임 구현
+	m_bAble = false;
+	GetWorld()->GetTimerManager().SetTimer(m_hCoolHandle, this, &ULightningRune::CoolDown, m_fCoolTime, false);
+
+	// 체인 라이트닝 투사체 발사
+	EjectLightning(_pActor);
+}
+
+void ULightningRune::CoolDown()
+{
+	m_bAble = true;
+}
+
+void ULightningRune::EjectLightning(AActor* _pActor)
+{
+	FActorSpawnParameters param;
+	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AChainLightning* pLight = GetWorld()->SpawnActor<AChainLightning>(_pActor->GetActorLocation(), _pActor->GetActorRotation(), param);
+	pLight->SetDamage(m_fEtc);
+	pLight->SetOwnerController(GetWorld()->GetFirstPlayerController());
+	pLight->SetTarget(_pActor);
 }

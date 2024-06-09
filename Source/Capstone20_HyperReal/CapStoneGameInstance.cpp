@@ -3,6 +3,7 @@
 
 #include "CapStoneGameInstance.h"
 #include "Manager/PlayerManager.h"
+#include "Manager/RuneManager.h"
 
 UCapStoneGameInstance::UCapStoneGameInstance()
 {
@@ -84,4 +85,6 @@ void UCapStoneGameInstance::Init()
 
 	if (m_PlayerManager)
 		m_PlayerManager->Init(TEXT("Soldier"));
+
+	m_RuneManager = GetSubsystem<URuneManager>();
 }

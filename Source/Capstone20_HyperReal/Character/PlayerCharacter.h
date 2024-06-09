@@ -137,6 +137,8 @@ public:
 	float GetAttackSpeed();
 	float GetMoveSpeed();
 
+	class URuneManager* GetRuneManager();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -149,7 +151,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-
 	virtual float GiveDamage(AActor* _Target, float _fAttackRatio, EPlayerSkill _type);
 
 private:

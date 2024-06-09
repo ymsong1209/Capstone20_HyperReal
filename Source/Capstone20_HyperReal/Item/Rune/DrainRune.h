@@ -18,5 +18,5 @@ public:
 	UDrainRune();
 
 public:
-	virtual void GiveDamageTrigger(AActor* _pActor) override;
+	virtual void GiveDamageTrigger(AActor* _pActor = nullptr, float _fValue = 0.f) override;
 };

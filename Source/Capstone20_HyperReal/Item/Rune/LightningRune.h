@@ -14,9 +14,17 @@ class CAPSTONE20_HYPERREAL_API ULightningRune : public URune
 {
 	GENERATED_BODY()
 	
+private:
+	bool m_bAble;
+	FTimerHandle m_hCoolHandle;
+
 public:
 	ULightningRune();
 
 public:
-	virtual void NormalAttackTrigger(AActor* _pActor = nullptr) override;
+	virtual void NormalAttackTrigger(AActor* _pActor = nullptr, float _fValue = 0.f) override;
+
+private:
+	void CoolDown();
+	void EjectLightning(AActor* _pActor);
 };

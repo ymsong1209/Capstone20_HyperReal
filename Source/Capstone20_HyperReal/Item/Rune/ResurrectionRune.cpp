@@ -11,7 +11,7 @@ UResurrectionRune::UResurrectionRune()
 	m_eRuneType = ERuneType::Resurrection;
 }
 
-void UResurrectionRune::Activate(AActor* _pActor)
+void UResurrectionRune::Activate(AActor* _pActor, float _fValue)
 {
 	// 캐릭터 부활
 }

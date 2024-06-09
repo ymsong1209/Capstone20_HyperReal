@@ -71,8 +71,8 @@ public:
 
 public:
 	// 공격과 관련된 함수
-	virtual void GiveDamageTrigger(AActor* _pActor = nullptr);
-	virtual void NormalAttackTrigger(AActor* _pActor = nullptr);
-	virtual void TakeDamageTrigger(AActor* _pActor = nullptr);
-	virtual void Activate(AActor* _pActor = nullptr);
+	virtual void GiveDamageTrigger(AActor* _pActor = nullptr, float _fValue = 0.f) {};
+	virtual void NormalAttackTrigger(AActor* _pActor = nullptr, float _fValue = 0.f) {};
+	virtual void TakeDamageTrigger(AActor* _pActor = nullptr, float _fValue = 0.f) {};
+	virtual void Activate(AActor* _pActor = nullptr, float _fValue = 0.f) {};
 };

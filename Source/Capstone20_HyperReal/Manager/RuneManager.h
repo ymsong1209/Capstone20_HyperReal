@@ -28,5 +28,12 @@ public:
 	virtual void Deinitialize() override;
 
 	void Init();
-private:
+
+public:
+	URune* GetRune(ERuneType _eType) { return m_arrRune[(int)_eType]; }
+
+	void GiveDamageTrigger(AActor* _pActor = nullptr, float _fValue = 0.f);
+	void NormalAttackTrigger(AActor* _pActor = nullptr, float _fValue = 0.f);
+	void TakeDamageTrigger(AActor* _pActor = nullptr, float _fValue = 0.f);
+	void Activate(AActor* _pActor = nullptr, float _fValue = 0.f);
 };

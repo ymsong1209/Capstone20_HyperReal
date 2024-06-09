@@ -133,6 +133,8 @@ private:
 	void SpawnHitEffect(FVector _vLoc, FRotator _vRot);
 	void InitializeDynamicMaterial();
 
+	float GetWhirlwindMaxTime();
+
 public:
 	void ChargeAttackEnd();
 	void AttackLeapAttack();

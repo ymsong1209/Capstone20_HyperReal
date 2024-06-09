@@ -11,7 +11,7 @@ UThornRune::UThornRune()
 	m_eRuneType = ERuneType::Thorn;
 }
 
-void UThornRune::TakeDamageTrigger(AActor* _pActor)
+void UThornRune::TakeDamageTrigger(AActor* _pActor, float _fValue)
 {
 	// 주변에 데미지 주기
 }

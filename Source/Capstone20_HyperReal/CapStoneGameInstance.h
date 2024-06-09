@@ -26,6 +26,9 @@ private:
 	UPROPERTY()
 	class UPlayerManager* m_PlayerManager;
 
+	UPROPERTY()
+	class URuneManager* m_RuneManager;
+
 public:
 	const FMonsterDataTableInfo* FindMonsterInfo(const FString& _Name);
 	const FPlayerDataTableInfo* FindPlayerInfo(const FString& _Name);
@@ -34,6 +37,7 @@ public:
 	void UpdatePlayerGold(const FString& PlayerName, int _gold);
 
 	UPlayerManager* GetPlayerManager() { return m_PlayerManager; }
+	URuneManager* GetRuneManager() { return m_RuneManager; }
 
 public:
 	virtual void Init() override;

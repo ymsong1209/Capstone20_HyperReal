@@ -10,7 +10,7 @@ UDashRune::UDashRune()
 	m_eRuneType = ERuneType::Dash;
 }
 
-void UDashRune::Activate(AActor* _pActor)
+void UDashRune::Activate(AActor* _pActor, float _fValue)
 {
 	// 플레이어 도약 실행
 }

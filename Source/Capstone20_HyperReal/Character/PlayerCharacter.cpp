@@ -24,6 +24,7 @@
 #include "InputMappingContext.h"
 #include "../Manager/PlayerManager.h"
 #include "../Building/Portal.h"
+#include "../Manager/RuneManager.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() :
@@ -142,25 +143,25 @@ void APlayerCharacter::Tick(float DeltaTime)
 	}
 
 	// 스킬 쿨타입 계산 밑 UI 적용
-	if (m_faccSkillACool < m_Info.ASkillmaxcooltime)
+	if (m_faccSkillACool < GetPlayerInfo().ASkillmaxcooltime)
 	{
 		m_faccSkillACool += DeltaTime;
 		m_pHUDWidget->CalSkillCoolTime(0,  m_faccSkillACool / GetPlayerInfo().ASkillmaxcooltime);
 	}
 
-	if (m_faccSkillSCool < m_Info.SSkillmaxcooltime)
+	if (m_faccSkillSCool < GetPlayerInfo().SSkillmaxcooltime)
 	{
 		m_faccSkillSCool += DeltaTime;
 		m_pHUDWidget->CalSkillCoolTime(1, m_faccSkillSCool / GetPlayerInfo().SSkillmaxcooltime);
 	}
 
-	if (m_faccSkillDCool < m_Info.DSkillmaxcooltime)
+	if (m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime)
 	{
 		m_faccSkillDCool += DeltaTime;
 		m_pHUDWidget->CalSkillCoolTime(2, m_faccSkillDCool / GetPlayerInfo().DSkillmaxcooltime);
 	}
 
-	if (m_faccSkillFCool < m_Info.FSkillmaxcooltime)
+	if (m_faccSkillFCool < GetPlayerInfo().FSkillmaxcooltime)
 	{
 		m_faccSkillFCool += DeltaTime;
 		m_pHUDWidget->CalSkillCoolTime(3, m_faccSkillFCool / GetPlayerInfo().FSkillmaxcooltime);
@@ -252,6 +253,18 @@ float APlayerCharacter::GetMoveSpeed()
 	return iMS;
 }
 
+URuneManager* APlayerCharacter::GetRuneManager()
+{
+	URuneManager* Mgr = nullptr;
+
+	UCapStoneGameInstance* gameInst = GetWorld()->GetGameInstance<UCapStoneGameInstance>();
+
+	if (gameInst)
+		Mgr = gameInst->GetRuneManager();
+
+	return Mgr;
+}
+
 float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float fDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
@@ -280,13 +293,17 @@ float APlayerCharacter::GiveDamage(AActor* _Target, float _fAttackRatio, EPlayer
 {
 	float fResult = _Target->TakeDamage(GetAttack() * _fAttackRatio, FDamageEvent(), GetController(), this);
 
-	// 평타에 적용되는 룬 작동
-	if (_type == EPlayerSkill::None)
+	// 데미지를 받을 수 있는 오브젝트 일 때만 적용
+	if (fResult != -1.f)
 	{
+		// 평타에 적용되는 룬 작동
+		if (_type == EPlayerSkill::None)
+		{
+			GetRuneManager()->NormalAttackTrigger(_Target, GetAttack() * _fAttackRatio);
+		}
 
+		// 전체에 다 적용 되는 룬 작동
 	}
-
-	// 전체에 다 적용 되는 룬 작동
 
 	return fResult;
 }

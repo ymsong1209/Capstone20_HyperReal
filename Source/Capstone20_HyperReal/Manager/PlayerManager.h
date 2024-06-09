@@ -31,7 +31,12 @@ public:
 	virtual void Deinitialize() override;
 
 	void Init(const FString& _fName);
+
+	// 후퇴 시 육체 강화 함수
 	void UpgradePlayerStat(EPlayerUpgradeType _eType);
+
+	// 후퇴 시 육체 복구 함수
+	void RestoreHealth();
 
 private:
 	void UpgradeAttack(float _fValue);

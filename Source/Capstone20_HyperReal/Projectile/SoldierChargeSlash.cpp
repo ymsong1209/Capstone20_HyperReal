@@ -39,6 +39,9 @@ void ASoldierChargeSlash::BeginPlay()
 void ASoldierChargeSlash::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FVector NewLoc = GetActorLocation() + m_Projectile->MaxSpeed * GetActorForwardVector() * DeltaTime;
+	SetActorLocation(NewLoc);
 }
 
 void ASoldierChargeSlash::SlashBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

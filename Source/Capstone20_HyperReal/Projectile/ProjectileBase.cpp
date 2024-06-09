@@ -53,7 +53,6 @@ void AProjectileBase::ProjectileBounce(const FHitResult& ImpactResult, const FVe
 void AProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-
 	m_fAccDistance = m_fMaxDistance;
 }
 
@@ -71,9 +70,14 @@ void AProjectileBase::Tick(float DeltaTime)
 			Destroy();
 	}
 
-	if(m_Target)
+	// 추적하는 타입
+	if(IsValid(m_Target))
 	{
-		
+		FVector vDir = (m_Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		//SetActorRotation(vDir.Rotation());
+
+		FVector NewLoc = (GetActorLocation() + (vDir * 1000.f * DeltaTime));
+		SetActorLocation(NewLoc);
 	}
 }
 

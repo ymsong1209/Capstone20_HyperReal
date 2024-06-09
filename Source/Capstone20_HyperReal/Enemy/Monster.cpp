@@ -148,8 +148,8 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 
 	if (mInfo.HP <= 0) {
 		//player에게 몬스터의 돈을 줌
-		APlayerCharacter* Player = Cast<APlayerCharacter>(DamageCauser);
-		Player->AddGold(mInfo.Gold);
+		//APlayerCharacter* Player = Cast<APlayerCharacter>(DamageCauser);
+		//Player->AddGold(mInfo.Gold);
 		
 		//돈 UI 업데이트
 		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
@@ -158,7 +158,7 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 			UInGameUserWidget* widget = GameMode->GetInGameWidget();
 			if (widget)
 			{
-				widget->SetEarnGold(Player->GetInfo().LevelAccGold);
+				//widget->SetEarnGold(Player->GetInfo().LevelAccGold);
 			}
 		}
 		

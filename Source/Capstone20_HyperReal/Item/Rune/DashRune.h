@@ -18,5 +18,5 @@ public:
 	UDashRune();
 
 public:
-	virtual void Activate(AActor* _pActor) override;
+	virtual void Activate(AActor* _pActor = nullptr, float _fValue = 0.f) override;
 };

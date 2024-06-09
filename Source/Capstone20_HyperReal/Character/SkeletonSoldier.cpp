@@ -24,6 +24,8 @@
 #include "../DamageType/AirborneDamageType.h"
 #include "../UI/InGameUserWidget.h"
 #include "../InGameModeBase.h"
+#include "../Manager/RuneManager.h"
+#include "../Item/Rune/Rune.h"
 
 ASkeletonSoldier::ASkeletonSoldier() :
 	m_ChargingMontage(nullptr),
@@ -360,7 +362,7 @@ void ASkeletonSoldier::EscapeFunction()
 
 void ASkeletonSoldier::ChargeStart()
 {
-	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || (m_faccSkillDCool < m_Info.DSkillmaxcooltime))
+	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || (m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime))
 		return;
 
 	GetCharacterMovement()->StopMovementImmediately();
@@ -449,7 +451,7 @@ void ASkeletonSoldier::ChargeAttack()
 void ASkeletonSoldier::Whirlwind()
 {
 	// 아무 스킬도 안쓰고 있었으면 휠윈드 실행
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillACool >= m_Info.ASkillmaxcooltime))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillACool >= GetPlayerInfo().ASkillmaxcooltime))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillA;
 
@@ -462,7 +464,7 @@ void ASkeletonSoldier::Whirlwind()
 			GetWorldTimerManager().SetTimer(m_hAttackWhirlwindHandle, this, &ASkeletonSoldier::AttackWhirlwind, 0.5f, true, 0.f);
 
 			// 타이머 설정해서 몇초후 훨윈드 자동 종료	
-			GetWorldTimerManager().SetTimer(m_hWhirlwindHandle, this, &ASkeletonSoldier::WhirlwindEnd, m_fWhilrwindDuration, false);
+			GetWorldTimerManager().SetTimer(m_hWhirlwindHandle, this, &ASkeletonSoldier::WhirlwindEnd, GetWhirlwindMaxTime(), false);
 		}
 
 		if (m_pRWeapon)
@@ -521,7 +523,7 @@ void ASkeletonSoldier::AttackWhirlwind()
 
 void ASkeletonSoldier::LeapAttack()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillSCool >= m_Info.SSkillmaxcooltime))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillSCool >= GetPlayerInfo().SSkillmaxcooltime))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillS;
 
@@ -600,7 +602,7 @@ void ASkeletonSoldier::AttackLeapAttack()
 
 void ASkeletonSoldier::UndeadFury()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillFCool >= m_Info.FSkillmaxcooltime))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillFCool >= GetPlayerInfo().FSkillmaxcooltime))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillF;
 		m_faccSkillFCool = 0.f;
@@ -919,4 +921,13 @@ void ASkeletonSoldier::InitializeDynamicMaterial()
 			m_pHUDWidget->SetSkillBackImage(3, SkillFIcon);
 		}
 	}
+}
+
+float ASkeletonSoldier::GetWhirlwindMaxTime()
+{
+	float fResult = m_fWhilrwindDuration;
+
+	URuneManager* RuneMgr = GetRuneManager();
+	fResult += RuneMgr->GetRune(ERuneType::Rotation)->GetExtraValue();
+	return fResult;
 }

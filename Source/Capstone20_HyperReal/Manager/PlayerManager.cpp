@@ -71,6 +71,9 @@ void UPlayerManager::Init(const FString& _fName)
 
 void UPlayerManager::UpgradePlayerStat(EPlayerUpgradeType _eType)
 {
+	// 일단 고정수치 100 감소
+	m_fPlayerInfo.TotalGold -= 100;
+
 	float fIncreaeMul = CalculateIncreaseRate();
 
 	switch (_eType)
@@ -85,6 +88,19 @@ void UPlayerManager::UpgradePlayerStat(EPlayerUpgradeType _eType)
 		UpgradeSoul(fIncreaeMul);
 		break;
 	}
+}
+
+void UPlayerManager::RestoreHealth()
+{
+	// 일단 고정수치 100 감소
+	m_fPlayerInfo.TotalGold -= 100;
+
+	int32 iRand = FMath::RandRange(20, 80);
+	
+	m_fPlayerInfo.HP += iRand;
+
+	if (m_fPlayerInfo.MaxHP <= m_fPlayerInfo.HP)
+		m_fPlayerInfo.HP = m_fPlayerInfo.MaxHP;
 }
 
 void UPlayerManager::UpgradeAttack(float _fValue)

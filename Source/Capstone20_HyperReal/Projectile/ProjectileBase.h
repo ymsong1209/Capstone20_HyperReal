@@ -44,7 +44,7 @@ protected:
 	AActor* m_Target;
 
 public:
-	void SetTarget(AActor* Target)
+	virtual void SetTarget(AActor* Target)
 	{
 		m_Target = Target;
 	}
