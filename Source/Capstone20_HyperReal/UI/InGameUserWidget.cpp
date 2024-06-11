@@ -169,8 +169,8 @@ void UInGameUserWidget::CloseRewardUI()
 	mRewardWidget->setDestroyBuildingCount(0);
 	mRewardWidget->setKillEnemyCount(0);
 	//basecamp 위젯 활성화하기
-	mBasecampWidget->SetVisibility(ESlateVisibility::Visible);
-	PushWidget(mBasecampWidget);
+	//mBasecampWidget->SetVisibility(ESlateVisibility::Visible);
+	//PushWidget(mBasecampWidget);
 }
 
 void UInGameUserWidget::CloseUI()
