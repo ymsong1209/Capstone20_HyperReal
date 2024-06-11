@@ -12,6 +12,7 @@
 /**
  * 
  */
+class URune;
 UCLASS()
 class CAPSTONE20_HYPERREAL_API UMagicWidget : public UMyWidget
 {
@@ -22,6 +23,8 @@ private:
 
 	UPROPERTY()
 	TArray<UButton*> Magic_Button;
+	UPROPERTY()
+	TArray<URune*> arrRune;
 	//UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	//UButton* Magic_Button1;
 	//UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -60,8 +63,11 @@ public:
 	void CloseButtonUI();
 	virtual void CloseUI() override;
 	UFUNCTION()
-	void Upgrade();
+	void Upgrade0();
+	void Upgrade1();
+	void Upgrade2();
 	void Refresh();
+
 
 	
 };
