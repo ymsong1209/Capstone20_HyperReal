@@ -17,11 +17,15 @@ void UBaseLevelWidget::NativeOnInitialized()
 void UBaseLevelWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
+	mBasecampWidget = Cast<UBasecampWidget>(GetWidgetFromName(TEXT("Basecampwidget")));
 }
 
 void UBaseLevelWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	//mBasecampWidget->SetVisibility(ESlateVisibility::Collapsed);
+	mBasecampWidget->SetVisibility(ESlateVisibility::Visible);
+	PushWidget(mBasecampWidget);
 }
 
 void UBaseLevelWidget::NativeDestruct()
@@ -63,4 +67,23 @@ UMyWidget* UBaseLevelWidget::TopWidget()
 	}
 
 	return ActivateWidgets.Last();
+}
+
+void UBaseLevelWidget::CloseUI()
+{
+	if (ActivateWidgets.Num() == 0)
+	{
+
+	}
+	else
+	{
+		UMyWidget* widget = TopWidget();
+		PopWidget();
+		widget->CloseUI();
+	}
+}
+
+void UBaseLevelWidget::OpenUI()
+{
+	//mBasecampWidget->SetVisibility(ESlateVisibility::Visible);
 }

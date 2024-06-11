@@ -4,6 +4,10 @@
 #include "BasecampWidget.h"
 #include "../InGameModeBase.h"
 #include "../UI/InGameUserWidget.h"
+#include "../BaseLevelGameModeBase.h"
+#include "BaseLevelWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 void UBasecampWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -52,10 +56,10 @@ void UBasecampWidget::UpgradeButtonClick()
 	if (UpgradeWidget)
 	{
 		UpgradeWidget->SetVisibility(ESlateVisibility::Visible);
-		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+		ABaseLevelGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ABaseLevelGameModeBase>();
 		if (GameMode)
 		{
-			UInGameUserWidget* widget = GameMode->GetInGameWidget();
+			UBaseLevelWidget* widget = GameMode->GetUBaseLevelWidget();
 			if (widget && widget->IsVisible())
 			{
 				widget->PushWidget(UpgradeWidget);
@@ -70,10 +74,10 @@ void UBasecampWidget::MagicButtonClick()
 	if (MagicWidget)
 	{
 		MagicWidget->SetVisibility(ESlateVisibility::Visible);
-		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+		ABaseLevelGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ABaseLevelGameModeBase>();
 		if (GameMode)
 		{
-			UInGameUserWidget* widget = GameMode->GetInGameWidget();
+			UBaseLevelWidget* widget = GameMode->GetUBaseLevelWidget();
 			if (widget && widget->IsVisible())
 			{
 				widget->PushWidget(MagicWidget);
@@ -87,10 +91,10 @@ void UBasecampWidget::MaintainButtonClick()
 	if (MaintainWidget)
 	{
 		MaintainWidget->SetVisibility(ESlateVisibility::Visible);
-		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+		ABaseLevelGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ABaseLevelGameModeBase>();
 		if (GameMode)
 		{
-			UInGameUserWidget* widget = GameMode->GetInGameWidget();
+			UBaseLevelWidget* widget = GameMode->GetUBaseLevelWidget();
 			if (widget && widget->IsVisible())
 			{
 				widget->PushWidget(MaintainWidget);
@@ -102,6 +106,7 @@ void UBasecampWidget::MaintainButtonClick()
 void UBasecampWidget::NextStageButtonClick()
 {
 	//여기서 다음 레벨로 이동;
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("SJWMap"));
 }
 
 void UBasecampWidget::CloseUI()

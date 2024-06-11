@@ -74,7 +74,6 @@ void UInGameUserWidget::NativeConstruct()
 	mRewardWidget->setRewardMoney(400);
 	mRewardWidget->SetVisibility(ESlateVisibility::Collapsed);
 	mBasecampWidget->SetVisibility(ESlateVisibility::Collapsed);
-	PushWidget(mBasecampWidget);
 }
 
 void UInGameUserWidget::NativeDestruct()

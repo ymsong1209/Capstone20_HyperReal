@@ -4,6 +4,8 @@
 #include "BodyStoreWidget.h"
 #include "../InGameModeBase.h"
 #include "../UI/InGameUserWidget.h"
+#include "../BaseLevelGameModeBase.h"
+#include "BaseLevelWidget.h"
 void UBodyStoreWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -47,10 +49,10 @@ void UBodyStoreWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 
 void UBodyStoreWidget::CloseButtonUI()
 {
-	AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+	ABaseLevelGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ABaseLevelGameModeBase>();
 	if (GameMode)
 	{
-		UInGameUserWidget* widget = GameMode->GetInGameWidget();
+		UBaseLevelWidget* widget = GameMode->GetUBaseLevelWidget();
 		if (widget)
 		{
 			widget->CloseUI();
