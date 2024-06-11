@@ -4,6 +4,7 @@
 #include "LightningRune.h"
 #include "TimerManager.h"
 #include "../../Projectile/ChainLightning.h"
+#include "../../Enemy/Monster.h"
 
 ULightningRune::ULightningRune()	:
 	m_bAble(true)
@@ -38,6 +39,11 @@ void ULightningRune::CoolDown()
 
 void ULightningRune::EjectLightning(AActor* _pActor)
 {
+	AMonster* pMon = Cast<AMonster>(_pActor);
+
+	if (!pMon)
+		return;
+
 	FActorSpawnParameters param;
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AChainLightning* pLight = GetWorld()->SpawnActor<AChainLightning>(_pActor->GetActorLocation(), _pActor->GetActorRotation(), param);

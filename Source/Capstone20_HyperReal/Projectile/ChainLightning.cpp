@@ -64,11 +64,13 @@ void AChainLightning::Tick(float DeltaTime)
 			//if (pMon)
 			//{
 			//}
+
+			FindNewTarget();
 		}
 
-		AMonster* pMon = Cast<AMonster>(m_Target);
-		if (pMon)
-			FindNewTarget();
+		//AMonster* pMon = Cast<AMonster>(m_Target);
+		//if (pMon)
+		//	FindNewTarget();
 	}
 }
 
@@ -82,8 +84,8 @@ void AChainLightning::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 
 			if (pMon)
 			{
-				FindNewTarget();
 			}
+			FindNewTarget();
 		}
 	}
 }
