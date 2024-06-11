@@ -180,6 +180,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	{
 		// 우클릭을 기본 공격에 바인딩 추후 triggerd 로 바꾸는게 좀더 자연스러울듯함
 		pInput->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacter::Attack);
+
+		pInput->BindAction(EscapeAction, ETriggerEvent::Started, this, &APlayerCharacter::TestBasecampUI);
 	}
 }
 
@@ -321,9 +323,7 @@ float APlayerCharacter::GiveDamage(AActor* _Target, float _fAttackRatio, EPlayer
 	{
 		// 평타에 적용되는 룬 작동
 		if (_type == EPlayerSkill::None)
-		{
 			GetRuneManager()->NormalAttackTrigger(_Target, GetAttack() * _fAttackRatio);
-		}
 
 		// 전체에 다 적용 되는 룬 작동
 		GetRuneManager()->GiveDamageTrigger(_Target, GetAttack() * _fAttackRatio);
@@ -456,6 +456,8 @@ void APlayerCharacter::Heal(float fValue)
 		GetPlayerInfo().HP = GetPlayerInfo().MaxHP;
 
 	m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetHPMax());
+
+	UE_LOG(LogTemp, Log, TEXT("Heal, current Hp : %d"), GetPlayerInfo().HP);
 }
 
 void APlayerCharacter::Ressurection(float fValue)
@@ -553,4 +555,9 @@ void APlayerCharacter::InitPlayerData()
 	//		}
 	//	}
 	//}	
+}
+
+void APlayerCharacter::TestBasecampUI()
+{
+	m_pHUDWidget->TestOpenTrigger();
 }
