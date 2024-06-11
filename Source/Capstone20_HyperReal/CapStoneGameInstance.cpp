@@ -37,6 +37,11 @@ void UCapStoneGameInstance::UpgradeRune(ERuneType _eType)
 	m_RuneManager->UpgradeRune(_eType);
 }
 
+void UCapStoneGameInstance::UpgradeHealth()
+{
+	m_PlayerManager->RestoreHealth();
+}
+
 const FMonsterDataTableInfo* UCapStoneGameInstance::FindMonsterInfo(const FString& _Name)
 {
 	if (mMonsterInfoTable) {
