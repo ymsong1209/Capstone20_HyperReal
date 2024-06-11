@@ -73,7 +73,7 @@ void UInGameUserWidget::NativeConstruct()
 	mRewardWidget->setDestroyBuildingCount(10);
 	mRewardWidget->setRewardMoney(400);
 	mRewardWidget->SetVisibility(ESlateVisibility::Collapsed);
-	mBasecampWidget->SetVisibility(ESlateVisibility::Visible);
+	mBasecampWidget->SetVisibility(ESlateVisibility::Collapsed);
 	PushWidget(mBasecampWidget);
 }
 
@@ -157,14 +157,10 @@ void UInGameUserWidget::OpenRewardUI(int gold, int building, int enemy)
 	mRewardWidget->setDestroyBuildingCount(building);
 	mRewardWidget->setKillEnemyCount(enemy);
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	if (PlayerCharacter)
-	{
-		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
-		if (GameInst)
-		{
-			GameInst->UpdatePlayerGold(PlayerCharacter->GetInfo().Name,PlayerCharacter->GetInfo().LevelAccGold);
-		}
-	}
+	if (!PlayerCharacter)return;
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	if(!GameInst)return;
+	GameInst->UpdatePlayerGold(PlayerCharacter->GetPlayerInfo().Name,PlayerCharacter->GetPlayerInfo().LevelAccGold);
 }
 
 void UInGameUserWidget::CloseRewardUI()

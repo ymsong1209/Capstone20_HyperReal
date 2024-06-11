@@ -21,9 +21,6 @@ public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	FPlayerInfo m_Info;
-
 	FString m_strDataTableKey;
 
 	/** Returns TopDownCameraComponent subobject **/
@@ -122,8 +119,6 @@ public:
 
 	bool IsInvincible() const {return m_bInvincible;}
 	void SetInvincible(bool _invincible){m_bInvincible = _invincible;}
-	
-	const FPlayerInfo& GetInfo() { return m_Info; }
 
 	FPlayerInfo& GetPlayerInfo();
 

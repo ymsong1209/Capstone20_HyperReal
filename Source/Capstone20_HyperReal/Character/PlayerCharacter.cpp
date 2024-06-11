@@ -428,7 +428,7 @@ void APlayerCharacter::EscapeFunction()
 		UInGameUserWidget* widget = GameMode->GetInGameWidget();
 		if (widget && widget->IsVisible())
 		{
-			widget->CloseRewardUI();
+			widget->CloseUI();
 			UGameplayStatics::SetGamePaused(GetWorld(), false);
 		}
 	}

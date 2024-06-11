@@ -76,7 +76,7 @@ void UUpgradeWidget::AttackIconButtonClick()
 		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 		if (GameInst)
 		{
-			int gold=PlayerCharacter->GetInfo().LevelAccGold+ PlayerCharacter->GetInfo().TotalGold;
+			int gold=PlayerCharacter->GetPlayerInfo().LevelAccGold+ PlayerCharacter->GetPlayerInfo().TotalGold;
 			FString str = FString::FromInt(gold);
 			MyMoneyText->SetText(FText::FromString(str));
 		}
@@ -104,7 +104,7 @@ void UUpgradeWidget::HPIconButtonClick()
 		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 		if (GameInst)
 		{
-			int gold = PlayerCharacter->GetInfo().LevelAccGold + PlayerCharacter->GetInfo().TotalGold;
+			int gold = PlayerCharacter->GetPlayerInfo().LevelAccGold + PlayerCharacter->GetPlayerInfo().TotalGold;
 			FString str = FString::FromInt(gold);
 			MyMoneyText->SetText(FText::FromString(str));
 		}
@@ -131,7 +131,7 @@ void UUpgradeWidget::SoulIconButtonClick()
 		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 		if (GameInst)
 		{
-			int gold = PlayerCharacter->GetInfo().LevelAccGold + PlayerCharacter->GetInfo().TotalGold;
+			int gold = PlayerCharacter->GetPlayerInfo().LevelAccGold + PlayerCharacter->GetPlayerInfo().TotalGold;
 			FString str = FString::FromInt(gold);
 			MyMoneyText->SetText(FText::FromString(str));
 		}

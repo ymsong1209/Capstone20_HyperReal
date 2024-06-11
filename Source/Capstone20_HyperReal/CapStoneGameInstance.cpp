@@ -69,7 +69,13 @@ void UCapStoneGameInstance::UpdatePlayerGold(const FString& PlayerName, int _gol
 {
 	if (mPlayerInfoTable) {
 		FPlayerDataTableInfo* table =  mPlayerInfoTable->FindRow<FPlayerDataTableInfo>(*PlayerName, TEXT(""));
+		if(!table)
+		{
+			UE_LOG(LogTemp, Error, TEXT("No PlayerInfoTable"));
+			return;
+		}
 		table->TotalGold += _gold;
+		UE_LOG(LogTemp, Log, TEXT("Player Gold : %d"), table->TotalGold);
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("No PlayerInfoTable"));
