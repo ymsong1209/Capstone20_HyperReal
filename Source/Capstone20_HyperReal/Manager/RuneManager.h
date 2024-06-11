@@ -14,6 +14,7 @@ class CAPSTONE20_HYPERREAL_API URuneManager : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 private:
+	UPROPERTY()
 	URune* m_arrRune[(int32)ERuneType::End];
 
 public:
