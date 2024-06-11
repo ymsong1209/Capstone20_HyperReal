@@ -190,6 +190,14 @@ void UInGameUserWidget::CloseUI()
 	
 }
 
+void UInGameUserWidget::TestOpenTrigger()
+{
+	if(mBasecampWidget->IsVisible())
+		mBasecampWidget->SetVisibility(ESlateVisibility::Collapsed);
+	else
+		mBasecampWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
 void UInGameUserWidget::PushWidget(UMyWidget* widget)
 {
 	if (widget)

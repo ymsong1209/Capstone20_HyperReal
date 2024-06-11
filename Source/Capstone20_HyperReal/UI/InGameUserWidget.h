@@ -63,6 +63,7 @@ public:
 	void OpenRewardUI(int gold,int building,int enemy);
 	void CloseRewardUI();
 	void CloseUI();
+	void TestOpenTrigger();
 public:
 	void PushWidget(UMyWidget* Widget);
 	UMyWidget* PopWidget();

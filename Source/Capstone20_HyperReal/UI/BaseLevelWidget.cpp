@@ -1,0 +1,66 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "BaseLevelWidget.h"
+#include "Components/Image.h"
+#include "Materials/Material.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Engine/Texture.h"
+#include "../CapStoneGameInstance.h"
+#include "../Character/PlayerCharacter.h"
+
+void UBaseLevelWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+}
+
+void UBaseLevelWidget::NativePreConstruct()
+{
+	Super::NativePreConstruct();
+}
+
+void UBaseLevelWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+}
+
+void UBaseLevelWidget::NativeDestruct()
+{
+	Super::NativeDestruct();
+}
+
+void UBaseLevelWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+}
+
+void UBaseLevelWidget::PushWidget(UMyWidget* widget)
+{
+	if (widget)
+	{
+		ActivateWidgets.Add(widget);
+	}
+}
+
+UMyWidget* UBaseLevelWidget::PopWidget()
+{
+	if (ActivateWidgets.Num() == 0)
+	{
+		return nullptr;
+	}
+
+	UMyWidget* TopWidget = ActivateWidgets.Last();
+	ActivateWidgets.RemoveAt(ActivateWidgets.Num() - 1);
+
+	return TopWidget;
+}
+
+UMyWidget* UBaseLevelWidget::TopWidget()
+{
+	if (ActivateWidgets.Num() == 0)
+	{
+		return nullptr;
+	}
+
+	return ActivateWidgets.Last();
+}
