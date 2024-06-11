@@ -36,7 +36,7 @@ void UStartWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void UStartWidget::StartButtonClick()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("BaseCampMap"));
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("BGBaseCampMap"));
 }
 
 void UStartWidget::EndButtonClick()
