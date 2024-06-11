@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MyWidget.h"
+#include "../GameData.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
@@ -67,7 +68,7 @@ private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UImage* frame3;
 
-	UpgradeState state;
+	EPlayerUpgradeType state;
 
 protected:
 	virtual void NativeOnInitialized();

@@ -23,6 +23,7 @@ enum class EPlayerJob : uint8
 UENUM(BlueprintType)
 enum class EPlayerUpgradeType : uint8
 {
+	None,
 	Attack,
 	Health,
 	Soul,
