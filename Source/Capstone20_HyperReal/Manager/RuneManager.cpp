@@ -14,6 +14,9 @@
 #include "../Item/Rune/DistortionRune.h"
 #include "../Item/Rune/ResurrectionRune.h"
 
+#include "../CapStoneGameInstance.h"
+#include "PlayerManager.h"
+
 URuneManager::URuneManager()
 {
 }
@@ -182,4 +185,17 @@ float URuneManager::GetCoolDownAdd()
 		}
 	}
 	return fResult;
+}
+
+void URuneManager::UpgradeRune(ERuneType _eType)
+{
+	URune* pRune = m_arrRune[(int32)_eType];
+	pRune->Updgrade();
+
+	UCapStoneGameInstance* gameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
+
+	if (gameInst)
+	{
+		gameInst->GetPlayerManager()->GetPlayerInfo().TotalGold -= 100;
+	}
 }

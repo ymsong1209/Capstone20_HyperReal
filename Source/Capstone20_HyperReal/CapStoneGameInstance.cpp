@@ -32,6 +32,11 @@ void UCapStoneGameInstance::UpgradePlayerStat(EPlayerUpgradeType _eType)
 	m_PlayerManager->UpgradePlayerStat(_eType);
 }
 
+void UCapStoneGameInstance::UpgradeRune(ERuneType _eType)
+{
+	m_RuneManager->UpgradeRune(_eType);
+}
+
 const FMonsterDataTableInfo* UCapStoneGameInstance::FindMonsterInfo(const FString& _Name)
 {
 	if (mMonsterInfoTable) {

@@ -2,6 +2,7 @@
 
 
 #include "Rune.h"
+#include "../../Manager/PlayerManager.h"
 
 URune::URune()	:
 	m_eRuneType(ERuneType::End),
@@ -16,4 +17,10 @@ URune::URune()	:
 	m_fAccCoolTime(0.f),
 	m_fCoolTime(0.f)
 {
+}
+
+void URune::Updgrade()
+{
+	// 나중에 최대 레벨인지 체크하는 코드 추가해야함
+	m_iLevel++;
 }

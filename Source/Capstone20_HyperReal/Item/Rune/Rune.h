@@ -75,4 +75,7 @@ public:
 	virtual void NormalAttackTrigger(AActor* _pActor = nullptr, float _fValue = 0.f) {};
 	virtual void TakeDamageTrigger(AActor* _pActor = nullptr, float _fValue = 0.f) {};
 	virtual void Activate(AActor* _pActor = nullptr, float _fValue = 0.f) {};
+
+public:
+	void Updgrade();
 };

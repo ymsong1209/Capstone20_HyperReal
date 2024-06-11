@@ -44,4 +44,6 @@ public:
 	float GetAttackSpeedAdd();
 	float GetMoveSpeedAdd();
 	float GetCoolDownAdd();
+
+	void UpgradeRune(ERuneType _eType);
 };

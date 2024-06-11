@@ -30,7 +30,7 @@ void UPlayerManager::Init(const FString& _fName)
 	{
 		const FPlayerDataTableInfo* Info = gameInst->FindPlayerInfo(_fName);
 
-		if (Info)
+		if (Info) 
 		{
 			UE_LOG(LogTemp, Log, TEXT("PlayerManager Init"));
 			m_fPlayerInfo.Name = Info->Name;

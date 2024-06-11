@@ -47,4 +47,5 @@ public:
 
 public:
 	void UpgradePlayerStat(EPlayerUpgradeType _eType);
+	void UpgradeRune(ERuneType _eType);
 };

@@ -25,6 +25,7 @@
 #include "../Manager/PlayerManager.h"
 #include "../Building/Portal.h"
 #include "../Manager/RuneManager.h"
+#include "../Item/Rune/Rune.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() :
@@ -298,8 +299,10 @@ float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 		m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetHPMax());
 
 	if (GetPlayerInfo().HP <= 0) {
-		//HandleDeath();
 		fDamage = -1.f;
+
+		// 리저렉션 룬 실행
+		GetRuneManager()->GetRune(ERuneType::Resurrection)->Activate();
 	}
 
 	return fDamage;
@@ -452,9 +455,18 @@ void APlayerCharacter::Heal(float fValue)
 	if(GetPlayerInfo().HP >= GetPlayerInfo().MaxHP)
 		GetPlayerInfo().HP = GetPlayerInfo().MaxHP;
 
-	UE_LOG(LogTemp, Log, TEXT("Heal Value : %f"), fValue);
+	m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetHPMax());
+}
+
+void APlayerCharacter::Ressurection(float fValue)
+{
+	GetPlayerInfo().HP = GetHPMax() * fValue;
+	GetPlayerInfo().SP = GetSPMax() * fValue;
 
 	m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetHPMax());
+	m_pHUDWidget->SetSP(GetPlayerInfo().SP, GetSPMax());
+
+	// 부활 이펙트 호출
 }
 
 void APlayerCharacter::InitPlayerData()

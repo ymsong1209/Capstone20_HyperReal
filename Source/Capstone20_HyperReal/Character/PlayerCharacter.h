@@ -178,6 +178,7 @@ public:
 	void SetPortal(class APortal* _portal) { m_pPortal = _portal; };
 
 	void Heal(float fValue);
+	void Ressurection(float fValue);
 
 private:
 	void InitPlayerData();

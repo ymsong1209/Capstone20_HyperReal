@@ -2,6 +2,7 @@
 
 
 #include "ResurrectionRune.h"
+#include "../../Character/PlayerCharacter.h"
 
 UResurrectionRune::UResurrectionRune()
 {
@@ -16,4 +17,16 @@ UResurrectionRune::UResurrectionRune()
 void UResurrectionRune::Activate(AActor* _pActor, float _fValue)
 {
 	// 캐릭터 부활
+	int32 iCount = (int32)m_fEtc;
+
+	if (iCount > 0)
+	{
+		m_fEtc -= 1.f;
+		APlayerCharacter* pPlayer = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+
+		if (IsValid(pPlayer))
+		{
+			pPlayer->Ressurection(0.5f);
+		}
+	}
 }
