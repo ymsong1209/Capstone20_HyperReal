@@ -4,6 +4,8 @@
 #include "MagicWidget.h"
 #include "../InGameModeBase.h"
 #include "../UI/InGameUserWidget.h"
+#include "../BaseLevelGameModeBase.h"
+#include "BaseLevelWidget.h"
 #include "Engine/Texture2D.h"
 #include "Slate/SlateBrushAsset.h"
 #include "Styling/SlateBrush.h"
@@ -78,10 +80,10 @@ void UMagicWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void UMagicWidget::CloseButtonUI()
 {
-	AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+	ABaseLevelGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ABaseLevelGameModeBase>();
 	if (GameMode)
 	{
-		UInGameUserWidget* widget = GameMode->GetInGameWidget();
+		UBaseLevelWidget* widget = GameMode->GetUBaseLevelWidget();
 		if (widget)
 		{
 			widget->CloseUI();

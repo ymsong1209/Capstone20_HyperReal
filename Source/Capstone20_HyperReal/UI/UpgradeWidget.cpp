@@ -3,6 +3,8 @@
 
 #include "UpgradeWidget.h"
 #include "../InGameModeBase.h"
+#include "../BaseLevelGameModeBase.h"
+#include "BaseLevelWidget.h"
 #include "../UI/InGameUserWidget.h"
 #include "../CapStoneGameInstance.h"
 #include "../Character/PlayerCharacter.h"
@@ -151,10 +153,10 @@ void UUpgradeWidget::CloseButtonUI()
 	}
 	else
 	{
-		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+		ABaseLevelGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ABaseLevelGameModeBase>();
 		if (GameMode)
 		{
-			UInGameUserWidget* widget = GameMode->GetInGameWidget();
+			UBaseLevelWidget* widget = GameMode->GetUBaseLevelWidget();
 			if (widget)
 			{
 				widget->CloseUI();

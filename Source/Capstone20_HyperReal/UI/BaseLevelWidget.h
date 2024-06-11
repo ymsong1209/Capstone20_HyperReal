@@ -39,5 +39,6 @@ public:
 	UMyWidget* PopWidget();
 	UMyWidget* TopWidget();
 	void CloseUI();
+	void OpenUI();
 
 };
