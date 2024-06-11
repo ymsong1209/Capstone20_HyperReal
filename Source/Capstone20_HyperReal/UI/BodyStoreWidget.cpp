@@ -7,6 +7,8 @@
 #include "../BaseLevelGameModeBase.h"
 #include "BaseLevelWidget.h"
 #include "../CapStoneGameInstance.h"
+#include "../Manager/PlayerManager.h"
+#include "../GameData.h"
 void UBodyStoreWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -32,10 +34,8 @@ void UBodyStoreWidget::NativePreConstruct()
 void UBodyStoreWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	HP_MyMoneyText->SetText(FText::FromString(TEXT("1200")));
-	UpgradeCostCurText->SetText(FText::FromString(TEXT("100")));
-	UpgradeCostMaxText->SetText(FText::FromString(TEXT("200")));
-	RestoreprogressBar->SetPercent(0.5f);
+	Refresh();
+	
 }
 
 void UBodyStoreWidget::NativeDestruct()
@@ -66,12 +66,31 @@ void UBodyStoreWidget::CloseUI()
 	SetVisibility(ESlateVisibility::Collapsed);
 }
 
+void UBodyStoreWidget::Refresh()
+{
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+	FString gstr = FString::FromInt(gold);
+	HP_MyMoneyText->SetText(FText::FromString(gstr));
+
+	int curHP = GameInst->GetPlayerManager()->GetPlayerInfo().HP;
+	int maxHP = GameInst->GetPlayerManager()->GetPlayerInfo().MaxHP;
+	FString hstr = FString::FromInt(curHP);
+	UpgradeCostCurText->SetText(FText::FromString(hstr));
+	hstr = FString::FromInt(maxHP);
+	UpgradeCostMaxText->SetText(FText::FromString(hstr));
+	RestoreprogressBar->SetPercent((float)curHP / (float)maxHP);
+}
+
 void UBodyStoreWidget::Upgrade()
 {
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInst->GetPlayerManager()->GetPlayerInfo().HP == GameInst->GetPlayerManager()->GetPlayerInfo().MaxHP)
+		return;
 	if (GameInst)
 	{
 		//나중에 수치별 예외처리
 		GameInst->UpgradeHealth();
+		Refresh();
 	}
 }

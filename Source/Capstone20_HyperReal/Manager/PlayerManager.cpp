@@ -132,7 +132,7 @@ void UPlayerManager::UpgradeAttack(float _fValue)
 	if (m_fPlayerInfo.AttackLevel >= STAT_MAX_LEVEL)
 		m_fPlayerInfo.AttackLevel = STAT_MAX_LEVEL;
 
-	UE_LOG(LogTemp, Log, TEXT("Attack Level : %d, Attack : %d"), m_fPlayerInfo.AttackLevel, m_fPlayerInfo.Attack);
+	UE_LOG(LogTemp, Log, TEXT("Attack Level : %d, Attack : %d, progress : %f"), m_fPlayerInfo.AttackLevel, m_fPlayerInfo.Attack,m_fPlayerInfo.AttackProgress);
 }
 
 void UPlayerManager::UpgradeHealth(float _fValue)

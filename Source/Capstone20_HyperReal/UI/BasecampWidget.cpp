@@ -98,6 +98,7 @@ void UBasecampWidget::MaintainButtonClick()
 			if (widget && widget->IsVisible())
 			{
 				widget->PushWidget(MaintainWidget);
+				MaintainWidget->Refresh();
 			}
 		}
 	}

@@ -49,6 +49,7 @@ public:
 	UFUNCTION()
 	void CloseButtonUI();
 	virtual void CloseUI() override;
+	void Refresh();
 	UFUNCTION()
 	void Upgrade();
 	

@@ -13,13 +13,19 @@
 #include "UpgradeWidget.generated.h"
 
 UENUM(BlueprintType)
-enum class UpgradeState : uint8
+enum class UpgradeText : uint8
 {
-	None,
-	Attack,
-	HP,
-	Soul,
-	End
+	NONE,
+	I,
+	II,
+	III,
+	IV,
+	V,
+	VI,
+	VII,
+	VIII,
+	IX,
+	X,
 };
 /**
  * 

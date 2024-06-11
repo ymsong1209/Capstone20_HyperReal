@@ -465,3 +465,13 @@ class CAPSTONE20_HYPERREAL_API UGameData : public UObject
 	
 
 };
+template<typename TEnum>
+FString EnumToString(TEnum EnumValue)
+{
+	const UEnum* EnumPtr = StaticEnum<TEnum>();
+	if (!EnumPtr)
+	{
+		return FString("Invalid");
+	}
+	return EnumPtr->GetNameStringByValue(static_cast<int64>(EnumValue));
+}
