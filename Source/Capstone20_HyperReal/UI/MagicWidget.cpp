@@ -137,7 +137,7 @@ void UMagicWidget::Refresh()
 	TArray<int32> Result;
 	
 	// 1부터 10까지의 숫자를 배열에 추가
-	for (int32 i = 1; i <= 10; ++i)
+	for (int32 i = 0; i <= 9; ++i)
 	{
 		Numbers.Add(i);
 	}
