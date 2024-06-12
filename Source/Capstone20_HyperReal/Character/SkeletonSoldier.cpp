@@ -689,11 +689,17 @@ void ASkeletonSoldier::LeapAttackMove()
 void ASkeletonSoldier::EjectChargeSlash()
 {
 	FVector vLoc = GetActorLocation() + GetActorForwardVector() * 100.f;
-	FActorSpawnParameters param;
-	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	ASoldierChargeSlash* pSlash = GetWorld()->SpawnActor<ASoldierChargeSlash>(vLoc, GetActorRotation(), param);
-	pSlash->SetDamage((float)(GetAttack() * GetPlayerInfo().DSkillRatio));
+	FTransform fTran;
+	fTran.SetLocation(vLoc);
+	fTran.SetRotation(GetActorRotation().Quaternion());
+
+	ASoldierChargeSlash* pSlash = GetWorld()->SpawnActorDeferred<ASoldierChargeSlash>(ASoldierChargeSlash::StaticClass(), fTran, nullptr, nullptr, 
+												ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+	float fDmg = (float)GetAttack() * GetPlayerInfo().DSkillRatio;
+	pSlash->SetDamage(fDmg);
 	pSlash->SetOwnerController(GetController());
+	UGameplayStatics::FinishSpawningActor(pSlash, fTran);
 }
 
 void ASkeletonSoldier::AttackHitCheck()

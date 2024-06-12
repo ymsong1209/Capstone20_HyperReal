@@ -26,6 +26,7 @@
 #include "../Building/Portal.h"
 #include "../Manager/RuneManager.h"
 #include "../Item/Rune/Rune.h"
+#include "../Effect/EffectBase.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() :
@@ -469,6 +470,10 @@ void APlayerCharacter::Ressurection(float fValue)
 	m_pHUDWidget->SetSP(GetPlayerInfo().SP, GetSPMax());
 
 	// 부활 이펙트 호출
+	FActorSpawnParameters param;
+	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(GetActorLocation(), GetActorRotation(), param);
+	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/RPGEffects/ParticlesNiagara/Priest/HealBurst/NS_Priest_Heal_Burst.NS_Priest_Heal_Burst'"));
 }
 
 void APlayerCharacter::InitPlayerData()
