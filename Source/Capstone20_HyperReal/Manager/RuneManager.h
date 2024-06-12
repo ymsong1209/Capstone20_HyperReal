@@ -18,8 +18,6 @@ private:
 	URune* m_arrRune[(int32)ERuneType::End];
 
 public:
-
-public:
 	URuneManager();
 	~URuneManager();
 

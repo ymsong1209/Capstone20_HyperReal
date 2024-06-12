@@ -6,7 +6,7 @@
 
 URune::URune()	:
 	m_eRuneType(ERuneType::End),
-	m_iLevel(1),
+	m_iLevel(0),
 	m_fHealthRatio(0.f),
 	m_fSoulRatio(0.f),
 	m_fAttackRatio(0.f),
