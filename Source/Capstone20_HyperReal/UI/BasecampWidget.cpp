@@ -105,12 +105,12 @@ void UBasecampWidget::MaintainButtonClick()
 
 void UBasecampWidget::NextStageButtonClick()
 {
-	//¿©±â¼­ ´ÙÀ½ ·¹º§·Î ÀÌµ¿;
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("SJWMap"));
+	//ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½;
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Level1"));
 }
 
 void UBasecampWidget::CloseUI()
 {
 	SetVisibility(ESlateVisibility::Collapsed);
-	//pauseÇ®°í ´ÙÀ½¾À ÀÌµ¿
+	//pauseÇ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
 }
