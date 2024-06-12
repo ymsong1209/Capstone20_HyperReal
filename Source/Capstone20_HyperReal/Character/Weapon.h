@@ -26,6 +26,7 @@ protected:
 	class USkeletalMeshComponent* m_WeaponMesh;
 
 protected:
+	UPROPERTY()
 	UMaterialInstanceDynamic* m_MIDBlinkOverlay;
 
 public:

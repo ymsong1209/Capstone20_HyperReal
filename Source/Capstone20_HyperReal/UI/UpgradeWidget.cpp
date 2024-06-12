@@ -8,6 +8,8 @@
 #include "../UI/InGameUserWidget.h"
 #include "../CapStoneGameInstance.h"
 #include "../Character/PlayerCharacter.h"
+#include "../Manager/PlayerManager.h"
+#include "../GameData.h"
 void UUpgradeWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -62,8 +64,12 @@ void UUpgradeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void UUpgradeWidget::AttackIconButtonClick()
 {
-	secondphase = true;
-	StartSecondPhase();
+	if (!secondphase)
+	{
+		secondphase = true;
+		StartSecondPhase();
+	}
+	
 	
 	state = EPlayerUpgradeType::Attack;
 	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Basecamp/UpgradeUI/AttackIcon.AttackIcon'"));
@@ -73,26 +79,42 @@ void UUpgradeWidget::AttackIconButtonClick()
 		targetIconImage->SetBrushFromTexture(NewTexture);
 	}
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if (PlayerCharacter)
 	{
-		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+		
 		if (GameInst)
 		{
-			int gold=PlayerCharacter->GetPlayerInfo().LevelAccGold+ PlayerCharacter->GetPlayerInfo().TotalGold;
-			FString str = FString::FromInt(gold);
-			MyMoneyText->SetText(FText::FromString(str));
+			//int gold=PlayerCharacter->GetPlayerInfo().LevelAccGold+ PlayerCharacter->GetPlayerInfo().TotalGold;
+			
 		}
 	}
+	int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+	UE_LOG(LogTemp, Log, TEXT("curgold : %d"), GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold);
+	FString gstr = FString::FromInt(gold);
+	MyMoneyText->SetText(FText::FromString(gstr));
 	InfoText->SetText(FText::FromString(TEXT("공격력 강화")));
 	//프로그레스 바 및 강화비용 설정
-	PhaseText->SetText(FText::FromString(TEXT("I단계")));
+	int curLevel = GameInst->GetPlayerManager()->GetPlayerInfo().AttackLevel;
+	UpgradeText eut = (UpgradeText)curLevel;
+	FString EnumString = EnumToString(eut)+TEXT("단계");
+	PhaseText->SetText(FText::FromString(EnumString));
+	//임시코드
+	int cost = 100;
+	FString str = FString::FromInt(cost);
+	UpgradeCostText->SetText(FText::FromString(str));
+	float rate = (GameInst->GetPlayerManager()->GetPlayerInfo().AttackProgress)/100.f;
+	progressBar->SetPercent(rate);
 	
 }
 
 void UUpgradeWidget::HPIconButtonClick()
 {
-	secondphase = true;
-	StartSecondPhase();
+	if (!secondphase)
+	{
+		secondphase = true;
+		StartSecondPhase();
+	}
 	state = EPlayerUpgradeType::Health;
 	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Basecamp/UpgradeUI/HPIcon.HPIcon'"));
 	UTexture2D* NewTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *imageName));
@@ -101,25 +123,41 @@ void UUpgradeWidget::HPIconButtonClick()
 		targetIconImage->SetBrushFromTexture(NewTexture);
 	}
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if (PlayerCharacter)
 	{
-		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+		
 		if (GameInst)
 		{
-			int gold = PlayerCharacter->GetPlayerInfo().LevelAccGold + PlayerCharacter->GetPlayerInfo().TotalGold;
-			FString str = FString::FromInt(gold);
-			MyMoneyText->SetText(FText::FromString(str));
+			//int gold = PlayerCharacter->GetPlayerInfo().LevelAccGold + PlayerCharacter->GetPlayerInfo().TotalGold;
+			//FString str = FString::FromInt(gold);
+			//MyMoneyText->SetText(FText::FromString(str));
 		}
 	}
+	int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+	UE_LOG(LogTemp, Log, TEXT("curgold : %d"), GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold);
+	FString gstr = FString::FromInt(gold);
+	MyMoneyText->SetText(FText::FromString(gstr));
 	InfoText->SetText(FText::FromString(TEXT("체력 촉진")));
+	int curLevel = GameInst->GetPlayerManager()->GetPlayerInfo().HealthLevel;
+	UpgradeText eut = (UpgradeText)curLevel;
+	FString EnumString = EnumToString(eut) + TEXT("단계");
+	PhaseText->SetText(FText::FromString(EnumString));
 	//프로그레스 바 및 강화비용 설정
-	PhaseText->SetText(FText::FromString(TEXT("I단계")));
+	int cost = 100;
+	FString str = FString::FromInt(cost);
+	UpgradeCostText->SetText(FText::FromString(str));
+	float rate = (GameInst->GetPlayerManager()->GetPlayerInfo().HealthProgress) / 100.f;
+	progressBar->SetPercent(rate);
 }
 
 void UUpgradeWidget::SoulIconButtonClick()
 {
-	secondphase = true;
-	StartSecondPhase();
+	if (!secondphase)
+	{
+		secondphase = true;
+		StartSecondPhase();
+	}
 	state = EPlayerUpgradeType::Soul;
 	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Basecamp/UpgradeUI/SoulIcon.SoulIcon'"));
 	UTexture2D* NewTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *imageName));
@@ -128,19 +166,33 @@ void UUpgradeWidget::SoulIconButtonClick()
 		targetIconImage->SetBrushFromTexture(NewTexture);
 	}
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if (PlayerCharacter)
 	{
-		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+		
 		if (GameInst)
 		{
-			int gold = PlayerCharacter->GetPlayerInfo().LevelAccGold + PlayerCharacter->GetPlayerInfo().TotalGold;
-			FString str = FString::FromInt(gold);
-			MyMoneyText->SetText(FText::FromString(str));
+			//int gold = PlayerCharacter->GetPlayerInfo().LevelAccGold + PlayerCharacter->GetPlayerInfo().TotalGold;
+			//FString str = FString::FromInt(gold);
+			//MyMoneyText->SetText(FText::FromString(str));
 		}
 	}
 	InfoText->SetText(FText::FromString(TEXT("영혼력 증대")));
 	//프로그레스 바 및 강화비용 설정
-	PhaseText->SetText(FText::FromString(TEXT("I단계")));
+	int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+	UE_LOG(LogTemp, Log, TEXT("curgold : %d"), GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold);
+	FString gstr = FString::FromInt(gold);
+	MyMoneyText->SetText(FText::FromString(gstr));
+	int curLevel = GameInst->GetPlayerManager()->GetPlayerInfo().SoulLevel;
+	UpgradeText eut = (UpgradeText)curLevel;
+	FString EnumString = EnumToString(eut) + TEXT("단계");
+	PhaseText->SetText(FText::FromString(EnumString));
+
+	int cost = 100;
+	FString str = FString::FromInt(cost);
+	UpgradeCostText->SetText(FText::FromString(str));
+	float rate = (GameInst->GetPlayerManager()->GetPlayerInfo().SoulProgress) / 100.f;
+	progressBar->SetPercent(rate);
 }
 
 void UUpgradeWidget::CloseButtonUI()
@@ -216,6 +268,26 @@ void UUpgradeWidget::Upgrade()
 	if (GameInst)
 	{
 		//나중에 수치별 예외처리
+		//UE_LOG(LogTemp, Log, TEXT("goldbefore : %d"), GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold);
+		//UE_LOG(LogTemp, Log, TEXT("goldafter : %d"), GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold);
 		GameInst->UpgradePlayerStat(state);
+		switch (state)
+		{
+		case EPlayerUpgradeType::None:
+			break;
+		case EPlayerUpgradeType::Attack:
+			AttackIconButtonClick();
+			break;
+		case EPlayerUpgradeType::Health:
+			HPIconButtonClick();
+			break;
+		case EPlayerUpgradeType::Soul:
+			SoulIconButtonClick();
+			break;
+		case EPlayerUpgradeType::End:
+			break;
+		default:
+			break;
+		}
 	}
 }

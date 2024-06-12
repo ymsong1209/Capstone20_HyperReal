@@ -16,6 +16,7 @@ class CAPSTONE20_HYPERREAL_API URune : public UObject
 	
 protected:
 	// 룬 이미지
+	UPROPERTY()
 	UTexture2D* m_TexRune;
 
 	// 룬 이름

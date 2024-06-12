@@ -15,7 +15,7 @@ AChainLightning::AChainLightning()
 
 	//m_Capsule->OnComponentBeginOverlap.AddDynamic(this, &AChainLightning::BeginOverlap);
 
-	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NiagaraAsset(TEXT("/Script/Niagara.NiagaraSystem'/Game/sA_PickupSet_1/Fx/NiagaraSystems/NS_Energy_1.NS_Energy_1'"));
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NiagaraAsset(TEXT("/Script/Niagara.NiagaraSystem'/Game/RPGEffects/ParticlesNiagara/Mage/LightningShield/NS_Mage_LIghtningShield.NS_Mage_LIghtningShield'"));
 
 	if (NiagaraAsset.Succeeded())
 		m_Niagara->SetAsset(NiagaraAsset.Object);
@@ -50,7 +50,7 @@ void AChainLightning::Tick(float DeltaTime)
 	FVector vDir = (m_Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 	SetActorRotation(vDir.Rotation());
 
-	FVector NewLoc = (GetActorLocation() + (vDir * 2000.f * DeltaTime));
+	FVector NewLoc = (GetActorLocation() + (vDir * 1500.f * DeltaTime));
 	SetActorLocation(NewLoc);
 
 	// 타겟에 데미지 주고 새로운 타겟 설정

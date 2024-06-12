@@ -39,6 +39,7 @@ protected:
 
 	FVector m_PrevLoc;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float m_Damage;
 
 	AActor* m_Target;

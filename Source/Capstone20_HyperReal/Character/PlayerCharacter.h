@@ -85,6 +85,7 @@ protected:
 
 	USkeletalMesh* m_SKMesh;
 
+	UPROPERTY()
 	UMaterialInstanceDynamic* m_MIDBlinkOverlay;
 
 	UInGameUserWidget* m_pHUDWidget;

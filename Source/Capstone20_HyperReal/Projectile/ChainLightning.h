@@ -16,6 +16,7 @@ class CAPSTONE20_HYPERREAL_API AChainLightning : public AProjectileBase
 
 private:
 	int32 m_iChainCount;
+
 	TArray<AActor*> m_arrTarget;
 
 	float m_fRange;

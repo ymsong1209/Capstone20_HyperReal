@@ -64,7 +64,11 @@ public:
 	virtual void CloseUI() override;
 	UFUNCTION()
 	void Upgrade0();
+
+	UFUNCTION()
 	void Upgrade1();
+
+	UFUNCTION()
 	void Upgrade2();
 	void Refresh();
 

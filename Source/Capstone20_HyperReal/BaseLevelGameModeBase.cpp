@@ -6,6 +6,7 @@
 #include "Character/SkeletonSoldier.h"
 #include "UObject/ConstructorHelpers.h"
 #include "UI/BaseLevelWidget.h"
+#include "GameFramework/PlayerController.h"
 ABaseLevelGameModeBase::ABaseLevelGameModeBase()
 {
 	static ConstructorHelpers::FClassFinder<UBaseLevelWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_KHIContent/UI/UI_BaseLevel.UI_BaseLevel_C'"));
@@ -32,7 +33,20 @@ void ABaseLevelGameModeBase::BeginPlay()
 		if (mBaseLevelWidget)
 			mBaseLevelWidget->AddToViewport();
 	}
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (PlayerController)
+	{
+		// 마우스 커서 표시
+		PlayerController->bShowMouseCursor = true;
 
+		// 마우스 입력 비활성화
+		PlayerController->SetIgnoreLookInput(true);
+		PlayerController->SetIgnoreMoveInput(true);
+
+		// 입력 모드를 UI 전용으로 설정
+		FInputModeUIOnly InputMode;
+		PlayerController->SetInputMode(InputMode);
+	}
 	//FInputModeGameAndUI mode;
 	//controller->SetInputMode(mode);
 }

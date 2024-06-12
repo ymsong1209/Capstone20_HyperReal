@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "MagicWidget.h"
@@ -70,7 +70,7 @@ void UMagicWidget::NativePreConstruct()
 void UMagicWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	//ÃÖÃÊ ÀÌ´Ï¼È¶óÀÌÁî 1¹ø ÁøÇàÇØÁÖ±â 
+	//ìµœì´ˆ ì´ë‹ˆì…œë¼ì´ì¦ˆ 1ë²ˆ ì§„í–‰í•´ì£¼ê¸° 
 	Refresh();
 }
 
@@ -136,18 +136,18 @@ void UMagicWidget::Refresh()
 	TArray<int32> Numbers;
 	TArray<int32> Result;
 	
-	// 1ºÎÅÍ 10±îÁöÀÇ ¼ıÀÚ¸¦ ¹è¿­¿¡ Ãß°¡
-	for (int32 i = 1; i <= 10; ++i)
+	// 1ë¶€í„° 10ê¹Œì§€ì˜ ìˆ«ìë¥¼ ë°°ì—´ì— ì¶”ê°€
+	for (int32 i = 0; i <= 9; ++i)
 	{
 		Numbers.Add(i);
 	}
 	
-	// ·£´ıÇÏ°Ô 3°³ÀÇ ¼ıÀÚ¸¦ »ÌÀ½
+	// ëœë¤í•˜ê²Œ 3ê°œì˜ ìˆ«ìë¥¼ ë½‘ìŒ
 	for (int32 i = 0; i < 3; ++i)
 	{
 		int32 Index = FMath::RandRange(0, Numbers.Num() - 1);
 		Result.Add(Numbers[Index]);
-		Numbers.RemoveAt(Index);  // Áßº¹ ¹æÁö¸¦ À§ÇØ ¼±ÅÃÇÑ ¼ıÀÚ´Â Á¦°Å
+		Numbers.RemoveAt(Index);  // ì¤‘ë³µ ë°©ì§€ë¥¼ ìœ„í•´ ì„ íƒí•œ ìˆ«ìëŠ” ì œê±°
 	}
 	
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
@@ -156,7 +156,7 @@ void UMagicWidget::Refresh()
 	for (int32 i = 0; i < 3; i++)
 	{
 		
-		//// ¹öÆ° ½ºÅ¸ÀÏ ¼³Á¤
+		//// ë²„íŠ¼ ìŠ¤íƒ€ì¼ ì„¤ì •
 		FButtonStyle ButtonStyle = Magic_Button[i]->WidgetStyle;
 		URune* rune=GameInst->GetRuneManager()->GetRune((ERuneType)Result[i]);
 		arrRune.Add(rune);
