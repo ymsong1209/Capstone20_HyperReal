@@ -3,6 +3,8 @@
 
 #include "UpgradeWidget.h"
 #include "../InGameModeBase.h"
+#include "../BaseLevelGameModeBase.h"
+#include "BaseLevelWidget.h"
 #include "../UI/InGameUserWidget.h"
 #include "../CapStoneGameInstance.h"
 #include "../Character/PlayerCharacter.h"
@@ -14,7 +16,7 @@ void UUpgradeWidget::NativeOnInitialized()
 void UUpgradeWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	state = UpgradeState::None;
+	state = EPlayerUpgradeType::None;
 	backButton = Cast<UButton>(GetWidgetFromName(TEXT("BackButton123")));
 	AttackIconButton = Cast<UButton>(GetWidgetFromName(TEXT("AttackIcon")));
 	HPIconButton = Cast<UButton>(GetWidgetFromName(TEXT("HPIcon")));
@@ -63,7 +65,7 @@ void UUpgradeWidget::AttackIconButtonClick()
 	secondphase = true;
 	StartSecondPhase();
 	
-	state = UpgradeState::Attack;
+	state = EPlayerUpgradeType::Attack;
 	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Basecamp/UpgradeUI/AttackIcon.AttackIcon'"));
 	UTexture2D* NewTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *imageName));
 	if (NewTexture)
@@ -91,7 +93,7 @@ void UUpgradeWidget::HPIconButtonClick()
 {
 	secondphase = true;
 	StartSecondPhase();
-	state = UpgradeState::HP;
+	state = EPlayerUpgradeType::Health;
 	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Basecamp/UpgradeUI/HPIcon.HPIcon'"));
 	UTexture2D* NewTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *imageName));
 	if (NewTexture)
@@ -118,7 +120,7 @@ void UUpgradeWidget::SoulIconButtonClick()
 {
 	secondphase = true;
 	StartSecondPhase();
-	state = UpgradeState::HP;
+	state = EPlayerUpgradeType::Soul;
 	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Basecamp/UpgradeUI/SoulIcon.SoulIcon'"));
 	UTexture2D* NewTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *imageName));
 	if (NewTexture)
@@ -147,13 +149,14 @@ void UUpgradeWidget::CloseButtonUI()
 	{
 		RestoreFisrtPhase();
 		secondphase = false;
+		state = EPlayerUpgradeType::None;
 	}
 	else
 	{
-		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+		ABaseLevelGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ABaseLevelGameModeBase>();
 		if (GameMode)
 		{
-			UInGameUserWidget* widget = GameMode->GetInGameWidget();
+			UBaseLevelWidget* widget = GameMode->GetUBaseLevelWidget();
 			if (widget)
 			{
 				widget->CloseUI();
@@ -209,4 +212,10 @@ void UUpgradeWidget::StartSecondPhase()
 
 void UUpgradeWidget::Upgrade()
 {
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInst)
+	{
+		//나중에 수치별 예외처리
+		GameInst->UpgradePlayerStat(state);
+	}
 }

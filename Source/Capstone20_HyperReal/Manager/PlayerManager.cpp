@@ -131,6 +131,8 @@ void UPlayerManager::UpgradeAttack(float _fValue)
 
 	if (m_fPlayerInfo.AttackLevel >= STAT_MAX_LEVEL)
 		m_fPlayerInfo.AttackLevel = STAT_MAX_LEVEL;
+
+	UE_LOG(LogTemp, Log, TEXT("Attack Level : %d, Attack : %d"), m_fPlayerInfo.AttackLevel, m_fPlayerInfo.Attack);
 }
 
 void UPlayerManager::UpgradeHealth(float _fValue)
@@ -161,6 +163,8 @@ void UPlayerManager::UpgradeHealth(float _fValue)
 
 	if (m_fPlayerInfo.HealthLevel >= STAT_MAX_LEVEL)
 		m_fPlayerInfo.HealthLevel = STAT_MAX_LEVEL;
+
+	UE_LOG(LogTemp, Log, TEXT("Health Level : %d, Health : %d"), m_fPlayerInfo.HealthLevel, m_fPlayerInfo.MaxHP);
 }
 
 void UPlayerManager::UpgradeSoul(float _fValue)
@@ -174,7 +178,7 @@ void UPlayerManager::UpgradeSoul(float _fValue)
 		m_fPlayerInfo.SoulLevel++;
 
 		// 상승 수치 나중에 테이블에 가져오든 해서 변경
-		m_fPlayerInfo.MaxHP += 200;
+		m_fPlayerInfo.MaxSP += 200;
 	}
 	else
 	{
@@ -185,12 +189,14 @@ void UPlayerManager::UpgradeSoul(float _fValue)
 			m_fPlayerInfo.SoulLevel++;
 			m_fPlayerInfo.SoulProgress -= 100.f;
 
-			m_fPlayerInfo.MaxHP += 200;
+			m_fPlayerInfo.MaxSP += 200;
 		}
 	}
 
 	if (m_fPlayerInfo.SoulLevel >= STAT_MAX_LEVEL)
 		m_fPlayerInfo.SoulLevel = STAT_MAX_LEVEL;
+
+	UE_LOG(LogTemp, Log, TEXT("Soul Level : %d, Soul : %d"), m_fPlayerInfo.SoulLevel, m_fPlayerInfo.MaxSP);
 }
 
 float UPlayerManager::CalculateIncreaseRate()

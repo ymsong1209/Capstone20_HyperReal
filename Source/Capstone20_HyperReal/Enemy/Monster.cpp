@@ -165,7 +165,7 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 		
 		HandleDeath();
 		//죽었을 경우 -1.f반환
-		Damage = -1.f;
+		Damage = 0.f;
 	}
 
 	//플레이어가 몬스터의 인식 범위 밖에서 때릴 경우, 플레이어 추적해야함

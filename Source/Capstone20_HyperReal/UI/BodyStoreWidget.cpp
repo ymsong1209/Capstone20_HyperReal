@@ -4,6 +4,9 @@
 #include "BodyStoreWidget.h"
 #include "../InGameModeBase.h"
 #include "../UI/InGameUserWidget.h"
+#include "../BaseLevelGameModeBase.h"
+#include "BaseLevelWidget.h"
+#include "../CapStoneGameInstance.h"
 void UBodyStoreWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -47,10 +50,10 @@ void UBodyStoreWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 
 void UBodyStoreWidget::CloseButtonUI()
 {
-	AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+	ABaseLevelGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ABaseLevelGameModeBase>();
 	if (GameMode)
 	{
-		UInGameUserWidget* widget = GameMode->GetInGameWidget();
+		UBaseLevelWidget* widget = GameMode->GetUBaseLevelWidget();
 		if (widget)
 		{
 			widget->CloseUI();
@@ -65,4 +68,10 @@ void UBodyStoreWidget::CloseUI()
 
 void UBodyStoreWidget::Upgrade()
 {
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInst)
+	{
+		//나중에 수치별 예외처리
+		GameInst->UpgradeHealth();
+	}
 }

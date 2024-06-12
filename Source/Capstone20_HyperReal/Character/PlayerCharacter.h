@@ -182,4 +182,6 @@ public:
 
 private:
 	void InitPlayerData();
+	
+	void TestBasecampUI();
 };

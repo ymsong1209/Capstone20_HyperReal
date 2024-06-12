@@ -23,4 +23,6 @@ void URune::Updgrade()
 {
 	// 나중에 최대 레벨인지 체크하는 코드 추가해야함
 	m_iLevel++;
+
+	UE_LOG(LogTemp, Log, TEXT("Rune Type : %d, Rune Level %d"), (int32)m_eRuneType, (int32)m_iLevel);
 }

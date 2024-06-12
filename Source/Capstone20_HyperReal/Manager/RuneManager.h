@@ -6,16 +6,16 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "RuneManager.generated.h"
 
-/**
- * 
- */
+class URune;
+
 UCLASS()
 class CAPSTONE20_HYPERREAL_API URuneManager : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
 private:
-	class URune* m_arrRune[(int32)ERuneType::End];
+	UPROPERTY()
+	URune* m_arrRune[(int32)ERuneType::End];
 
 public:
 
