@@ -182,7 +182,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		// 우클릭을 기본 공격에 바인딩 추후 triggerd 로 바꾸는게 좀더 자연스러울듯함
 		pInput->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacter::Attack);
 
-		pInput->BindAction(EscapeAction, ETriggerEvent::Started, this, &APlayerCharacter::TestBasecampUI);
+		//pInput->BindAction(EscapeAction, ETriggerEvent::Started, this, &APlayerCharacter::TestBasecampUI);
 	}
 }
 
