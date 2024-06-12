@@ -104,5 +104,5 @@ void APortal::TransitionToNextLevel(AActor* OtherActor)
 
 void APortal::OpenLevel()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), FName("KHIStartMap"));
+	UGameplayStatics::OpenLevel(GetWorld(), FName("BGBaseCampMap"));
 }
