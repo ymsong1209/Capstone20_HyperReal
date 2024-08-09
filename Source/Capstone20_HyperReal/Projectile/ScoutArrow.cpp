@@ -71,8 +71,10 @@ void AScoutArrow::ProjectileStop(const FHitResult& ImpactResult)
 	// FVector DecalLoc = GetActorLocation();
 	// DecalLoc.Z -=88.f;
 	
-	
-	ImpactResult.GetActor()->TakeDamage(m_Damage,FDamageEvent(),m_OwnerController, this);
+	if(IsValid(m_OwnerController))
+	{
+		ImpactResult.GetActor()->TakeDamage(m_Damage,FDamageEvent(),m_OwnerController, this);
+	}
 	Destroy();
 }
 
