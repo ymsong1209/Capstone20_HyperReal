@@ -308,6 +308,7 @@ float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 		GetRuneManager()->GetRune(ERuneType::Resurrection)->Activate();
 	}
 
+	UE_LOG(LogTemp, Log, TEXT("TakeDamage : %d"), fDamage);
 	return fDamage;
 }
 

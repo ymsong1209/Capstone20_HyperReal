@@ -135,10 +135,11 @@ void ABuilding::SpawnMonster()
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		// 배열에서 랜덤하게 몬스터 클래스 선택
+		if(mMonsterClasses.Num()< 1) return;
 		TSubclassOf<AMonster> ChosenMonsterClass = mMonsterClasses[FMath::RandRange(0, mMonsterClasses.Num() - 1)];
 		AMonster* SpawnedMonster = GetWorld()->SpawnActor<AMonster>(ChosenMonsterClass, SpawnLocation, SpawnRotation, SpawnParams);
 		
-		if (SpawnedMonster)
+		if (IsValid(SpawnedMonster))
 		{
 			//생성된 몬스터에게 building알려줌
 			SpawnedMonster->SetOwnerBuilding(this);
