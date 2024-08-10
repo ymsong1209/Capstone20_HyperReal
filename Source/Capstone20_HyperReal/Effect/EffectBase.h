@@ -16,16 +16,24 @@ public:
 	AEffectBase();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Effect")
 	UNiagaraComponent* m_Niagara;
-	
-	bool m_bOnceDestory;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (AllowPrivateAccess = "true"), Category = "Effect")
+	UParticleSystemComponent* m_Particle;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (AllowPrivateAccess = "true"), Category = "Effect")
+	USoundBase* m_Sound;
+
+	bool m_bOnceDestroy;
 
 public:
 	bool SetNiagara(const FString& _strPath);
 	bool SetNiagara(UNiagaraSystem* _pNiagara);
+	bool SetParticle(const FString& Path);
+	bool SetParticle(UParticleSystem* Particle);
+	bool SetSound(const FString& Path, float volume = 1.f);
+	bool SetSound(USoundBase* Sound, float volume = 1.f);
 
-	void SetOnceDestory(bool _bSet) { m_bOnceDestory = _bSet; }
+	void SetOnceDestroy(bool _bSet) { m_bOnceDestroy = _bSet; }
 
 protected:
 	// Called when the game starts or when spawned
@@ -38,5 +46,7 @@ public:
 private:
 	UFUNCTION()
 	void NiagaraFinish(UNiagaraComponent* _pCom);
+	UFUNCTION()
+	void ParticleFinish(UParticleSystemComponent* Particle);
 
 };

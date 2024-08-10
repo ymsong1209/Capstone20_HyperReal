@@ -14,6 +14,7 @@ AProjectileBase::AProjectileBase() :
 
 	m_Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
 	m_Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	m_Particle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle"));
 	m_Niagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
 	m_Projectile = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile"));
 	

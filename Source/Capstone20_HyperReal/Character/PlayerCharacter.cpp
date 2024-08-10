@@ -283,7 +283,6 @@ URuneManager* APlayerCharacter::GetRuneManager()
 float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float fDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-
 	GetRuneManager()->TakeDamageTrigger(DamageCauser, Damage);
 
 	//무적일 경우엔 -1.f반환
@@ -307,8 +306,7 @@ float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 		// 리저렉션 룬 실행
 		GetRuneManager()->GetRune(ERuneType::Resurrection)->Activate();
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("TakeDamage : %d"), fDamage);
+	
 	return fDamage;
 }
 

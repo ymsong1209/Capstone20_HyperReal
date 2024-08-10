@@ -4,6 +4,7 @@
 #include "BossAttackProjectile.h"
 
 #include "../Character/PlayerCharacter.h"
+#include "../Effect/EffectBase.h"
 
 ABossAttackProjectile::ABossAttackProjectile()
 {
@@ -17,7 +18,14 @@ ABossAttackProjectile::ABossAttackProjectile()
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("BossAttackMesh setting failed"));
-	}	
+	}
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Script/Engine.ParticleSystem'/Game/Assets/ToonTankEffects/P_HitEffect.P_HitEffect'"));
+	if (ParticleAsset.Succeeded())
+	{
+		m_Particle->SetTemplate(ParticleAsset.Object);
+	}
+	
 
 	m_Projectile->InitialSpeed = 0.f;
 	m_Projectile->MaxSpeed = 0.f;
@@ -55,7 +63,12 @@ void ABossAttackProjectile::ProjectileStop(const FHitResult& ImpactResult)
 	if(IsValid(Player))
 	{
 		ImpactResult.GetActor()->TakeDamage(m_Damage,FDamageEvent(),m_OwnerController, this);
-		UE_LOG(LogTemp, Warning, TEXT("projectile hit called"));
+		//m_particle 소환
+		FActorSpawnParameters param;
+		param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		AEffectBase* effect = GetWorld()->SpawnActor<AEffectBase>(ImpactResult.ImpactPoint, GetActorRotation(), param);
+		effect->SetParticle(TEXT("/Script/Engine.ParticleSystem'/Game/Assets/ToonTankEffects/P_DeathEffect.P_DeathEffect'"));
+		//effect->SetSound(TEXT("/Script/Engine.SoundWave'/Game/Assets/ToonTankEffects/Sounds/Explosion_Cue.Explosion_Cue'"))
 	}
 	Destroy();
 }

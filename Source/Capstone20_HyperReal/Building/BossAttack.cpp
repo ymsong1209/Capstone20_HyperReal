@@ -18,7 +18,7 @@ ABossAttack::ABossAttack()
 	mDecal->SetRelativeLocation(FVector(0, 200, 0));  // 위치 조정
 	mDecal->SetRelativeRotation(FRotator(-90, 180, 0));  // 바닥에 평행하도록 회전
 	mDecal->DecalSize = FVector(150, 150, 150);  // 데칼 크기 설정 (길이, 너비, 높이)
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DecalMaterial(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SYMContent/Building/MT_PortalDecal_Inst.MT_PortalDecal_Inst'"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> DecalMaterial(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SYMContent/Building/MT_TargetDecal_Inst.MT_TargetDecal_Inst'"));
 	if (DecalMaterial.Succeeded())
 	{
 		mDecal->SetDecalMaterial(DecalMaterial.Object);
@@ -105,7 +105,7 @@ void ABossAttack::SpawnProjectile()
 	ABossAttackProjectile* ProjectileActor = GetWorld()->SpawnActor<ABossAttackProjectile>(Loc, GetActorRotation(), param);
 	if(!IsValid(ProjectileActor)) return;
 	ProjectileActor->SetOwnerController(GetInstigatorController());
-	ProjectileActor->SetDamage(static_cast<float>(mDamage));
+	ProjectileActor->SetDamage(mDamage);
 }
 
 

@@ -8,13 +8,29 @@
 ABossBuilding::ABossBuilding()
 {
 	mDataTableKey = "BossBuilding";
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> BuildingMeshAsset(TEXT("/Script/Engine.StaticMesh'/Game/Low_Poly_Viking_World/Models/Constructions/SM_Small_House_03_A.SM_Small_House_03_A'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> BuildingMeshAsset(TEXT("/Script/Engine.StaticMesh'/Game/Toony_Tiny_RTS_Set_UE5/Meshes/Buildings/SM_Castle.SM_Castle'"));
 	if (BuildingMeshAsset.Succeeded())
 	{
 		mMesh->SetStaticMesh(BuildingMeshAsset.Object);
 	}
 	mMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 	mMesh->bReceivesDecals = false;
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset1(TEXT("/Script/Engine.StaticMesh'/Game/Toony_Tiny_RTS_Set_UE5/Meshes/Buildings/SM_Castle.SM_Castle'"));
+	if (MeshAsset1.Succeeded())
+	{
+		mMeshes.Add(MeshAsset1.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset2(TEXT("/Script/Engine.StaticMesh'/Game/Toony_Tiny_RTS_Set_UE5/Meshes/Buildings/Construction/SM_Castle_1.SM_Castle_1'"));
+	if (MeshAsset2.Succeeded())
+	{
+		mMeshes.Add(MeshAsset2.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> MeshAsset3(TEXT("/Script/Engine.StaticMesh'/Game/Toony_Tiny_RTS_Set_UE5/Meshes/Buildings/Construction/SM_Castle_0.SM_Castle_0'"));
+	if (MeshAsset3.Succeeded())
+	{
+		mMeshes.Add(MeshAsset3.Object);
+	}
 
 	//bossattack소환할 주기
 	mAttackTime = -1.f;
