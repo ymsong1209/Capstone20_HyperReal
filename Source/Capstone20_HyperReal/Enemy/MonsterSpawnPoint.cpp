@@ -15,7 +15,7 @@ AMonsterSpawnPoint::AMonsterSpawnPoint()
 
 	SetRootComponent(mRoot);
 
-	mRoot->bVisualizeComponent = true;
+	//mRoot->bVisualizeComponent = true;
 
 	mSpawnMonster = nullptr;
 	mSpawnTimeAcc = 0.f;
