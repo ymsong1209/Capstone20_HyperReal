@@ -41,7 +41,8 @@ APlayerCharacter::APlayerCharacter() :
 	m_eUsingSkill(EPlayerSkill::None),
 	m_fAnimPlaySpeed(1.f),
 	m_bGhostTrail(false),
-	m_bInvincible(false)
+	m_bInvincible(false),
+	m_bIsDead(false)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -65,7 +66,7 @@ APlayerCharacter::APlayerCharacter() :
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
-	CameraBoom->TargetArmLength = 600.f;
+	CameraBoom->TargetArmLength = 1000.f;
 	CameraBoom->SetRelativeRotation(FRotator(-70.f, 0.f, 0.f));
 	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
 
@@ -73,6 +74,7 @@ APlayerCharacter::APlayerCharacter() :
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	TopDownCameraComponent->SetFieldOfView(70.f);
 
 	// 캐릭터 이펙트용 나이아가라 컴포넌트 추가(필요시 배열로 변경해도 됨)
 	m_NSEffect01 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara01"));
@@ -303,6 +305,7 @@ float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 	if (GetPlayerInfo().HP <= 0) {
 		fDamage = -1.f;
 
+		SetDead(true);
 		// 리저렉션 룬 실행
 		GetRuneManager()->GetRune(ERuneType::Resurrection)->Activate();
 	}
@@ -462,6 +465,7 @@ void APlayerCharacter::Heal(float fValue)
 
 void APlayerCharacter::Ressurection(float fValue)
 {
+	SetDead(false);
 	GetPlayerInfo().HP = GetHPMax() * fValue;
 	GetPlayerInfo().SP = GetSPMax() * fValue;
 

@@ -101,6 +101,7 @@ public:
 	virtual void SkillEnd() override;
 	virtual void SpawnGhostTrail() override;
 	virtual void EscapeFunction() override;
+	virtual void SetDead(bool _bState) override;
 
 private:
 	// 차지 공격

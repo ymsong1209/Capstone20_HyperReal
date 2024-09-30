@@ -14,6 +14,7 @@
 #include "Components/DecalComponent.h"
 
 #include "SoldierAnimInstance.h"
+#include "SkeletonSoldierController.h"
 #include "ClickMoveController.h"
 #include "LongSword.h"
 #include "../Effect/EffectBase.h"
@@ -332,7 +333,7 @@ void ASkeletonSoldier::SpawnGhostTrail()
 
 	// 색 변하는 세팅
 	FVector vColor1 = FVector(0.f, 0.f, 1.f);
-	FVector vColor2 = FVector(1.f, 1.f, 0.f);
+	FVector vColor2 = FVector(1.f, 0.f, 0.f);
 
 	const float fTrailMaxCount = 10.f;
 
@@ -350,14 +351,24 @@ void ASkeletonSoldier::SpawnGhostTrail()
 	}
 
 	float fValue = (m_fTrailCount / fTrailMaxCount);
-	FVector vLerpColor = FVector::SlerpNormals(vColor1, vColor2, fValue);
+	//FVector vLerpColor = FVector::SlerpNormals(vColor1, vColor2, fValue);
 
-	pGhost->SetColorParam(vLerpColor);
+	pGhost->SetColorParam(vColor2);
 }
 
 void ASkeletonSoldier::EscapeFunction()
 {
 	Super::EscapeFunction();
+}
+
+void ASkeletonSoldier::SetDead(bool _bState)
+{
+	m_bIsDead = _bState;
+
+	if (m_bIsDead)
+		DisableInput(Cast<ASkeletonSoldierController>(GetController()));
+	else
+		EnableInput(Cast<ASkeletonSoldierController>(GetController()));
 }
 
 void ASkeletonSoldier::ChargeStart()

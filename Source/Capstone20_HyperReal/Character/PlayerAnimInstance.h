@@ -21,6 +21,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	bool m_bOnAttack;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	bool	m_bIsDead;
+
 public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds);
 

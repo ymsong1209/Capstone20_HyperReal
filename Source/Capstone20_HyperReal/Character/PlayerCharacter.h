@@ -73,6 +73,8 @@ public:
 
 protected:
 	class UPlayerAnimInstance* m_pAnim;
+	bool	m_bIsDead;
+
 	bool m_bOnAttack;
 
 	bool m_bComboDetected;
@@ -108,6 +110,8 @@ private:
 	class APortal* m_pPortal;
 
 public:
+	bool IsDead() { return m_bIsDead; }
+
 	bool OnAttack() const { return m_bOnAttack; };
 	void SetAttack(bool _bAttack) { m_bOnAttack = _bAttack; }
 
@@ -180,6 +184,7 @@ public:
 
 	void Heal(float fValue);
 	void Ressurection(float fValue);
+	virtual void SetDead(bool _bState) {};
 
 private:
 	void InitPlayerData();

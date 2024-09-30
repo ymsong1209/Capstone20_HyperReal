@@ -23,6 +23,7 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		m_fSpeed = pMovement->Velocity.Size();
 
 		m_bOnAttack = pPlayer->OnAttack();
+		m_bIsDead = pPlayer->IsDead();
 	}
 }
 
