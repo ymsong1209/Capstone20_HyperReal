@@ -15,6 +15,7 @@ void UBasecampWidget::NativeOnInitialized()
 
 void UBasecampWidget::NativePreConstruct()
 {
+
 	Super::NativePreConstruct();
 
 	UpgradeWidget = Cast<UUpgradeWidget>(GetWidgetFromName(TEXT("UpgradeWidget")));
@@ -25,6 +26,19 @@ void UBasecampWidget::NativePreConstruct()
 	mMagicButton = Cast<UButton>(GetWidgetFromName(TEXT("MagicButton")));
 	mMaintainButton = Cast<UButton>(GetWidgetFromName(TEXT("MaintainButton")));
 	mNextStageButton = Cast<UButton>(GetWidgetFromName(TEXT("NextStageButton")));
+
+	UTextBlock* tb= Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBlock_108")));;
+	tb->SetToolTip(nullptr);
+	tb = Cast<UTextBlock>(GetWidgetFromName(TEXT("text1")));;
+	tb->SetToolTip(nullptr);
+
+	tb = Cast<UTextBlock>(GetWidgetFromName(TEXT("text2")));;
+	tb->SetToolTip(nullptr);
+
+	tb = Cast<UTextBlock>(GetWidgetFromName(TEXT("text3")));;
+	tb->SetToolTip(nullptr);
+
+
 
 	mUpgradeButton->OnClicked.AddDynamic(this, &UBasecampWidget::UpgradeButtonClick);
 	mMagicButton->OnClicked.AddDynamic(this, &UBasecampWidget::MagicButtonClick);
