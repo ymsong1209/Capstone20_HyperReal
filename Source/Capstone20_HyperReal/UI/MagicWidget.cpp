@@ -25,6 +25,7 @@ void UMagicWidget::NativePreConstruct()
 	Magic_Button.Reserve(3);  
 	Magic_Name.Reserve(3);
 	MagicDesc.Reserve(3);
+	Magic_LevelText.Reserve(3);
 	arrRune.Reserve(3);
 	for (int32 i = 1; i <= 3; i++)
 	{
@@ -36,10 +37,22 @@ void UMagicWidget::NativePreConstruct()
 		}
 		WidgetName = FString::Printf(TEXT("MagicName%d"), i);
 		UTextBlock* textWidget = Cast<UTextBlock>(GetWidgetFromName(*WidgetName));
+		textWidget = Cast<UTextBlock>(GetWidgetFromName(*WidgetName));
+
 		if (textWidget)
 		{
 			Magic_Name.Add(textWidget);
 		}
+
+		WidgetName = FString::Printf(TEXT("%dLevel"), i);
+		UTextBlock* leveltextWidget = Cast<UTextBlock>(GetWidgetFromName(*WidgetName));
+		textWidget = Cast<UTextBlock>(GetWidgetFromName(*WidgetName));
+
+		if (textWidget)
+		{
+			Magic_LevelText.Add(textWidget);
+		}
+
 		WidgetName = FString::Printf(TEXT("MagicDescription%d"), i);
 		textWidget = Cast<UTextBlock>(GetWidgetFromName(*WidgetName));
 		if (textWidget)
@@ -108,6 +121,11 @@ void UMagicWidget::Upgrade0()
 	if (GameInst)
 	{
 		GameInst->UpgradeRune(arrRune[0]->GetRuneType());
+		int32 magicLevel;
+		magicLevel = arrRune[0]->GetLevel();
+		FString str = "Level " + FString::FromInt(magicLevel);
+		Magic_LevelText[0]->SetText(FText::FromString(str));
+		Magic_Button[0]->SetIsEnabled(false);
 	}
 }
 
@@ -117,6 +135,11 @@ void UMagicWidget::Upgrade1()
 	if (GameInst)
 	{
 		GameInst->UpgradeRune(arrRune[1]->GetRuneType());
+		int32 magicLevel;
+		magicLevel = arrRune[1]->GetLevel();
+		FString str = "Level " + FString::FromInt(magicLevel);
+		Magic_LevelText[1]->SetText(FText::FromString(str));
+		Magic_Button[1]->SetIsEnabled(false);
 	}
 }
 
@@ -126,6 +149,11 @@ void UMagicWidget::Upgrade2()
 	if (GameInst)
 	{
 		GameInst->UpgradeRune(arrRune[2]->GetRuneType());
+		int32 magicLevel;
+		magicLevel = arrRune[2]->GetLevel();
+		FString str = "Level " + FString::FromInt(magicLevel);
+		Magic_LevelText[2]->SetText(FText::FromString(str));
+		Magic_Button[2]->SetIsEnabled(false);
 	}
 }
 
@@ -169,6 +197,10 @@ void UMagicWidget::Refresh()
 		Magic_Name[i]->SetText(FText::FromString(name));
 		FString desc = rune->GetExplan();
 		MagicDesc[i]->SetText(FText::FromString(desc));
+
+		int32 magicLevel = rune->GetLevel();
+		FString str = "Level " + FString::FromInt(magicLevel);
+		Magic_LevelText[i]->SetText(FText::FromString(str));
 	}
 }
 

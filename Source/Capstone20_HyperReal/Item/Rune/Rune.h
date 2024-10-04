@@ -50,6 +50,8 @@ protected:
 	float m_fAccCoolTime;
 	float m_fCoolTime;
 
+	int32 m_iCost;
+
 public:
 	UTexture2D* GetIconImage() { return m_TexRune; }
 	const FString& GetName() { return m_strName; }
@@ -66,6 +68,7 @@ public:
 	float GetMoveSpeedRatio() { return 1.f + m_fMoveSpeedRatio; }
 	float GetCoolDownRatio() { return 1.f - m_fCoolDownRatio; }
 	float GetExtraValue() { return m_fEtc; }
+	int32 GetCost() { return m_iCost; }
 
 public:
 	URune();

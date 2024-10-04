@@ -98,5 +98,6 @@ public:
 	void StartSecondPhase();
 	UFUNCTION()
 	void Upgrade();
+	int32 CheckStateLevel(EPlayerUpgradeType type);
 	
 };

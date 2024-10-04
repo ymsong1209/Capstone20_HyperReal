@@ -270,6 +270,9 @@ void UUpgradeWidget::Upgrade()
 		//나중에 수치별 예외처리
 		//UE_LOG(LogTemp, Log, TEXT("goldbefore : %d"), GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold);
 		//UE_LOG(LogTemp, Log, TEXT("goldafter : %d"), GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold);
+		int curStateLevel=CheckStateLevel(state);
+		if (curStateLevel == 5|| GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold<100)
+			return;
 		GameInst->UpgradePlayerStat(state);
 		switch (state)
 		{
@@ -290,4 +293,23 @@ void UUpgradeWidget::Upgrade()
 			break;
 		}
 	}
+}
+
+int32 UUpgradeWidget::CheckStateLevel(EPlayerUpgradeType type)
+{
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	int curLevel = 0;
+	if (type == EPlayerUpgradeType::Attack)
+	{
+		curLevel= GameInst->GetPlayerManager()->GetPlayerInfo().AttackLevel;
+	}
+	else if(type == EPlayerUpgradeType::Health)
+	{
+		curLevel = GameInst->GetPlayerManager()->GetPlayerInfo().HealthLevel;
+	}
+	else if (type == EPlayerUpgradeType::Soul)
+	{
+		curLevel = GameInst->GetPlayerManager()->GetPlayerInfo().SoulLevel;
+	}
+	return curLevel;
 }
