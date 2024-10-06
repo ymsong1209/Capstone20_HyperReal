@@ -4,6 +4,7 @@
 #include "CapStoneGameInstance.h"
 #include "Manager/PlayerManager.h"
 #include "Manager/RuneManager.h"
+#include "Manager/LevelManager.h"
 
 UCapStoneGameInstance::UCapStoneGameInstance()
 {
@@ -103,4 +104,5 @@ void UCapStoneGameInstance::Init()
 		m_PlayerManager->Init(TEXT("Soldier"));
 
 	m_RuneManager = GetSubsystem<URuneManager>();
+	m_LevelManager = GetSubsystem<ULevelManager>();
 }

@@ -8,6 +8,7 @@
 #include "../Character/PlayerCharacter.h"
 #include "../Manager/RuneManager.h"
 #include "../Item/Rune/DemolitionRune.h"
+#include "../Manager/LevelManager.h"
 
 // Sets default values
 ABuilding::ABuilding() :
@@ -80,8 +81,11 @@ void ABuilding::BeginPlay()
 		else {
 			UE_LOG(LogTemp, Error, TEXT("No Info"));
 		}
+		mInfo.HP = GameInst->GetLevelManager()->GetBuildingHP();
+		mInfo.MaxHP = GameInst->GetLevelManager()->GetBuildingMaxHP();
 	}
-	SetDestroyRateText(100);
+	SetDestroyRateText(mInfo.HP/mInfo.MaxHP * 100);
+	
 }
 
 // Called every frame
@@ -205,6 +209,11 @@ float ABuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
 void ABuilding::HandleDeath()
 {
 	mbIsInvincible = true;
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInst)
+	{
+		GameInst->GetLevelManager()->LevelClear();
+	}
 	//KillAllMonsters();
 	Destroy();
 }

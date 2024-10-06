@@ -61,7 +61,7 @@ float ABossBuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEv
 		if (mCurPhase < mMeshes.Num() && mMeshes[mCurPhase])
 		{
 			mMesh->SetStaticMesh(mMeshes[mCurPhase]);
-			mMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
+			mMesh->SetRelativeScale3D(FVector(0.7f, 0.7f, 0.7f));
 		}
 	}
 
@@ -76,7 +76,7 @@ void ABossBuilding::Tick(float DeltaTime)
 	if(mAttackTime != -1.f && mAccAttackTime >= mAttackTime)
 	{
 		mAccAttackTime = 0.f;
-		
+		UE_LOG(LogTemp, Warning, TEXT("BossAttack"));
 		//player를 찾음
 		APlayerCharacter* Player = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 		if(!IsValid(Player)) return;

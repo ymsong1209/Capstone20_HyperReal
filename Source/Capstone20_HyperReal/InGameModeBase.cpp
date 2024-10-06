@@ -7,6 +7,7 @@
 #include "Character/SkeletonSoldier.h"
 #include "UObject/ConstructorHelpers.h"
 #include "UI/InGameUserWidget.h"
+#include "CapStoneGameInstance.h"
 
 AInGameModeBase::AInGameModeBase()
 {

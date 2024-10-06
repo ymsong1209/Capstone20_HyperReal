@@ -6,6 +6,8 @@
 #include "../UI/InGameUserWidget.h"
 #include "../BaseLevelGameModeBase.h"
 #include "BaseLevelWidget.h"
+#include "../CapStoneGameInstance.h"
+#include "../Manager/LevelManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 void UBasecampWidget::NativeOnInitialized()
@@ -106,12 +108,13 @@ void UBasecampWidget::MaintainButtonClick()
 
 void UBasecampWidget::NextStageButtonClick()
 {
-	//���⼭ ���� ������ �̵�;
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Level1"));
+	//여기서 다음 레벨로 이동;
+	UCapStoneGameInstance* gameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
+	gameInst->GetLevelManager()->LoadInGameLevel();
 }
 
 void UBasecampWidget::CloseUI()
 {
 	SetVisibility(ESlateVisibility::Collapsed);
-	//pauseǮ�� ������ �̵�
+	//pause풀고 다음씬 이동
 }
