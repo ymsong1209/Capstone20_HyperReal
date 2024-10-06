@@ -31,15 +31,15 @@ void UInGameUserWidget::NativePreConstruct()
 	skillicon = Cast<UImage>(GetWidgetFromName(TEXT("skillicon1")));
 
 	const int32 NumImages = 4;
-	skillImages.Reserve(NumImages);  // ���� ����ȭ�� ���� �迭 ũ�� �̸� ����
+	skillImages.Reserve(NumImages);  // 성능 최적화를 위해 배열 크기 미리 설정
 	skillBackImages.Reserve(NumImages);
 
 	for (int32 i = 1; i <= NumImages; i++)
 	{
-		// ���� �̸� ����: skillicon1, skillicon2, ..., skillicon5
+		// 위젯 이름 생성: skillicon1, skillicon2, ..., skillicon5
 		FString WidgetName = FString::Printf(TEXT("skillicon%d"), i);
 
-		// ���� �̸����� UImage ã��
+		// 위젯 이름으로 UImage 찾기
 		UImage* ImageWidget = Cast<UImage>(GetWidgetFromName(*WidgetName));
 		if (ImageWidget)
 		{
