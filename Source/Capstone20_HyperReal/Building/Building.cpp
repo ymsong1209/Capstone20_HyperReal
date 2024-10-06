@@ -81,11 +81,11 @@ void ABuilding::BeginPlay()
 		else {
 			UE_LOG(LogTemp, Error, TEXT("No Info"));
 		}
+		GameInst->GetLevelManager()->SetBuilding(this);
 		mInfo.HP = GameInst->GetLevelManager()->GetBuildingHP();
 		mInfo.MaxHP = GameInst->GetLevelManager()->GetBuildingMaxHP();
 	}
-	SetDestroyRateText(mInfo.HP/mInfo.MaxHP * 100);
-	
+	SetDestroyRateText(static_cast<int32>(static_cast<float>(mInfo.HP) / static_cast<float>(mInfo.MaxHP) * 100));
 }
 
 // Called every frame

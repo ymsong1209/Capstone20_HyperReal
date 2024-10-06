@@ -15,6 +15,7 @@ class CAPSTONE20_HYPERREAL_API ULevelManager : public UGameInstanceSubsystem
 	GENERATED_BODY()
 private:
 	int32 curlevel;
+	class ABuilding* mainBuilding;
 	int32 mainBuildingCurHP;
 	int32 mainBuildingMaxHP;
 	bool  isLevelClear;
@@ -32,6 +33,8 @@ public:
 	void LoadInGameLevel();
 	int32 GetBuildingHP();
 	int32 GetBuildingMaxHP();
+	void SetBuilding(class ABuilding* _building) { mainBuilding = _building; }
+	void SetBuildingHP();
 	void LevelClear();
 	void SetLevelClear(bool _bValue) {_bValue = isLevelClear;};
 	

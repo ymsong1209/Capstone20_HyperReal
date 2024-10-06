@@ -8,6 +8,7 @@
 ULevelManager::ULevelManager()
 {
 	curlevel = 1;
+	mainBuilding = nullptr;
 	mainBuildingCurHP = -1;
 	mainBuildingMaxHP = -1;
 	isLevelClear = false;
@@ -37,6 +38,7 @@ void ULevelManager::LoadInGameLevel()
 	FString LevelName = FString::Printf(TEXT("Level%d"), curlevel);
 	UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
 	isLevelClear = false;
+	mainBuilding = nullptr;
 }
 
 int32 ULevelManager::GetBuildingHP()
@@ -93,9 +95,17 @@ int32 ULevelManager::GetBuildingMaxHP()
 	}
 }
 
+void ULevelManager::SetBuildingHP()
+{
+	if(!mainBuilding) return;
+	mainBuildingCurHP = FMath::Clamp(mainBuildingCurHP,-1,mainBuilding->GetBuildingInfo().HP);
+	mainBuildingMaxHP = FMath::Clamp(mainBuildingMaxHP,-1,mainBuilding->GetBuildingInfo().MaxHP);
+}
+
 void ULevelManager::LevelClear()
 {
 	isLevelClear = true;
+	mainBuilding = nullptr;
 	curlevel++;
 	mainBuildingCurHP = -1;
 	mainBuildingMaxHP = -1;

@@ -11,6 +11,7 @@
 #include "../UI/InGameUserWidget.h"
 #include "../CapStoneGameInstance.h"
 #include "../Manager/PlayerManager.h"
+#include "Capstone20_HyperReal/Manager/LevelManager.h"
 
 APortal::APortal()
 {
@@ -86,6 +87,7 @@ void APortal::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 	int building = 0;
 	int enemy = 0;
 	widget->OpenRewardUI(gold, building, enemy);
+	GameInst->GetLevelManager()->SetBuildingHP();
 	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
