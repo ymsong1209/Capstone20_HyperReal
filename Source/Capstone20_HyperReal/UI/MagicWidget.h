@@ -24,6 +24,9 @@ private:
 	UPROPERTY()
 	TArray<UButton*> Magic_Button;
 	UPROPERTY()
+	TArray<UTextBlock*> Magic_LevelText;
+
+	UPROPERTY()
 	TArray<URune*> arrRune;
 	//UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	//UButton* Magic_Button1;
