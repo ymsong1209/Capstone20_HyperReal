@@ -23,6 +23,7 @@ enum class EPlayerSkill : uint8
 	SkillS UMETA(DisplayName = "SkillS"),
 	SkillD UMETA(DisplayName = "SkillD"),
 	SkillF UMETA(DisplayName = "SkillF"),
+	Dash UMETA(DisplayName = "Dash"),
 	None UMETA(DisplayName = "None")
 };
 

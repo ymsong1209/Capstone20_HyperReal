@@ -90,6 +90,19 @@ bool AEffectBase::SetSound(USoundBase* Sound, float volume)
 	return false;
 }
 
+void AEffectBase::SetOnceDestroy(bool _bSet)
+{
+	m_bOnceDestroy = _bSet;
+
+	if (_bSet)
+	{
+		if (m_Niagara)
+			m_Niagara->OnSystemFinished.AddDynamic(this, &AEffectBase::NiagaraFinish);
+		else if(m_Particle)
+			m_Particle->OnSystemFinished.AddDynamic(this, &AEffectBase::ParticleFinish);
+	}
+}
+
 // Called when the game starts or when spawned
 void AEffectBase::BeginPlay()
 {
@@ -106,11 +119,13 @@ void AEffectBase::Tick(float DeltaTime)
 
 void AEffectBase::NiagaraFinish(UNiagaraComponent* _pCom)
 {
-	Destroy();
+	if(m_bOnceDestroy)
+		Destroy();
 }
 
 void AEffectBase::ParticleFinish(UParticleSystemComponent* Particle)
 {
-	Destroy();
+	if (m_bOnceDestroy)
+		Destroy();
 }
 

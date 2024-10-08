@@ -54,3 +54,13 @@ void UPlayerAnimInstance::AnimNotify_AttackEnd()
 			pPlayer->AttackEnd();
 	}
 }
+
+void UPlayerAnimInstance::AnimNotify_DashEnd()
+{
+	APlayerCharacter* pPlayer = Cast<APlayerCharacter>(TryGetPawnOwner());
+
+	if (IsValid(pPlayer))
+	{
+		pPlayer->DashEnd();
+	}
+}

@@ -36,4 +36,7 @@ public:
 
 	UFUNCTION()
 	virtual void AnimNotify_AttackEnd();
+
+	UFUNCTION()
+	virtual void AnimNotify_DashEnd();
 };

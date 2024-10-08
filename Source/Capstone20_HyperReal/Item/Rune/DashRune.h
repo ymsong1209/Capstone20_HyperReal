@@ -13,10 +13,18 @@ UCLASS()
 class CAPSTONE20_HYPERREAL_API UDashRune : public URune
 {
 	GENERATED_BODY()
+
+private:
+	FTimerHandle m_hDashCoolHandle;
+	float m_fDashCool;
+	bool m_bDashAble;
 	
 public:
 	UDashRune();
 
 public:
 	virtual void Activate(AActor* _pActor = nullptr, float _fValue = 0.f) override;
+
+private:
+	void DashCoolEnd();
 };

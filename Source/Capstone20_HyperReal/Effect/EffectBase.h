@@ -18,11 +18,14 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Effect")
 	UNiagaraComponent* m_Niagara;
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (AllowPrivateAccess = "true"), Category = "Effect")
 	UParticleSystemComponent* m_Particle;
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (AllowPrivateAccess = "true"), Category = "Effect")
 	USoundBase* m_Sound;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "Effect")
 	bool m_bOnceDestroy;
 
 public:
@@ -33,7 +36,7 @@ public:
 	bool SetSound(const FString& Path, float volume = 1.f);
 	bool SetSound(USoundBase* Sound, float volume = 1.f);
 
-	void SetOnceDestroy(bool _bSet) { m_bOnceDestroy = _bSet; }
+	void SetOnceDestroy(bool _bSet);
 
 protected:
 	// Called when the game starts or when spawned

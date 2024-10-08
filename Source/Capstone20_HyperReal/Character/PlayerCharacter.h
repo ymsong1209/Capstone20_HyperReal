@@ -11,6 +11,7 @@ class UInputMappingContext;
 class UInputAction;
 class FActionInputInstance;
 class UInGameUserWidget;
+class AEffectBase;
 
 UCLASS()
 class CAPSTONE20_HYPERREAL_API APlayerCharacter : public ACharacter
@@ -48,6 +49,9 @@ public:
 	UInputAction* SkillFAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
+	UInputAction* SpaceAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
 	UInputAction* EscapeAction;
 	
 	// 공격 애니메이션 몽타주 저장
@@ -57,9 +61,16 @@ public:
 	// 재생 시킬 애니메이션 인덱스
 	int32 m_iAttackMontageIndex;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	UAnimMontage* m_DashMontage;
+
 	// 공격시 살짝 이동할 힘
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
 	float m_fAttackImpulse;
+
+	// 대쉬할때 줄 힘
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
+	float m_fDashImpulse;
 
 	// 고스트 트레일 생성 간격
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect)
@@ -70,6 +81,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
 	UMaterialInterface* m_pBlinkOverlayInterface;
+
+	// 대쉬용 이펙트(패키징 안되는거 짜증나서 블루프린트로 변경해봄)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect)
+	TSubclassOf<AEffectBase> m_BPDashEffect;
 
 protected:
 	class UPlayerAnimInstance* m_pAnim;
@@ -93,11 +108,8 @@ protected:
 	UInGameUserWidget* m_pHUDWidget;
 
 	float m_faccSkillACool;
-
 	float m_faccSkillSCool;
-
 	float m_faccSkillDCool;
-
 	float m_faccSkillFCool;
 
 private:
@@ -118,6 +130,7 @@ public:
 	bool IsComboDectected() { return m_bComboDetected; }
 
 	EPlayerSkill GetUsingSkill() { return m_eUsingSkill; }
+	void SetUsingSkill(EPlayerSkill _eSkill) { m_eUsingSkill = _eSkill; }
 
 	float GetAnimPlaySpeed() { return m_fAnimPlaySpeed * GetAttackSpeed(); }
 	void SetAnimPlaySpeed(float _fSpeed) { m_fAnimPlaySpeed = _fSpeed; }
@@ -173,6 +186,8 @@ public:
 	virtual void SkillEnd() {};
 	virtual void SpawnGhostTrail();
 
+	virtual void DashEnd();
+
 	FVector GetMousePosition();
 
 	virtual void EscapeFunction();
@@ -185,9 +200,10 @@ public:
 	void Heal(float fValue);
 	void Ressurection(float fValue);
 	virtual void SetDead(bool _bState) {};
+	void Dash();
 
 private:
 	void InitPlayerData();
-	
+	void SpaceOn();
 	void TestBasecampUI();
 };

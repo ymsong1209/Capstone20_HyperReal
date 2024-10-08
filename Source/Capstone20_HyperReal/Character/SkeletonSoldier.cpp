@@ -53,6 +53,7 @@ ASkeletonSoldier::ASkeletonSoldier() :
 		m_SKMesh = MeshAsset.Object;
 	}
 	GetMesh()->bReceivesDecals = false;
+	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -100.f));
 
 	// 코드로 애니메이션 블루프린트 세팅
 	static ConstructorHelpers::FClassFinder<USoldierAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SJWContent/Character/AB_SkeletonSoldier.AB_SkeletonSoldier_C'"));
@@ -93,6 +94,13 @@ ASkeletonSoldier::ASkeletonSoldier() :
 		m_UndeadFuryMontage = AnimUndeadFury.Object;
 	}
 
+	// 대쉬 애니메이션 수동 세팅
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AnimDash(TEXT("/Script/Engine.AnimMontage'/Game/A_SJWContent/Character/Animation/AM_SoldierDash.AM_SoldierDash'"));
+	if (AnimDash.Succeeded())
+	{
+		m_DashMontage = AnimDash.Object;
+	}
+
 	// 입력 매핑 수동 설정
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputA(TEXT("/Script/EnhancedInput.InputAction'/Game/A_SJWContent/Input/Action/IA_SkillA.IA_SkillA'"));
 	if (InputA.Succeeded())
@@ -122,6 +130,12 @@ ASkeletonSoldier::ASkeletonSoldier() :
 	if (InputEscape.Succeeded())
 	{
 		EscapeAction = InputEscape.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputSpace(TEXT("/Script/EnhancedInput.InputAction'/Game/A_SJWContent/Input/Action/IA_Space.IA_Space'"));
+	if (InputSpace.Succeeded())
+	{
+		SpaceAction = InputSpace.Object;
 	}
 
 	// 데칼 머티리얼 로딩
@@ -155,6 +169,14 @@ ASkeletonSoldier::ASkeletonSoldier() :
 	if (NSUndeadFuryAsset.Succeeded())
 	{
 		m_NSEffect01->SetAsset(NSUndeadFuryAsset.Object);
+	}
+
+	// 대쉬 이펙트 블루 프린트 로딩
+	static ConstructorHelpers::FClassFinder<AEffectBase> BPDashEffect(TEXT("/Script/Engine.Blueprint'/Game/A_SJWContent/Effect/Blueprint/EB_SoldierDash.EB_SoldierDash_C'"));
+
+	if (BPDashEffect.Succeeded())
+	{
+		m_BPDashEffect = BPDashEffect.Class;
 	}
 
 	m_fAttackImpulse = 1200.f;

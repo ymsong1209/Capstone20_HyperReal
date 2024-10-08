@@ -2,17 +2,39 @@
 
 
 #include "DashRune.h"
+#include "../../Character/PlayerCharacter.h"
 
-UDashRune::UDashRune()
+UDashRune::UDashRune()	:
+	m_fDashCool(1.f),
+	m_bDashAble(true)
 {
 	m_TexRune = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_SJWContent/Rune/leap.leap'")));
 
 	m_strName = TEXT("도약");
 	m_strDesc = TEXT("대쉬 기술을 습득");
 	m_eRuneType = ERuneType::Dash;
+
+	m_iLevel = 1;
 }
 
 void UDashRune::Activate(AActor* _pActor, float _fValue)
 {
+	if (m_iLevel == 0 || m_bDashAble == false)
+		return;
+
 	// 플레이어 도약 실행
+	APlayerCharacter* pPlayer = Cast<APlayerCharacter>(_pActor);
+
+	if (IsValid(pPlayer))
+	{
+		pPlayer->Dash();
+		m_bDashAble = false;
+		// 타이머를 이용해서 쿨타임 계산
+		GetWorld()->GetTimerManager().SetTimer(m_hDashCoolHandle, this, &UDashRune::DashCoolEnd, m_fDashCool, false);
+	}
+}
+
+void UDashRune::DashCoolEnd()
+{
+	m_bDashAble = true;
 }

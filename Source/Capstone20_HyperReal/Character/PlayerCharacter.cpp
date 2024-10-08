@@ -34,6 +34,7 @@ APlayerCharacter::APlayerCharacter() :
 	AttackAction(nullptr),
 	m_iAttackMontageIndex(0),
 	m_fAttackImpulse(0.f),
+	m_fDashImpulse(4500.f),
 	m_fGhostTrailTickTime(0.1f),
 	m_pAnim(nullptr),
 	m_bOnAttack(false),
@@ -69,6 +70,8 @@ APlayerCharacter::APlayerCharacter() :
 	CameraBoom->TargetArmLength = 1000.f;
 	CameraBoom->SetRelativeRotation(FRotator(-70.f, 0.f, 0.f));
 	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
+	CameraBoom->bEnableCameraLag = true;
+	CameraBoom->CameraLagSpeed = 5.f;
 
 	// Create a camera...
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
@@ -183,6 +186,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	{
 		// 우클릭을 기본 공격에 바인딩 추후 triggerd 로 바꾸는게 좀더 자연스러울듯함
 		pInput->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacter::Attack);
+		pInput->BindAction(SpaceAction, ETriggerEvent::Started, this, &APlayerCharacter::SpaceOn);
 
 		//pInput->BindAction(EscapeAction, ETriggerEvent::Started, this, &APlayerCharacter::TestBasecampUI);
 	}
@@ -409,6 +413,15 @@ void APlayerCharacter::SpawnGhostTrail()
 	pGhost->SetLifeTime(0.f);
 }
 
+void APlayerCharacter::DashEnd()
+{
+	m_eUsingSkill = EPlayerSkill::None;
+	// 대쉬가 끝났으면 강제로 한번 멈추기
+	GetCharacterMovement()->StopMovementImmediately();
+	// 기본 프리셋으로 변경
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+}
+
 FVector APlayerCharacter::GetMousePosition()
 {
 	FHitResult Hit;
@@ -477,6 +490,62 @@ void APlayerCharacter::Ressurection(float fValue)
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(GetActorLocation(), GetActorRotation(), param);
 	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/RPGEffects/ParticlesNiagara/Priest/HealBurst/NS_Priest_Heal_Burst.NS_Priest_Heal_Burst'"));
+}
+
+void APlayerCharacter::Dash()
+{	
+	if (m_bOnAttack || m_eUsingSkill != EPlayerSkill::None)
+		return;
+
+	m_eUsingSkill = EPlayerSkill::Dash;
+
+	// 콜리전 채널 변경
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player_Dash"));
+
+	// 대쉬 애니메이션 실행
+	if (!m_pAnim->Montage_IsPlaying(m_DashMontage))
+	{
+		m_pAnim->Montage_SetPosition(m_DashMontage, 0.f);
+		m_pAnim->Montage_Play(m_DashMontage, GetAnimPlaySpeed());
+	}
+
+	// 마우스 방향을 계산
+	FHitResult Hit;
+	bool bHitSuccessful = false;
+
+	AClickMoveController* pController = Cast<AClickMoveController>(GetController());
+
+	if (!IsValid(pController))
+		return;
+
+	bHitSuccessful = pController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+	FVector CachedDestination;
+
+	// If we hit a surface, cache the location
+	if (bHitSuccessful)
+		CachedDestination = Hit.Location;
+
+	FVector vDir = (CachedDestination - GetActorLocation()).GetSafeNormal();
+	SetActorRotation(vDir.Rotation());
+
+	// 미는 힘은 수치화 해줘야 함
+	GetCharacterMovement()->StopMovementImmediately();
+	FVector vPower = GetActorForwardVector() * m_fDashImpulse;
+	LaunchCharacter(vPower, true, false);
+
+	// 대쉬 이펙트 생성
+	if (m_BPDashEffect)
+	{
+		UWorld* pWorld = GetWorld();
+
+		if (pWorld)
+		{
+			FVector vLoc = GetActorLocation() + FVector(0.f, 50.f, 0.f);
+			FRotator vRot = GetActorRotation();
+			AEffectBase* pEffect = pWorld->SpawnActor<AEffectBase>(m_BPDashEffect, vLoc, vRot);
+			pEffect->SetOnceDestroy(true);
+		}
+	}
 }
 
 void APlayerCharacter::InitPlayerData()
@@ -563,6 +632,11 @@ void APlayerCharacter::InitPlayerData()
 	//		}
 	//	}
 	//}	
+}
+
+void APlayerCharacter::SpaceOn()
+{
+	GetRuneManager()->GetRune(ERuneType::Dash)->Activate(this);
 }
 
 void APlayerCharacter::TestBasecampUI()
