@@ -14,4 +14,9 @@ class CAPSTONE20_HYPERREAL_API UPlayerUpgradeSaveGame : public USaveGame
 {
 	GENERATED_BODY()
 	
+public:
+	UPlayerUpgradeSaveGame();
+
+	UPROPERTY(BlueprintReadWrite, Category = "Player Stats")
+	FPlayerInfo m_fPlayerInfo;
 };

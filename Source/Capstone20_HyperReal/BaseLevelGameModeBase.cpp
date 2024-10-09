@@ -15,9 +15,24 @@ ABaseLevelGameModeBase::ABaseLevelGameModeBase()
 		mBaseLevelWidgetClass = WidgetClass.Class;
 	}
 }
+
+#include "CapStoneGameInstance.h"
+#include "Manager/PlayerManager.h"
 void ABaseLevelGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
+
+	// í”Œë ˆì´ì–´ ë°ì´í„° ë¡œë“œìš© í…ŒìŠ¤íŠ¸ ì½”ë“œ
+	UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
+
+	if (pGameInst)
+	{
+		pGameInst->GetPlayerManager()->LoadPlayerInfo();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Save Player Info Failed, no Game Instance"));
+	}
 }
 
 void ABaseLevelGameModeBase::BeginPlay()
@@ -36,14 +51,14 @@ void ABaseLevelGameModeBase::BeginPlay()
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	if (PlayerController)
 	{
-		// ¸¶¿ì½º Ä¿¼­ Ç¥½Ã
+		// ï¿½ï¿½ï¿½ì½º Ä¿ï¿½ï¿½ Ç¥ï¿½ï¿½
 		PlayerController->bShowMouseCursor = true;
 
-		// ¸¶¿ì½º ÀÔ·Â ºñÈ°¼ºÈ­
+		// ï¿½ï¿½ï¿½ì½º ï¿½Ô·ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
 		PlayerController->SetIgnoreLookInput(true);
 		PlayerController->SetIgnoreMoveInput(true);
 
-		// ÀÔ·Â ¸ğµå¸¦ UI Àü¿ëÀ¸·Î ¼³Á¤
+		// ï¿½Ô·ï¿½ ï¿½ï¿½å¸¦ UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		FInputModeUIOnly InputMode;
 		PlayerController->SetInputMode(InputMode);
 	}
