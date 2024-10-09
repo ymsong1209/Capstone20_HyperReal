@@ -14,9 +14,9 @@ class CAPSTONE20_HYPERREAL_API ASkeletonSoldier : public APlayerCharacter
 {
 	GENERATED_BODY()
 
+public:
 	ASkeletonSoldier();
 
-public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	UAnimMontage* m_ChargingMontage;
 

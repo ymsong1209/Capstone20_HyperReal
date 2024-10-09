@@ -181,6 +181,12 @@ ASkeletonSoldier::ASkeletonSoldier() :
 
 	m_fAttackImpulse = 1200.f;
 	m_strDataTableKey = TEXT("Soldier");
+
+	// 임의로 마나 소모량 정해둠
+	m_iSP_SkillA = 30;
+	m_iSP_SkillS = 30;
+	m_iSP_SkillD = 30;
+	m_iSP_SkillF = 30;
 }
 
 void ASkeletonSoldier::BeginPlay()
@@ -395,12 +401,14 @@ void ASkeletonSoldier::SetDead(bool _bState)
 
 void ASkeletonSoldier::ChargeStart()
 {
-	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || (m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime * GetCoolDown()))
+	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || 
+		(m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime * GetCoolDown()) || !UseSP(m_iSP_SkillD))
 		return;
 
 	GetCharacterMovement()->StopMovementImmediately();
 
 	m_fChargeStartTime = GetWorld()->GetTimeSeconds();
+
 	m_eUsingSkill = EPlayerSkill::SkillD;
 
 	if (!m_pAnim->Montage_IsPlaying(m_ChargingMontage))
@@ -484,7 +492,8 @@ void ASkeletonSoldier::ChargeAttack()
 void ASkeletonSoldier::Whirlwind()
 {
 	// 아무 스킬도 안쓰고 있었으면 휠윈드 실행
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillACool >= GetPlayerInfo().ASkillmaxcooltime * GetCoolDown()))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && 
+		(m_faccSkillACool >= GetPlayerInfo().ASkillmaxcooltime * GetCoolDown()) && UseSP(m_iSP_SkillA))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillA;
 
@@ -556,8 +565,10 @@ void ASkeletonSoldier::AttackWhirlwind()
 
 void ASkeletonSoldier::LeapAttack()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillSCool >= GetPlayerInfo().SSkillmaxcooltime * GetCoolDown()))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && 
+		(m_faccSkillSCool >= GetPlayerInfo().SSkillmaxcooltime * GetCoolDown()) && UseSP(m_iSP_SkillS))
 	{
+		GetPlayerInfo().SP -= m_iSP_SkillS;
 		m_eUsingSkill = EPlayerSkill::SkillS;
 
 		if (!m_pAnim->Montage_IsPlaying(m_LeapAttackMontage))
@@ -635,8 +646,10 @@ void ASkeletonSoldier::AttackLeapAttack()
 
 void ASkeletonSoldier::UndeadFury()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && (m_faccSkillFCool >= GetPlayerInfo().FSkillmaxcooltime * GetCoolDown()))
+	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && 
+		(m_faccSkillFCool >= GetPlayerInfo().FSkillmaxcooltime * GetCoolDown()) && UseSP(m_iSP_SkillF))
 	{
+		GetPlayerInfo().SP -= m_iSP_SkillF;
 		m_eUsingSkill = EPlayerSkill::SkillF;
 		m_faccSkillFCool = 0.f;
 

@@ -38,6 +38,10 @@ public:
 	// 후퇴 시 육체 복구 함수
 	void RestoreHealth();
 
+public:
+	void SavePlayerInfo();
+	void LoadPlayerInfo();
+
 private:
 	void UpgradeAttack(float _fValue);
 	void UpgradeHealth(float _fValue);

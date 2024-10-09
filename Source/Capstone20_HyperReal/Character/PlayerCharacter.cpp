@@ -43,7 +43,12 @@ APlayerCharacter::APlayerCharacter() :
 	m_fAnimPlaySpeed(1.f),
 	m_bGhostTrail(false),
 	m_bInvincible(false),
-	m_bIsDead(false)
+	m_bIsDead(false),
+	m_iSP_SkillA(0),
+	m_iSP_SkillS(0),
+	m_iSP_SkillD(0),
+	m_iSP_SkillF(0),
+	m_iSPRegenerate(2)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -131,6 +136,9 @@ void APlayerCharacter::BeginPlay()
 	
 	// 데이터 테이블 키 맵핑
 	InitPlayerData();
+
+	// 플레이어 마나 재생 타이머 호출
+	GetWorld()->GetTimerManager().SetTimer(m_hSPRegenHandle, this, &APlayerCharacter::RegenerateSP, 1.f, true);
 }
 
 // Called every frame
@@ -306,13 +314,17 @@ float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 	if (m_pHUDWidget)
 		m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetHPMax());
 
-	if (GetPlayerInfo().HP <= 0) {
+	if (GetPlayerInfo().HP <= 0) 
+	{
+		GetPlayerInfo().HP = 0;
 		fDamage = -1.f;
 
 		SetDead(true);
 		// 리저렉션 룬 실행
 		GetRuneManager()->GetRune(ERuneType::Resurrection)->Activate();
 	}
+
+	ApplyDamageVingnette();
 	
 	return fDamage;
 }
@@ -472,8 +484,7 @@ void APlayerCharacter::Heal(float fValue)
 		GetPlayerInfo().HP = GetPlayerInfo().MaxHP;
 
 	m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetHPMax());
-
-	UE_LOG(LogTemp, Log, TEXT("Heal, current Hp : %d"), GetPlayerInfo().HP);
+	ApplyDamageVingnette();
 }
 
 void APlayerCharacter::Ressurection(float fValue)
@@ -484,6 +495,8 @@ void APlayerCharacter::Ressurection(float fValue)
 
 	m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetHPMax());
 	m_pHUDWidget->SetSP(GetPlayerInfo().SP, GetSPMax());
+
+	ApplyDamageVingnette();
 
 	// 부활 이펙트 호출
 	FActorSpawnParameters param;
@@ -546,6 +559,21 @@ void APlayerCharacter::Dash()
 			pEffect->SetOnceDestroy(true);
 		}
 	}
+}
+
+bool APlayerCharacter::UseSP(int32 _iValue)
+{	
+	if (GetPlayerInfo().SP < _iValue)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SP is Lower than Value"));
+		false;
+	}
+	
+	GetPlayerInfo().SP -= _iValue;
+	if (m_pHUDWidget)
+		m_pHUDWidget->SetSP(GetPlayerInfo().SP, GetSPMax());
+
+	return true;
 }
 
 void APlayerCharacter::InitPlayerData()
@@ -642,4 +670,42 @@ void APlayerCharacter::SpaceOn()
 void APlayerCharacter::TestBasecampUI()
 {
 	m_pHUDWidget->TestOpenTrigger();
+}
+
+void APlayerCharacter::ApplyDamageVingnette()
+{
+	float fValue = 1.f - (float)GetPlayerInfo().HP / (float)GetHPMax();
+
+	if (0.4f > fValue)
+		return;
+
+	TArray<AActor*> arrPostProcess;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APostProcessVolume::StaticClass(), arrPostProcess);
+
+	if (arrPostProcess.Num() > 0)
+	{
+		APostProcessVolume* pVolume = Cast<APostProcessVolume>(arrPostProcess[0]);
+
+		if (pVolume)
+		{
+			FPostProcessVolumeProperties fProp = pVolume->GetProperties();
+			FPostProcessSettings* pSetting = (FPostProcessSettings*)fProp.Settings;
+			pSetting->bOverride_VignetteIntensity = true;
+			pSetting->VignetteIntensity = fValue;
+		}
+	}
+}
+
+void APlayerCharacter::RegenerateSP()
+{
+	if (GetPlayerInfo().SP >= GetSPMax())
+		return;
+
+	GetPlayerInfo().SP += m_iSPRegenerate;
+
+	if (GetPlayerInfo().SP > GetSPMax())
+		GetPlayerInfo().SP = GetSPMax();
+
+	if (m_pHUDWidget)
+		m_pHUDWidget->SetSP(GetPlayerInfo().SP, GetSPMax());
 }

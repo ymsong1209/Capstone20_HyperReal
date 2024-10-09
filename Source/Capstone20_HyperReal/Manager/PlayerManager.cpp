@@ -3,6 +3,7 @@
 
 #include "PlayerManager.h"
 #include "../CapStoneGameInstance.h"
+#include "../Save/PlayerUpgradeSaveGame.h"
 
 UPlayerManager::UPlayerManager()
 {
@@ -101,6 +102,29 @@ void UPlayerManager::RestoreHealth()
 
 	if (m_fPlayerInfo.MaxHP <= m_fPlayerInfo.HP)
 		m_fPlayerInfo.HP = m_fPlayerInfo.MaxHP;
+}
+
+void UPlayerManager::SavePlayerInfo()
+{
+	UPlayerUpgradeSaveGame* pSaveInst = Cast<UPlayerUpgradeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPlayerUpgradeSaveGame::StaticClass()));
+
+	pSaveInst->m_fPlayerInfo = m_fPlayerInfo;
+
+	UGameplayStatics::SaveGameToSlot(pSaveInst, TEXT("PlayerInfoSlot"), 0);
+}
+
+void UPlayerManager::LoadPlayerInfo()
+{
+	UPlayerUpgradeSaveGame* pLoadInst = Cast<UPlayerUpgradeSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("PlayerInfoSlot"), 0));
+
+	if (pLoadInst)
+	{
+		m_fPlayerInfo = pLoadInst->m_fPlayerInfo;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Load Failed, Save file not found"));
+	}
 }
 
 void UPlayerManager::UpgradeAttack(float _fValue)

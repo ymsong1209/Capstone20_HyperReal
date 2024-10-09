@@ -58,6 +58,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TArray<UAnimMontage*> m_arrAttackMontage;
 
+	// 스킬 마나 소모량
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	int32 m_iSP_SkillA;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	int32 m_iSP_SkillS;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	int32 m_iSP_SkillD;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	int32 m_iSP_SkillF;
+
+	// 초당 마나 재생량
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
+	int32 m_iSPRegenerate;
+
 	// 재생 시킬 애니메이션 인덱스
 	int32 m_iAttackMontageIndex;
 
@@ -111,6 +128,8 @@ protected:
 	float m_faccSkillSCool;
 	float m_faccSkillDCool;
 	float m_faccSkillFCool;
+
+	FTimerHandle m_hSPRegenHandle;
 
 private:
 	float m_fDefaultSpeed;
@@ -202,8 +221,12 @@ public:
 	virtual void SetDead(bool _bState) {};
 	void Dash();
 
+	bool UseSP(int32 _iValue);
+
 private:
 	void InitPlayerData();
 	void SpaceOn();
 	void TestBasecampUI();
+	void ApplyDamageVingnette();
+	void RegenerateSP();
 };

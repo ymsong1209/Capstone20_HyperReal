@@ -3,3 +3,7 @@
 
 #include "PlayerUpgradeSaveGame.h"
 
+UPlayerUpgradeSaveGame::UPlayerUpgradeSaveGame()	:
+	m_fPlayerInfo{}
+{
+}
