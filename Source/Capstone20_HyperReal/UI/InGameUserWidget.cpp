@@ -22,7 +22,8 @@ void UInGameUserWidget::NativePreConstruct()
 	mPrevGold = Cast<UTextBlock>(GetWidgetFromName(TEXT("PrevMoney")));
 	mEarnGold = Cast<UTextBlock>(GetWidgetFromName(TEXT("earnMoney")));
 	mDestoryRate = Cast<UTextBlock>(GetWidgetFromName(TEXT("DestroyRate")));
-
+	mYouWin = Cast<UTextBlock>(GetWidgetFromName(TEXT("YouWin")));
+	mYouDied = Cast<UTextBlock>(GetWidgetFromName(TEXT("YouDied")));
 	
 	FString	t = "Testcode";
 	mPrevGold->SetText(FText::FromString(t));
@@ -74,6 +75,8 @@ void UInGameUserWidget::NativeConstruct()
 	mRewardWidget->setRewardMoney(400);
 	mRewardWidget->SetVisibility(ESlateVisibility::Collapsed);
 	mBasecampWidget->SetVisibility(ESlateVisibility::Collapsed);
+	mYouWin->SetVisibility(ESlateVisibility::Collapsed);
+	mYouDied->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UInGameUserWidget::NativeDestruct()
@@ -226,6 +229,16 @@ UMyWidget* UInGameUserWidget::TopWidget()
 	}
 
 	return ActivateWidgets.Last();
+}
+
+void UInGameUserWidget::YouWin()
+{
+	mYouWin->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UInGameUserWidget::YouDied()
+{
+	mYouDied->SetVisibility(ESlateVisibility::Visible);
 }
 
 

@@ -30,6 +30,8 @@ protected:
 	UTextBlock* mPrevGold;
 	UTextBlock* mEarnGold;
 	UTextBlock* mDestoryRate;
+	UTextBlock* mYouWin;
+	UTextBlock* mYouDied;
 protected:
 	virtual void NativeOnInitialized();
 	virtual void NativePreConstruct();
@@ -68,4 +70,7 @@ public:
 	void PushWidget(UMyWidget* Widget);
 	UMyWidget* PopWidget();
 	UMyWidget* TopWidget();
+
+	void YouWin();
+	void YouDied();
 };
