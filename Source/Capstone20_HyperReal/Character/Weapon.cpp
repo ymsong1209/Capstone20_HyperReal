@@ -18,9 +18,10 @@ AWeapon::AWeapon()	:
 	m_WeaponMesh->SetupAttachment(m_Capsule);
 	m_Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MTI_BlinkFresnel.MTI_BlinkFresnel'"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MT_BlinkFresnel_inst.MT_BlinkFresnel_inst'"));
 	if (MIBlinkOverlay.Succeeded())
 	{
+		UE_LOG(LogTemp, Log, TEXT("Blink Overlay Load Succeed"));
 		m_pBlinkOverlayInterface = MIBlinkOverlay.Object;
 	}
 }
@@ -34,10 +35,9 @@ void AWeapon::BeginPlay()
 	m_WeaponMesh->SetRenderCustomDepth(true);
 	m_WeaponMesh->CustomDepthStencilValue = 100;
 
-	if (m_pBlinkOverlayInterface)
-	{
-		m_MIDBlinkOverlay = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), m_pBlinkOverlayInterface);
-	}
+	m_MIDBlinkOverlay = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), m_pBlinkOverlayInterface);
+	if (m_MIDBlinkOverlay)
+		UE_LOG(LogTemp, Log, TEXT("Make Blink Overlay Dynamic Material Succeed"));
 }
 
 void AWeapon::SwitchBlinkOverlay(bool _bSwitch)

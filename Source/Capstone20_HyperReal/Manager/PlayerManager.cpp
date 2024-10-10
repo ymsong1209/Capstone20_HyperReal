@@ -104,18 +104,23 @@ void UPlayerManager::RestoreHealth()
 		m_fPlayerInfo.HP = m_fPlayerInfo.MaxHP;
 }
 
-void UPlayerManager::SavePlayerInfo()
+void UPlayerManager::SavePlayerInfo(USaveGame* _pSaveGame)
 {
-	UPlayerUpgradeSaveGame* pSaveInst = Cast<UPlayerUpgradeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPlayerUpgradeSaveGame::StaticClass()));
+	UPlayerUpgradeSaveGame* pSaveInst = Cast<UPlayerUpgradeSaveGame>(_pSaveGame);
 
-	pSaveInst->m_fPlayerInfo = m_fPlayerInfo;
-
-	UGameplayStatics::SaveGameToSlot(pSaveInst, TEXT("PlayerInfoSlot"), 0);
+	if (pSaveInst)
+	{
+		pSaveInst->m_fPlayerInfo = m_fPlayerInfo;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Save Player Info Failed, Save Instance is Null"));
+	}
 }
 
-void UPlayerManager::LoadPlayerInfo()
+void UPlayerManager::LoadPlayerInfo(USaveGame* _pSaveGame)
 {
-	UPlayerUpgradeSaveGame* pLoadInst = Cast<UPlayerUpgradeSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("PlayerInfoSlot"), 0));
+	UPlayerUpgradeSaveGame* pLoadInst = Cast<UPlayerUpgradeSaveGame>(_pSaveGame);
 
 	if (pLoadInst)
 	{
@@ -123,7 +128,7 @@ void UPlayerManager::LoadPlayerInfo()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Load Failed, Save file not found"));
+		UE_LOG(LogTemp, Warning, TEXT("Load Player Info Failed, Load Instance is Null"));
 	}
 }
 

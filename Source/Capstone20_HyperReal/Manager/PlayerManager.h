@@ -39,8 +39,8 @@ public:
 	void RestoreHealth();
 
 public:
-	void SavePlayerInfo();
-	void LoadPlayerInfo();
+	void SavePlayerInfo(USaveGame* _pSaveGame);
+	void LoadPlayerInfo(USaveGame* _pSaveGame);
 
 private:
 	void UpgradeAttack(float _fValue);

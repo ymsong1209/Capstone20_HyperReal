@@ -5,6 +5,7 @@
 #include "Manager/PlayerManager.h"
 #include "Manager/RuneManager.h"
 #include "Manager/LevelManager.h"
+#include "Save/PlayerUpgradeSaveGame.h"
 
 UCapStoneGameInstance::UCapStoneGameInstance()
 {
@@ -90,6 +91,40 @@ void UCapStoneGameInstance::UpdatePlayerGold(const FString& PlayerName, int _gol
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("No PlayerInfoTable"));
+	}
+}
+
+void UCapStoneGameInstance::SaveGameData()
+{
+	UPlayerUpgradeSaveGame* pSaveInst = Cast<UPlayerUpgradeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPlayerUpgradeSaveGame::StaticClass()));
+
+	if (!pSaveInst)
+		UE_LOG(LogTemp, Error, TEXT("Make PlayerUpgradeSaveGame Failed"));
+
+	if (m_PlayerManager)
+		m_PlayerManager->SavePlayerInfo(pSaveInst);
+
+	if (m_RuneManager)
+		m_RuneManager->SaveRuneLevels(pSaveInst);
+
+	UGameplayStatics::SaveGameToSlot(pSaveInst, TEXT("GameData"), 0);
+}
+
+void UCapStoneGameInstance::LoadGameData()
+{
+	UPlayerUpgradeSaveGame* pLoadInst = Cast<UPlayerUpgradeSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("GameData"), 0));
+
+	if (pLoadInst)
+	{
+		if (m_PlayerManager)
+			m_PlayerManager->LoadPlayerInfo(pLoadInst);
+
+		if (m_RuneManager)
+			m_RuneManager->LoadRuneLevels(pLoadInst);
+	}	
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GameData Save Slot not exist"));
 	}
 }
 

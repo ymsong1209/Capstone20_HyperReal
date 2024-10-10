@@ -32,23 +32,23 @@
 APlayerCharacter::APlayerCharacter() :
 	DefaultMappingContext(nullptr),
 	AttackAction(nullptr),
+	m_iSP_SkillA(0),
+	m_iSP_SkillS(0),
+	m_iSP_SkillD(0),
+	m_iSP_SkillF(0),
+	m_iSPRegenerate(2),
 	m_iAttackMontageIndex(0),
 	m_fAttackImpulse(0.f),
 	m_fDashImpulse(4500.f),
 	m_fGhostTrailTickTime(0.1f),
 	m_pAnim(nullptr),
+	m_bIsDead(false),
 	m_bOnAttack(false),
 	m_bComboDetected(false),
 	m_eUsingSkill(EPlayerSkill::None),
 	m_fAnimPlaySpeed(1.f),
 	m_bGhostTrail(false),
-	m_bInvincible(false),
-	m_bIsDead(false),
-	m_iSP_SkillA(0),
-	m_iSP_SkillS(0),
-	m_iSP_SkillD(0),
-	m_iSP_SkillF(0),
-	m_iSPRegenerate(2)
+	m_bInvincible(false)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -96,7 +96,7 @@ APlayerCharacter::APlayerCharacter() :
 	m_fDefaultAccel = GetCharacterMovement()->MaxAcceleration;
 
 	// 무적 판정, 차징 등등에 쓰일 깜빡이는 오버레이 머티리얼 로딩
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MTI_BlinkFresnel.MTI_BlinkFresnel'ddd"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MT_BlinkFresnel_inst.MT_BlinkFresnel_inst'"));
 	if (MIBlinkOverlay.Succeeded())
 	{
 		m_pBlinkOverlayInterface = MIBlinkOverlay.Object;
@@ -566,7 +566,7 @@ bool APlayerCharacter::UseSP(int32 _iValue)
 	if (GetPlayerInfo().SP < _iValue)
 	{
 		UE_LOG(LogTemp, Error, TEXT("SP is Lower than Value"));
-		false;
+		return false;
 	}
 	
 	GetPlayerInfo().SP -= _iValue;

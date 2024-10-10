@@ -19,4 +19,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Player Stats")
 	FPlayerInfo m_fPlayerInfo;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Rune Level")
+	TArray<int32> m_arrRuneLevels;
 };

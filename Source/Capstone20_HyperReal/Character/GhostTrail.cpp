@@ -78,7 +78,7 @@ void AGhostTrail::SetMesh(const FString& _strPath)
 	USkeletalMesh* Mesh = LoadObject<USkeletalMesh>(GetWorld(), *_strPath);
 
 	if (Mesh)
-		m_Mesh->SetSkeletalMesh(Mesh);
+		m_Mesh->SetSkinnedAssetAndUpdate(Mesh);
 
 	// 재질 생성
 	int32 iMtrlCount = m_Mesh->GetNumMaterials();
@@ -93,7 +93,8 @@ void AGhostTrail::SetMesh(const FString& _strPath)
 void AGhostTrail::SetMesh(USkeletalMesh* _pMesh)
 {
 	if (_pMesh)
-		m_Mesh->SetSkeletalMesh(_pMesh);
+		m_Mesh->SetSkinnedAssetAndUpdate(_pMesh);
+
 
 	// 재질 생성
 	int32 iMtrlCount = m_Mesh->GetNumMaterials();

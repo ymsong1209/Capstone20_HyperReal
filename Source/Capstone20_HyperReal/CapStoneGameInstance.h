@@ -44,6 +44,9 @@ public:
 	URuneManager* GetRuneManager() { return m_RuneManager; }
 	ULevelManager* GetLevelManager() const { return m_LevelManager; }
 
+public:
+	void SaveGameData();
+	void LoadGameData();
 
 public:
 	virtual void Init() override;

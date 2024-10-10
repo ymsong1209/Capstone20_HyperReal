@@ -124,18 +124,21 @@ void UBasecampWidget::MaintainButtonClick()
 
 void UBasecampWidget::NextStageButtonClick()
 {
-	// 세이브 기능 확인용 코드
-	UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
-
-	if (pGameInst)
 	{
-		pGameInst->GetPlayerManager()->SavePlayerInfo();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Save Player Info Failed, no Game Instance"));
-	}
+		// ==============================
+		// 세이브 기능 확인용 코드 - 서종원
+		UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
 
+		if (pGameInst)
+		{
+			pGameInst->SaveGameData();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Save Game Data Failed, no Game Instance"));
+		}
+		// ==============================
+	}
 
 	//여기서 다음 레벨로 이동;
 	UCapStoneGameInstance* gameInst = Cast<UCapStoneGameInstance>(GetGameInstance());

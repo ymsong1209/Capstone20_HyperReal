@@ -16,6 +16,7 @@
 
 #include "../CapStoneGameInstance.h"
 #include "PlayerManager.h"
+#include "../Save/PlayerUpgradeSaveGame.h"
 
 URuneManager::URuneManager()
 {
@@ -197,5 +198,45 @@ void URuneManager::UpgradeRune(ERuneType _eType)
 	if (gameInst)
 	{
 		gameInst->GetPlayerManager()->GetPlayerInfo().TotalGold -= 100;
+	}
+}
+
+void URuneManager::SaveRuneLevels(USaveGame* _pSaveGame)
+{
+	UPlayerUpgradeSaveGame* pSaveInst = Cast<UPlayerUpgradeSaveGame>(_pSaveGame);
+
+	if (pSaveInst)
+	{
+		for (int32 i = 0; i < (int32)ERuneType::End; i++)
+		{
+			if (nullptr == m_arrRune[i])
+				continue;
+
+			pSaveInst->m_arrRuneLevels.Add(m_arrRune[i]->GetLevel());
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Save Rune Levels Failed, Save Instance is Null"));
+	}
+}
+
+void URuneManager::LoadRuneLevels(USaveGame* _pSaveGame)
+{
+	UPlayerUpgradeSaveGame* pLoadInst = Cast<UPlayerUpgradeSaveGame>(_pSaveGame);
+
+	if (pLoadInst)
+	{
+		for (int32 i = 0; i < pLoadInst->m_arrRuneLevels.Num(); i++)
+		{
+			if (nullptr == m_arrRune[i])
+				continue;
+
+			m_arrRune[i]->SetLevel(pLoadInst->m_arrRuneLevels[i]);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Load Rune Levels Failed, Load Instance is Null"));
 	}
 }

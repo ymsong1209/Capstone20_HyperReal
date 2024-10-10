@@ -44,4 +44,8 @@ public:
 	float GetCoolDownAdd();
 
 	void UpgradeRune(ERuneType _eType);
+
+public:
+	void SaveRuneLevels(USaveGame* _pSaveGame);
+	void LoadRuneLevels(USaveGame* _pSaveGame);
 };

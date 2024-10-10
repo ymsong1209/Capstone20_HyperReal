@@ -22,16 +22,20 @@ void ABaseLevelGameModeBase::InitGame(const FString& MapName, const FString& Opt
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
 
-	// 플레이어 데이터 로드용 테스트 코드
-	UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
+	{
+		// ========================================
+		// 플레이어 데이터 로드용 테스트 코드 - 서종원
+		UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
 
-	if (pGameInst)
-	{
-		pGameInst->GetPlayerManager()->LoadPlayerInfo();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Save Player Info Failed, no Game Instance"));
+		if (pGameInst)
+		{
+			pGameInst->LoadGameData();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Load Game Data Failed, no Game Instance"));
+		}
+		// =========================================
 	}
 }
 
