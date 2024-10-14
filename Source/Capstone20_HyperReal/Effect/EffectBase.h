@@ -38,6 +38,11 @@ public:
 
 	void SetOnceDestroy(bool _bSet);
 
+	UNiagaraComponent* GetNiagaraCom() { return m_Niagara; }
+
+	FVector GetNiagaraComScale();
+	void SetNiagaraComScale(FVector _vScale);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

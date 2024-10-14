@@ -2,52 +2,52 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "ProjectileBase.h"
-#include "ChainLightning.generated.h"
+#include "../GameInfo.h"
+#include "GameFramework/Actor.h"
+#include "LightningChain.generated.h"
 
-class AEffectBase;
-/**
- * 
- */
 UCLASS()
-class CAPSTONE20_HYPERREAL_API AChainLightning : public AProjectileBase
+class CAPSTONE20_HYPERREAL_API ALightningChain : public AActor
 {
 	GENERATED_BODY()
-
+	
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UNiagaraSystem* m_Lightning;
 
 private:
 	int32 m_iChainCount;
-
-	TArray<AActor*> m_arrTarget;
-
 	float m_fRange;
+	AActor* m_Target;
+	TArray<AActor*> m_arrTarget;
+	float m_fDamage;
 
-	AEffectBase* m_pCurrentLight;
+	class AEffectBase* m_pCurLightEffect;
+
+	FTimerHandle m_hSpawnTimerHandle;
+	FVector m_vPrevLoc;
 
 public:
 	void SetChainCount(int32 _iCount) { m_iChainCount = _iCount; }
+	void SetTarget(AActor* _pTarget) { m_Target = _pTarget; }
+	void SetDamage(float _fDmg) { m_fDamage = _fDmg; }
 
-public:
+public:	
 	// Sets default values for this actor's properties
-	AChainLightning();
+	ALightningChain();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
+public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION()
-	void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 private:
+	void CheckAndSpawn();
 	void FindNewTarget();
 	void SpawnLightning();
+	void SpawnHitEffect(FVector _vLoc, FRotator _vRot);
 
 };

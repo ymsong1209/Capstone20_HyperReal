@@ -103,11 +103,24 @@ void AEffectBase::SetOnceDestroy(bool _bSet)
 	}
 }
 
+FVector AEffectBase::GetNiagaraComScale()
+{
+	if (m_Niagara)
+		return m_Niagara->GetRelativeScale3D();
+	else
+		return FVector();
+}
+
+void AEffectBase::SetNiagaraComScale(FVector _vScale)
+{
+	if (m_Niagara)
+		m_Niagara->SetRelativeScale3D(_vScale);
+}
+
 // Called when the game starts or when spawned
 void AEffectBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame

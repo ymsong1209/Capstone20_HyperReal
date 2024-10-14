@@ -208,7 +208,7 @@ void ASkeletonSoldier::BeginPlay()
 	{
 		m_pLeapAttackRangeDecal->SetRelativeLocation(FVector(0.f, 0.f, -80.f));
 		m_pLeapAttackRangeDecal->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
-		m_pLeapAttackRangeDecal->SetRelativeScale3D(FVector(0.5f, 2.6f, 2.6f));
+		m_pLeapAttackRangeDecal->SetRelativeScale3D(FVector(0.5f, 2.1f, 2.1f));
 		m_pLeapAttackRangeDecal->SetHiddenInGame(true);
 	}
 
@@ -425,7 +425,7 @@ void ASkeletonSoldier::ChargeStart()
 
 void ASkeletonSoldier::Charging()
 {
-	if (m_eUsingSkill != EPlayerSkill::SkillD)
+	if (m_eUsingSkill != EPlayerSkill::SkillD || m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime * GetCoolDown())
 		return;
 
 	// 마우스 방향으로 차징중 회전
@@ -475,7 +475,6 @@ void ASkeletonSoldier::ChargeAttack()
 		return;
 
 	m_faccSkillDCool = 0.f;
-
 	float fElapsedTime = GetWorld()->GetTimeSeconds() - m_fChargeStartTime;
 
 	m_iChargeAttackCount = FMath::FloorToInt32(fElapsedTime / m_fChargingTick) + 1;
@@ -581,7 +580,7 @@ void ASkeletonSoldier::LeapAttack()
 
 			// 낙하할 위치 알려주는 데칼 생성
 			if(m_pLeapAttackDecalInterface)
-				m_pLeapAttackDecal = UGameplayStatics::SpawnDecalAtLocation(this, m_pLeapAttackDecalInterface, FVector(64.f, 128.f, 128.f), 
+				m_pLeapAttackDecal = UGameplayStatics::SpawnDecalAtLocation(this, m_pLeapAttackDecalInterface, FVector(64.f, 300.f, 300.f), 
 				GetActorLocation(), FRotator(-90.f, 0.f, 0.f), 0.f);
 
 #if ENABLE_DRAW_DEBUG
@@ -595,14 +594,13 @@ void ASkeletonSoldier::LeapAttack()
 
 void ASkeletonSoldier::AttackLeapAttack()
 {
-	SetActorEnableCollision(true);
-
+	//SetActorEnableCollision(true);
 	m_faccSkillSCool = 0.f;
 
 	// Camera shake
 	GetController<AClickMoveController>()->ClientStartCameraShake(USmashCameraShake::StaticClass());
 
-	float fRadius = 100.f;
+	float fRadius = 300.f;
 	float fStartPos = 50.f;
 	float fEndPos = -50.f;
 
@@ -713,7 +711,7 @@ void ASkeletonSoldier::WhirlwindEnd()
 
 void ASkeletonSoldier::LeapAttackMove()
 {
-	SetActorEnableCollision(false);
+	//SetActorEnableCollision(false);
 	m_pLeapAttackRangeDecal->SetHiddenInGame(true);
 
 	if (IsValid(m_pLeapAttackDecal))
@@ -936,7 +934,7 @@ void ASkeletonSoldier::SpawnHitEffect(FVector _vLoc, FRotator _vRot)
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(_vLoc, _vRot, param);
 
-	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/Hack_And_Slash_FX/VFX_Niagara/Impacts/NS_Demon_Slash_Impact.NS_Demon_Slash_Impact'"));
+	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/A_SJWContent/Effect/Niagara/NS_Demon_Slash_Impact.NS_Demon_Slash_Impact'"));
 }
 
 void ASkeletonSoldier::InitializeDynamicMaterial()

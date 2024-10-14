@@ -23,10 +23,9 @@ protected:
 
 	// 무기 표현용 스켈레탈 매쉬(트레일을 구현하기 위함)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
-	class USkeletalMeshComponent* m_WeaponMesh;
+	USkeletalMeshComponent* m_WeaponMesh;
 
-protected:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Overlay)
 	UMaterialInstanceDynamic* m_MIDBlinkOverlay;
 
 public:

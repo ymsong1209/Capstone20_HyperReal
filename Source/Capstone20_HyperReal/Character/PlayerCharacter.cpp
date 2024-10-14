@@ -502,7 +502,7 @@ void APlayerCharacter::Ressurection(float fValue)
 	FActorSpawnParameters param;
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(GetActorLocation(), GetActorRotation(), param);
-	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/RPGEffects/ParticlesNiagara/Priest/HealBurst/NS_Priest_Heal_Burst.NS_Priest_Heal_Burst'"));
+	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/A_SJWContent/Effect/Niagara/NS_Priest_Heal_Burst.NS_Priest_Heal_Burst'"));
 }
 
 void APlayerCharacter::Dash()

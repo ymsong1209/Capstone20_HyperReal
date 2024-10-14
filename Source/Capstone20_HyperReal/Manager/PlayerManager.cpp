@@ -159,7 +159,10 @@ void UPlayerManager::UpgradeAttack(float _fValue)
 	}
 
 	if (m_fPlayerInfo.AttackLevel >= STAT_MAX_LEVEL)
+	{
 		m_fPlayerInfo.AttackLevel = STAT_MAX_LEVEL;
+		m_fPlayerInfo.AttackProgress = 100.f;
+	}
 
 	UE_LOG(LogTemp, Log, TEXT("Attack Level : %d, Attack : %d, progress : %f"), m_fPlayerInfo.AttackLevel, m_fPlayerInfo.Attack,m_fPlayerInfo.AttackProgress);
 }
@@ -191,7 +194,10 @@ void UPlayerManager::UpgradeHealth(float _fValue)
 	}
 
 	if (m_fPlayerInfo.HealthLevel >= STAT_MAX_LEVEL)
+	{
+		m_fPlayerInfo.HealthProgress = 100.f;
 		m_fPlayerInfo.HealthLevel = STAT_MAX_LEVEL;
+	}
 
 	UE_LOG(LogTemp, Log, TEXT("Health Level : %d, Health : %d"), m_fPlayerInfo.HealthLevel, m_fPlayerInfo.MaxHP);
 }
@@ -223,7 +229,10 @@ void UPlayerManager::UpgradeSoul(float _fValue)
 	}
 
 	if (m_fPlayerInfo.SoulLevel >= STAT_MAX_LEVEL)
+	{
 		m_fPlayerInfo.SoulLevel = STAT_MAX_LEVEL;
+		m_fPlayerInfo.SoulProgress = 100.f;
+	}
 
 	UE_LOG(LogTemp, Log, TEXT("Soul Level : %d, Soul : %d"), m_fPlayerInfo.SoulLevel, m_fPlayerInfo.MaxSP);
 }

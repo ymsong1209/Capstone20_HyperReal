@@ -21,8 +21,8 @@ AWeapon::AWeapon()	:
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MT_BlinkFresnel_inst.MT_BlinkFresnel_inst'"));
 	if (MIBlinkOverlay.Succeeded())
 	{
-		UE_LOG(LogTemp, Log, TEXT("Blink Overlay Load Succeed"));
 		m_pBlinkOverlayInterface = MIBlinkOverlay.Object;
+		UE_LOG(LogTemp, Log, TEXT("Blink Overlay Load Succeed"));
 	}
 }
 
@@ -43,7 +43,11 @@ void AWeapon::BeginPlay()
 void AWeapon::SwitchBlinkOverlay(bool _bSwitch)
 {
 	if (_bSwitch)
+	{
 		m_WeaponMesh->SetOverlayMaterial(m_MIDBlinkOverlay);
+		if (m_WeaponMesh->GetOverlayMaterial())
+			UE_LOG(LogTemp, Log, TEXT("Overlay Material Set Successfully"));
+	}
 	else
 		m_WeaponMesh->SetOverlayMaterial(nullptr);
 }

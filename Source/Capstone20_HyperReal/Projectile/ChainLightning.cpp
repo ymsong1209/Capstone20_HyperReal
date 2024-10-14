@@ -3,8 +3,10 @@
 
 #include "ChainLightning.h"
 #include "../Enemy/Monster.h"
+#include "../Effect/EffectBase.h"
 
-AChainLightning::AChainLightning()
+AChainLightning::AChainLightning()	:
+	m_pCurrentLight(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -15,10 +17,15 @@ AChainLightning::AChainLightning()
 
 	//m_Capsule->OnComponentBeginOverlap.AddDynamic(this, &AChainLightning::BeginOverlap);
 
-	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NiagaraAsset(TEXT("/Script/Niagara.NiagaraSystem'/Game/RPGEffects/ParticlesNiagara/Mage/LightningShield/NS_Mage_LIghtningShield.NS_Mage_LIghtningShield'"));
+	//static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NiagaraAsset(TEXT("/Script/Niagara.NiagaraSystem'/Game/RPGEffects/ParticlesNiagara/Mage/LightningShield/NS_Mage_LIghtningShield.NS_Mage_LIghtningShield'"));
 
-	if (NiagaraAsset.Succeeded())
-		m_Niagara->SetAsset(NiagaraAsset.Object);
+	//if (NiagaraAsset.Succeeded())
+	//	m_Niagara->SetAsset(NiagaraAsset.Object);
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> LightningAsset(TEXT("/Script/Niagara.NiagaraSystem'/Game/A_SJWContent/Effect/Niagara/NS_Chain_Lightning.NS_Chain_Lightning'"));
+
+	if (LightningAsset.Succeeded())
+		m_Lightning = LightningAsset.Object;
 
 	//m_Niagara->SetRelativeLocation(FVector(-50.f, 0.f, 0.f));
 	//m_Niagara->SetRelativeRotation(FRotator(0.f, 0.f, 90.f));
@@ -35,6 +42,9 @@ AChainLightning::AChainLightning()
 void AChainLightning::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (IsValid(m_Target))
+		SpawnLightning();
 }
 
 void AChainLightning::Tick(float DeltaTime)
@@ -44,8 +54,15 @@ void AChainLightning::Tick(float DeltaTime)
 	if (!IsValid(m_Target))
 	{
 		Destroy();
+
+		if (IsValid(m_pCurrentLight))
+			m_pCurrentLight->SetLifeSpan(2.f);
+
 		return;
 	}
+
+	if (IsValid(m_pCurrentLight))
+		m_pCurrentLight->GetNiagaraCom()->SetVectorParameter(FName("User.Beam_End"), GetActorLocation());
 
 	FVector vDir = (m_Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 	SetActorRotation(vDir.Rotation());
@@ -66,6 +83,7 @@ void AChainLightning::Tick(float DeltaTime)
 			//}
 
 			FindNewTarget();
+			SpawnLightning();
 		}
 
 		//AMonster* pMon = Cast<AMonster>(m_Target);
@@ -121,4 +139,23 @@ void AChainLightning::FindNewTarget()
 	}
 
 	m_Target = pNext;
+}
+
+void AChainLightning::SpawnLightning()
+{
+	if (!m_Lightning)
+		return;
+
+	if (IsValid(m_pCurrentLight))
+	{
+		m_pCurrentLight->SetLifeSpan(2.f);
+		m_pCurrentLight = nullptr;	
+	}
+
+	FActorSpawnParameters param;
+	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	m_pCurrentLight = GetWorld()->SpawnActor<AEffectBase>(GetActorLocation(), GetActorRotation(), param);
+	m_pCurrentLight->SetNiagara(m_Lightning);
+
+	m_pCurrentLight->GetNiagaraCom()->SetVectorParameter(FName("User.Beam_Start"), m_Target->GetActorLocation());
 }

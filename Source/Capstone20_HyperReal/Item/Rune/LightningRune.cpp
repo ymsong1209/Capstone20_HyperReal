@@ -3,8 +3,8 @@
 
 #include "LightningRune.h"
 #include "TimerManager.h"
-#include "../../Projectile/ChainLightning.h"
 #include "../../Enemy/Monster.h"
+#include "../../Effect/LightningChain.h"
 
 ULightningRune::ULightningRune()	:
 	m_bAble(true)
@@ -18,6 +18,7 @@ ULightningRune::ULightningRune()	:
 	// 스태틱 데미지
 	m_fEtc = 10.f;
 	m_fCoolTime = 1.f;
+	m_iLevel = 1;
 }
 
 void ULightningRune::NormalAttackTrigger(AActor* _pActor, float _fValue)
@@ -44,10 +45,22 @@ void ULightningRune::EjectLightning(AActor* _pActor)
 	if (!pMon)
 		return;
 
-	FActorSpawnParameters param;
-	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	AChainLightning* pLight = GetWorld()->SpawnActor<AChainLightning>(_pActor->GetActorLocation(), _pActor->GetActorRotation(), param);
-	pLight->SetDamage(m_fEtc);
-	pLight->SetOwnerController(GetWorld()->GetFirstPlayerController());
-	pLight->SetTarget(_pActor);
+	//FActorSpawnParameters param;
+	//param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	FTransform fTrans;
+	fTrans.SetLocation(_pActor->GetActorLocation());
+	fTrans.SetRotation(_pActor->GetActorRotation().Quaternion());
+
+	//AChainLightning* pLight = GetWorld()->SpawnActorDeferred<AChainLightning>(AChainLightning::StaticClass(), fTrans, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	//pLight->SetDamage(m_fEtc);
+	//pLight->SetOwnerController(GetWorld()->GetFirstPlayerController());
+	//pLight->SetTarget(_pActor);
+	//UGameplayStatics::FinishSpawningActor(pLight, fTrans);
+
+	ALightningChain* pChain = GetWorld()->SpawnActorDeferred<ALightningChain>(ALightningChain::StaticClass(), fTrans, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	pChain->SetTarget(_pActor);
+	pChain->SetDamage(m_fEtc);
+	pChain->SetChainCount(4);
+	UGameplayStatics::FinishSpawningActor(pChain, fTrans);
 }
