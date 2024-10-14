@@ -35,7 +35,9 @@ void ULevelManager::Init()
 
 void ULevelManager::LoadInGameLevel()
 {
-	FString LevelName = FString::Printf(TEXT("Level%d"), curlevel);
+	// FString LevelName = FString::Printf(TEXT("Level%d"), curlevel);
+	// UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
+	FString LevelName = FString::Printf(TEXT("/Game/Maps/Level%d"), curlevel);
 	UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
 	isLevelClear = false;
 	mainBuilding = nullptr;

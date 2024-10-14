@@ -56,7 +56,7 @@ ASkeletonSoldier::ASkeletonSoldier() :
 	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -100.f));
 
 	// 코드로 애니메이션 블루프린트 세팅
-	static ConstructorHelpers::FClassFinder<USoldierAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SJWContent/Character/AB_SkeletonSoldier.AB_SkeletonSoldier_C'"));
+	static ConstructorHelpers::FClassFinder<USoldierAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SJWContent/Character/Animation/AB_Skeleton_Soldier.AB_Skeleton_Soldier_C'"));
 	if (AnimClass.Succeeded())
 		GetMesh()->SetAnimInstanceClass(AnimClass.Class);
 
@@ -935,7 +935,7 @@ void ASkeletonSoldier::SpawnHitEffect(FVector _vLoc, FRotator _vRot)
 
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(_vLoc, _vRot, param);
-
+	
 	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/Hack_And_Slash_FX/VFX_Niagara/Impacts/NS_Demon_Slash_Impact.NS_Demon_Slash_Impact'"));
 }
 
