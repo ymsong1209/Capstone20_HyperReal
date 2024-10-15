@@ -240,6 +240,7 @@ void URuneManager::LoadRuneLevels(USaveGame* _pSaveGame)
 
 			m_arrRune[i]->SetLevel(pLoadInst->m_arrRuneLevels[i]);
 		}
+		UE_LOG(LogTemp, Log, TEXT("Rune Levels Load Success"));
 	}
 	else
 	{

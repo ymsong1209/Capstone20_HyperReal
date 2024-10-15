@@ -125,6 +125,7 @@ void UPlayerManager::LoadPlayerInfo(USaveGame* _pSaveGame)
 	if (pLoadInst)
 	{
 		m_fPlayerInfo = pLoadInst->m_fPlayerInfo;
+		UE_LOG(LogTemp, Log, TEXT("Player Info Load Success"));
 	}
 	else
 	{

@@ -6,6 +6,7 @@
 #include "Manager/RuneManager.h"
 #include "Manager/LevelManager.h"
 #include "Save/PlayerUpgradeSaveGame.h"
+#include "Save/LevelSaveGame.h"
 
 UCapStoneGameInstance::UCapStoneGameInstance()
 {
@@ -96,10 +97,25 @@ void UCapStoneGameInstance::UpdatePlayerGold(const FString& PlayerName, int _gol
 
 void UCapStoneGameInstance::SaveGameData()
 {
+	SavePlayerData();
+	SaveLevelData();
+}
+
+void UCapStoneGameInstance::LoadGameData()
+{
+	LoadPlayerData();
+	LoadLevelData();
+}
+
+void UCapStoneGameInstance::SavePlayerData()
+{
 	UPlayerUpgradeSaveGame* pSaveInst = Cast<UPlayerUpgradeSaveGame>(UGameplayStatics::CreateSaveGameObject(UPlayerUpgradeSaveGame::StaticClass()));
 
 	if (!pSaveInst)
+	{
 		UE_LOG(LogTemp, Error, TEXT("Make PlayerUpgradeSaveGame Failed"));
+		return;
+	}
 
 	if (m_PlayerManager)
 		m_PlayerManager->SavePlayerInfo(pSaveInst);
@@ -107,12 +123,13 @@ void UCapStoneGameInstance::SaveGameData()
 	if (m_RuneManager)
 		m_RuneManager->SaveRuneLevels(pSaveInst);
 
-	UGameplayStatics::SaveGameToSlot(pSaveInst, TEXT("GameData"), 0);
+	UGameplayStatics::SaveGameToSlot(pSaveInst, TEXT("PlayerGameData"), 0);
+	UE_LOG(LogTemp, Log, TEXT("PlayerGameData Save Success"));
 }
 
-void UCapStoneGameInstance::LoadGameData()
+void UCapStoneGameInstance::LoadPlayerData()
 {
-	UPlayerUpgradeSaveGame* pLoadInst = Cast<UPlayerUpgradeSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("GameData"), 0));
+	UPlayerUpgradeSaveGame* pLoadInst = Cast<UPlayerUpgradeSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("PlayerGameData"), 0));
 
 	if (pLoadInst)
 	{
@@ -127,6 +144,37 @@ void UCapStoneGameInstance::LoadGameData()
 		UE_LOG(LogTemp, Warning, TEXT("GameData Save Slot not exist"));
 	}
 }
+void UCapStoneGameInstance::SaveLevelData()
+{
+	ULevelSaveGame* pSaveInst = Cast<ULevelSaveGame>(UGameplayStatics::CreateSaveGameObject(ULevelSaveGame::StaticClass()));
+	if(!pSaveInst)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Make LevelSaveGame Failed"));
+		return;
+	}
+
+	if(m_LevelManager)
+		m_LevelManager->SaveLevelData(pSaveInst);
+
+	UGameplayStatics::SaveGameToSlot(pSaveInst, TEXT("LevelData"), 0);
+	UE_LOG(LogTemp, Log, TEXT("LevelData Save Success"));
+}
+
+void UCapStoneGameInstance::LoadLevelData()
+{
+	ULevelSaveGame* pLoadInst = Cast<ULevelSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("LevelData"), 0));
+	if(pLoadInst)
+	{
+		if(m_LevelManager)
+			m_LevelManager->LoadLevelData(pLoadInst);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("LevelData Save Slot not exist"));
+	}
+}
+
+
 
 void UCapStoneGameInstance::Init()
 {

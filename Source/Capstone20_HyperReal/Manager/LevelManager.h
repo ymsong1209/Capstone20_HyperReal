@@ -28,7 +28,9 @@ public:
 	virtual void Deinitialize() override;
 
 	void Init();
-
+public:
+	void SaveLevelData(USaveGame* _pSaveGame);//세이브 파일에 저장
+	void LoadLevelData(USaveGame* _pSaveGame);//세이브 파일에서 불러오기
 public:
 	void LoadInGameLevel();
 	int32 GetBuildingHP();
