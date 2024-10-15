@@ -20,6 +20,11 @@
 
 URuneManager::URuneManager()
 {
+	static ConstructorHelpers::FObjectFinder<UDataTable> RuneDataTableAsset(TEXT("/Script/Engine.DataTable'/Game/A_SJWContent/Rune/RuneDT.RuneDT'"));
+	if (RuneDataTableAsset.Succeeded()) {
+		m_pRuneDataTable = RuneDataTableAsset.Object;
+		UE_LOG(LogTemp, Log, TEXT("Load Rune Data Table Succeed"));
+	}
 }
 
 URuneManager::~URuneManager()
@@ -52,7 +57,28 @@ void URuneManager::Init()
 	m_arrRune[(int)ERuneType::Distortion] = NewObject<UDistortionRune>(this, UDistortionRune::StaticClass());
 	m_arrRune[(int)ERuneType::Resurrection] = NewObject<UResurrectionRune>(this, UResurrectionRune::StaticClass());
 
-	// 만약 저장 데이터가 있다면 레벨을 바꿔줘야함
+	for (int i = 0; i < (int)ERuneType::End; i++)
+	{
+		if (m_arrRune[i])
+			m_arrRune[i]->SetDataTable(m_pRuneDataTable);
+	}
+
+	// 룬 코스트 데이터 가져오기
+	if (m_pRuneDataTable)
+	{
+		FRuneDataTableInfo* pInfo = m_pRuneDataTable->FindRow<FRuneDataTableInfo>(FName("Cost"), TEXT(""));
+
+		if (pInfo)
+		{
+			m_fRuneCostInfo.Level1Value = pInfo->Level1Value;
+			m_fRuneCostInfo.Level2Value = pInfo->Level2Value;
+			m_fRuneCostInfo.Level3Value = pInfo->Level3Value;
+			m_fRuneCostInfo.Level4Value = pInfo->Level4Value;
+			m_fRuneCostInfo.Level5Value = pInfo->Level5Value;
+		}
+	}
+	else 
+		UE_LOG(LogTemp, Error, TEXT("No Rune Data Table"));
 }
 
 void URuneManager::GiveDamageTrigger(AActor* _pActor, float _fValue)
@@ -191,14 +217,42 @@ float URuneManager::GetCoolDownAdd()
 void URuneManager::UpgradeRune(ERuneType _eType)
 {
 	URune* pRune = m_arrRune[(int32)_eType];
-	pRune->Updgrade();
-
 	UCapStoneGameInstance* gameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
 
 	if (gameInst)
 	{
-		gameInst->GetPlayerManager()->GetPlayerInfo().TotalGold -= 100;
+		gameInst->GetPlayerManager()->GetPlayerInfo().TotalGold -= GetRuneCost(_eType);
+		UE_LOG(LogTemp, Log, TEXT("Upgrade Rune, Cost : %d"), GetRuneCost(_eType));
 	}
+
+	pRune->Updgrade();
+}
+
+int32 URuneManager::GetRuneCost(ERuneType _eType)
+{
+	int32 iLevel = m_arrRune[(int)_eType]->GetLevel();
+	int32 iCost = 0;
+
+	switch (iLevel)
+	{
+	case 0:
+		iCost = (int32)m_fRuneCostInfo.Level1Value;
+		break;
+	case 1:
+		iCost = (int32)m_fRuneCostInfo.Level2Value;
+		break;
+	case 2:
+		iCost = (int32)m_fRuneCostInfo.Level3Value;
+		break;
+	case 3:
+		iCost = (int32)m_fRuneCostInfo.Level4Value;
+		break;
+	case 4:
+		iCost = (int32)m_fRuneCostInfo.Level5Value;
+		break;
+	}
+
+	return iCost;
 }
 
 void URuneManager::SaveRuneLevels(USaveGame* _pSaveGame)

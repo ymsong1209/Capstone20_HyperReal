@@ -16,4 +16,7 @@ class CAPSTONE20_HYPERREAL_API UDemolitionRune : public URune
 	
 public:
 	UDemolitionRune();
+
+public:
+	virtual void SetRuneInfo() override;
 };

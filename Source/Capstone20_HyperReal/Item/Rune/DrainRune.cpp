@@ -12,6 +12,13 @@ UDrainRune::UDrainRune()
 	m_strName = TEXT("흡혈");
 	m_strDesc = TEXT("준 피해에 비례하여 체력 회복");
 	m_eRuneType = ERuneType::Drain;
+
+	m_pLevelChangeData = &m_fEtc;
+}
+
+void UDrainRune::SetRuneInfo()
+{
+	SetRuneInfoInner(TEXT("Drain"));
 }
 
 void UDrainRune::GiveDamageTrigger(AActor* _pActor, float _fValue)

@@ -11,4 +11,11 @@ UHasteRune::UHasteRune()
 	m_strName = TEXT("신속");
 	m_strDesc = TEXT("이동 속도가 상승");
 	m_eRuneType = ERuneType::Haste;
+
+	m_pLevelChangeData = &m_fMoveSpeedRatio;
+}
+
+void UHasteRune::SetRuneInfo()
+{
+	SetRuneInfoInner(TEXT("Haste"));
 }

@@ -16,4 +16,7 @@ class CAPSTONE20_HYPERREAL_API UHasteRune : public URune
 	
 public:
 	UHasteRune();
+
+public:
+	virtual void SetRuneInfo() override;
 };

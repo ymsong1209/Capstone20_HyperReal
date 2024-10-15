@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class CAPSTONE20_HYPERREAL_API URune : public UObject
 {
 	GENERATED_BODY()
@@ -50,7 +50,12 @@ protected:
 	float m_fAccCoolTime;
 	float m_fCoolTime;
 
-	int32 m_iCost;
+	float* m_pLevelChangeData;
+
+	UPROPERTY()
+	UDataTable* m_pRuneDataTable;
+
+	FRuneInfo m_fRuneInfo;
 
 public:
 	UTexture2D* GetIconImage() { return m_TexRune; }
@@ -60,7 +65,7 @@ public:
 	ERuneType GetRuneType() { return m_eRuneType; }
 
 	int32 GetLevel() { return m_iLevel; }
-	void SetLevel(int32 _iLevel) { m_iLevel = _iLevel; }
+	void SetLevel(int32 _iLevel);
 	float GetHealthRatio() { return 1.f + m_fHealthRatio; }
 	float GetSoulRatio() { return 1.f + m_fSoulRatio; }
 	float GetAttackRatio() { return 1.f + m_fAttackRatio; }
@@ -68,7 +73,12 @@ public:
 	float GetMoveSpeedRatio() { return 1.f + m_fMoveSpeedRatio; }
 	float GetCoolDownRatio() { return 1.f - m_fCoolDownRatio; }
 	float GetExtraValue() { return m_fEtc; }
-	int32 GetCost() { return m_iCost; }
+
+	// 룬에서 코스트 다이렉트로 가져가지 말것, 룬 매니저의 GetRuneCost 함수를 통해 가져갈것
+	//int32 GetCost() { return m_iCost; }
+
+	void SetDataTable(UDataTable* _pRuneDataTable) { m_pRuneDataTable = _pRuneDataTable; SetRuneInfo(); }
+	virtual void SetRuneInfo() PURE_VIRTUAL(URune::SetRuneInfo, ;)
 
 public:
 	URune();
@@ -82,4 +92,7 @@ public:
 
 public:
 	void Updgrade();
+
+protected:
+	void SetRuneInfoInner(FStringView _strName);
 };

@@ -18,5 +18,6 @@ public:
 	UResurrectionRune();
 
 public:
+	virtual void SetRuneInfo() override;
 	virtual void Activate(AActor* _pActor = nullptr, float _fValue = 0.f) override;
 };

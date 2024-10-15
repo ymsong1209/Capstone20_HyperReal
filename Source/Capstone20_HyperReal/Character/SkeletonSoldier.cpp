@@ -235,22 +235,30 @@ void ASkeletonSoldier::Tick(float DeltaTime)
 	{
 		if (m_bOnLeapAttackCharge)
 		{
-			FVector vMousePos = GetMousePosition();
-			vMousePos.Z = GetActorLocation().Z;
+			FHitResult Hit;
+			bool bHitSuccessful = false;
+
+			AClickMoveController* pController = Cast<AClickMoveController>(GetController());
+
+			FVector vMousePos;
+			if (IsValid(pController))
+			{
+				bHitSuccessful = pController->GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel10, true, Hit);
+
+				// If we hit a surface, cache the location
+				if (bHitSuccessful)
+					vMousePos = Hit.Location;
+			}
 
 			// 최대 거리 밖으로 이동 안하도록 설정
-			if (FVector::Dist(vMousePos, GetActorLocation()) > m_fLeapMaxDistance)
+			if (FVector::DistXY(vMousePos, GetActorLocation()) > m_fLeapMaxDistance)
 			{
-				FVector vDir = (vMousePos - GetActorLocation()).GetSafeNormal();
+				FVector vDir = (vMousePos - GetActorLocation()).GetSafeNormal2D();
 				m_vLeapAttackPos = (GetActorLocation() + vDir * m_fLeapMaxDistance);
+				m_vLeapAttackPos.Z = vMousePos.Z;
 			}
 			else
 				m_vLeapAttackPos = vMousePos;
-
-			m_vLeapAttackPos.Z = GetMousePosition().Z;
-
-			// 위치 확인용 스피어 출력
-			DrawDebugSphere(GetWorld(), m_vLeapAttackPos, 10.f, 50, FColor::Green);
 
 			if (IsValid(m_pLeapAttackDecal))
 				m_pLeapAttackDecal->SetWorldLocation(m_vLeapAttackPos);
@@ -330,11 +338,12 @@ void ASkeletonSoldier::SkillEnd()
 	{
 		if (++m_iAccChargeAttackCount >= m_iChargeAttackCount)
 		{
-			m_pAnim->Montage_Stop(0.1f);
+			m_pAnim->Montage_Stop(0.f);
 			m_iChargeAttackCount = 0;
 			m_iAccChargeAttackCount = 0;
 			m_fChargeStartTime = 0.f;
 			m_eUsingSkill = EPlayerSkill::None;
+			UE_LOG(LogTemp, Warning, TEXT("Charge Slash end"));
 		}
 	}
 		break;

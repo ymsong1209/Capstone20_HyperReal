@@ -12,6 +12,13 @@ UResurrectionRune::UResurrectionRune()
 	m_strName = TEXT("부활");
 	m_strDesc = TEXT("1회에 한해 부활 가능");
 	m_eRuneType = ERuneType::Resurrection;
+
+	m_pLevelChangeData = &m_fEtc;
+}
+
+void UResurrectionRune::SetRuneInfo()
+{
+	SetRuneInfoInner(TEXT("Resurrection"));
 }
 
 void UResurrectionRune::Activate(AActor* _pActor, float _fValue)

@@ -177,6 +177,7 @@ public:
 	float		SoulProgress;
 };
 
+
 USTRUCT(BlueprintType)
 struct FMonsterDataTableInfo : public FTableRowBase
 {
@@ -242,6 +243,113 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32		Gold;
 };
+
+
+USTRUCT(BlueprintType)
+struct FBuildingDataTableInfo : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	// Constructor to initialize all member variables with default values
+	FBuildingDataTableInfo()
+		: Attack(0),
+		  Armor(0),
+		  HP(0),
+		  MP(0),
+		  AttackSpeed(0.0f),
+		  SpawnIntervalSeconds(0.0f),
+		  MonstersPerSpawn(0.0f),
+		  SpawnRadius(0.0f),
+		  Level(0),
+		  Exp(0),
+		  Gold(0)
+	{
+		PhaseTriggerHP.Empty();
+	}
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	FString		Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		Attack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		Armor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		HP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		MP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		AttackSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		SpawnIntervalSeconds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		MonstersPerSpawn;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		SpawnRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TArray<float> PhaseTriggerHP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		Level;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		Exp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		Gold;
+};
+
+
+USTRUCT(BlueprintType)
+struct FRuneDataTableInfo : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	// Constructor to initialize all member variables with default values
+	FRuneDataTableInfo() :
+		Level1Value(0.f),
+		Level2Value(0.f),
+		Level3Value(0.f),
+		Level4Value(0.f),
+		Level5Value(0.f)
+	{
+	}
+
+public:
+	// Rune Name or "Rune Cost"(Rune Upgrade cost per level)  
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	FString		Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		Level1Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		Level2Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		Level3Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		Level4Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		Level5Value;
+};
+
+
+/// =====================================
+/// 실제로 코드에서 불러들여서 사용할 구조체
+/// =====================================
+
+
 USTRUCT(BlueprintType)
 struct FPlayerInfo
 {
@@ -463,67 +571,6 @@ public:
 	int32		Gold;
 };
 
-USTRUCT(BlueprintType)
-struct FBuildingDataTableInfo : public FTableRowBase
-{
-	GENERATED_BODY()
-public:
-	// Constructor to initialize all member variables with default values
-	FBuildingDataTableInfo()
-		: Attack(0),
-		  Armor(0),
-		  HP(0),
-		  MP(0),
-		  AttackSpeed(0.0f),
-		  SpawnIntervalSeconds(0.0f),
-		  MonstersPerSpawn(0.0f),
-		  SpawnRadius(0.0f),
-		  Level(0),
-		  Exp(0),
-		  Gold(0)
-	{
-		PhaseTriggerHP.Empty();
-	}
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	FString		Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32		Attack;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32		Armor;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32		HP;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32		MP;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float		AttackSpeed;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float		SpawnIntervalSeconds;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float		MonstersPerSpawn;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float		SpawnRadius;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TArray<float> PhaseTriggerHP;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32		Level;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32		Exp;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32		Gold;
-};
 
 USTRUCT(BlueprintType)
 struct FBuildingInfo
@@ -594,6 +641,43 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32		Gold;
 };
+
+USTRUCT(BlueprintType)
+struct FRuneInfo : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	// Constructor to initialize all member variables with default values
+	FRuneInfo() :
+		Level1Value(0.f),
+		Level2Value(0.f),
+		Level3Value(0.f),
+		Level4Value(0.f),
+		Level5Value(0.f)
+	{
+	}
+
+public:
+	// Rune Name or "Rune Cost"(Rune Upgrade cost per level)  
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	FString		Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		Level1Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		Level2Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		Level3Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		Level4Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float		Level5Value;
+};
+
 UCLASS()
 class CAPSTONE20_HYPERREAL_API UGameData : public UObject
 {

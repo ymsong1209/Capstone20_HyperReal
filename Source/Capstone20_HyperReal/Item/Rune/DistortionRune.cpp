@@ -11,4 +11,11 @@ UDistortionRune::UDistortionRune()
 	m_strName = TEXT("왜곡");
 	m_strDesc = TEXT("모든 스킬 쿨타임 감소");
 	m_eRuneType = ERuneType::Distortion;
+
+	m_pLevelChangeData = &m_fCoolDownRatio;
+}
+
+void UDistortionRune::SetRuneInfo()
+{
+	SetRuneInfoInner(TEXT("Distortion"));
 }

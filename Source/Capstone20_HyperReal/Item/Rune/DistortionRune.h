@@ -16,4 +16,7 @@ class CAPSTONE20_HYPERREAL_API UDistortionRune : public URune
 
 public:
 	UDistortionRune();
+
+public:
+	virtual void SetRuneInfo() override;
 };

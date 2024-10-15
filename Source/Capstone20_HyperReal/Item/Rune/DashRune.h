@@ -16,13 +16,13 @@ class CAPSTONE20_HYPERREAL_API UDashRune : public URune
 
 private:
 	FTimerHandle m_hDashCoolHandle;
-	float m_fDashCool;
 	bool m_bDashAble;
 	
 public:
 	UDashRune();
 
 public:
+	virtual void SetRuneInfo() override;
 	virtual void Activate(AActor* _pActor = nullptr, float _fValue = 0.f) override;
 
 private:

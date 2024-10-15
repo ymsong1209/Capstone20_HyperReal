@@ -22,6 +22,7 @@ public:
 	ULightningRune();
 
 public:
+	virtual void SetRuneInfo() override;
 	virtual void NormalAttackTrigger(AActor* _pActor = nullptr, float _fValue = 0.f) override;
 
 private:

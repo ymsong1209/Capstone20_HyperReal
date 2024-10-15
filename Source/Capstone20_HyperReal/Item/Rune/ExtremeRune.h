@@ -16,4 +16,7 @@ class CAPSTONE20_HYPERREAL_API UExtremeRune : public URune
 	
 public:
 	UExtremeRune();
+
+public:
+	virtual void SetRuneInfo() override;
 };
