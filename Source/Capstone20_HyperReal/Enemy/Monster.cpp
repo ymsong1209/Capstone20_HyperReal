@@ -13,6 +13,7 @@
 #include "../InGameModeBase.h"
 #include "../UI/InGameUserWidget.h"
 #include "../DamageType/AirborneDamageType.h"
+#include "../Manager/LevelManager.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -162,6 +163,9 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 				widget->SetEarnGold(GameInst->GetPlayerManager()->GetPlayerInfo().LevelAccGold);
 			}
 		}
+		
+		ULevelManager* LevelManager = GameInst->GetLevelManager();
+		LevelManager->AddMonsterDeathCount();
 		
 		HandleDeath();
 		//죽었을 경우 -1.f반환

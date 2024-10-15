@@ -20,6 +20,8 @@ private:
 	int32 mainBuildingMaxHP;
 	bool  isLevelClear;
 
+	int monsterDeathCount;
+
 public:
 	ULevelManager();
 	~ULevelManager();
@@ -39,5 +41,7 @@ public:
 	void SetBuildingHP();
 	void LevelClear();
 	void SetLevelClear(bool _bValue) {_bValue = isLevelClear;};
+	void AddMonsterDeathCount(){++monsterDeathCount;}
+	int GetMonsterDeathCount() const { return monsterDeathCount; }
 	
 };

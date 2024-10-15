@@ -13,6 +13,7 @@ ULevelManager::ULevelManager()
 	mainBuildingCurHP = -1;
 	mainBuildingMaxHP = -1;
 	isLevelClear = false;
+	monsterDeathCount = 0;
 }
 
 ULevelManager::~ULevelManager()
@@ -73,6 +74,7 @@ void ULevelManager::LoadInGameLevel()
 	UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelName));
 	isLevelClear = false;
 	mainBuilding = nullptr;
+	monsterDeathCount = 0;
 }
 
 int32 ULevelManager::GetBuildingHP()
