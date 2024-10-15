@@ -45,7 +45,6 @@ AMonster::AMonster()
 	AIControllerClass = AMonsterAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	
-	mAttackEnd = false;
 	bIsInvincible = false;
 	bCanAttack = true;
 
@@ -126,7 +125,8 @@ void AMonster::Tick(float DeltaTime)
 			GetMesh()->SetRelativeLocation(NewLocation);
 			if (mAIController)
 			{
-				mAIController->Possess(this);
+				ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+				mAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Player"), Player);
 			}
 		}
 	}
@@ -245,10 +245,9 @@ void AMonster::StartAirborne()
 	bIsAirborne = true;
 	fAirborneTime = 0.0f;
 	fInitialZ = GetMesh()->GetRelativeLocation().Z;
-	if (GetAIController())
+	if (mAIController)
 	{
-		mAIController = GetAIController();
-		GetAIController()->UnPossess();
+		mAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), nullptr);
 	}
 }
 

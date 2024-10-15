@@ -4,7 +4,7 @@
 #include "MonsterAnimInstance.h"
 #include "Monster.h"
 #include "MonsterAIController.h"
-#include "ShaderPrintParameters.h"
+
 
 UMonsterAnimInstance::UMonsterAnimInstance()
 	:mAnimType(EMonsterAnim::Idle),
@@ -56,7 +56,7 @@ void UMonsterAnimInstance::AnimNotify_AttackEnd()
 	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
 	if (IsValid(Monster)) {
 		Monster->SetAttackEnd(true);
-		UE_LOG(LogTemp,Display,TEXT("AttackEnd"));
+		//UE_LOG(LogTemp,Display,TEXT("AttackEnd"));
 	}
 }
 
@@ -72,30 +72,52 @@ void UMonsterAnimInstance::AnimNotify_Attack()
 void UMonsterAnimInstance::AnimNotify_HitStart()
 {
 	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
-	if (IsValid(Monster))Monster->SetCanAttack(false);
-	else return;
-	AMonsterAIController* AIController = Cast<AMonsterAIController>(Monster->GetController());
-	UE_LOG(LogTemp, Warning, TEXT("HitStart"));
-	if (AIController && AIController->IsPossesed())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UnPossesed"));
-		AIController->UnPossess(); // 몬스터 컨트롤 연결
-	}
+	Monster->GetAIController()->GetBlackboardComponent()->SetValueAsObject(("Target"), nullptr);
+	//UE_LOG(LogTemp, Warning, TEXT("HitStart"))
 }
 
 void UMonsterAnimInstance::AnimNotify_HitEnd()
 {
 	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
-	if (IsValid(Monster))Monster->SetCanAttack(true);
-	else return;
-	
-	//기존에 만들어뒀던 ai다시 장착
-	AMonsterAIController* AIController = Monster->GetAIController();
-	UE_LOG(LogTemp, Warning, TEXT("HitEnd"));
-	if(AIController && !AIController->IsPossesed())
+	ACharacter* Character = GetWorld()->GetFirstPlayerController()->GetCharacter();
+	Monster->GetAIController()->GetBlackboardComponent()->SetValueAsObject(("Target"), Character);
+	//UE_LOG(LogTemp, Warning, TEXT("HitEnd"));		
+}
+
+void UMonsterAnimInstance::ChangeAnimType(EMonsterAnim _Type)
+{
+	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
+	if (!Monster)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Possessed"));
-		AIController->Possess(Monster); // 몬스터 컨트롤 연결
+		UE_LOG(LogTemp, Error, TEXT("ChangeAnimType failed: Monster is nullptr"));
+		return;
 	}
-		
+    
+	//FString AnimTypeString = AnimTypeToString(_Type);
+	// UE_LOG(LogTemp, Warning, TEXT("ChangeAnimType at Monster: %s to AnimType: %s"), *Monster->GetName(), *AnimTypeString);
+	if(_Type == EMonsterAnim::Idle)
+	{
+		int a = 0;
+	}
+	mAnimType = _Type;
+}
+
+FString UMonsterAnimInstance::AnimTypeToString(EMonsterAnim _Type)
+{
+	switch (_Type)
+	{
+	case EMonsterAnim::Idle: return "Idle";
+	case EMonsterAnim::Walk: return "Walk";
+	case EMonsterAnim::Run: return "Run";
+	case EMonsterAnim::Attack: return "Attack";
+	case EMonsterAnim::Death: return "Death";
+	case EMonsterAnim::Hit: return "Hit";
+	case EMonsterAnim::Stun: return "Stun";
+	case EMonsterAnim::Airborne: return "Airborne";
+	case EMonsterAnim::Skill1: return "Skill1";
+	case EMonsterAnim::Skill2: return "Skill2";
+	case EMonsterAnim::Skill3: return "Skill3";
+	case EMonsterAnim::Skill4: return "Skill4";
+	default: return "Unknown";
+	}
 }

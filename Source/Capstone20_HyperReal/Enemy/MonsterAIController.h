@@ -16,8 +16,7 @@ UCLASS()
 class CAPSTONE20_HYPERREAL_API AMonsterAIController : public AAIController
 {
 	GENERATED_BODY()
-private:
-	bool mbIsPossesed;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UBehaviorTree* mAITree;
@@ -25,8 +24,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UBlackboardData* mAIBlackboard;
 	
-public:
-	bool IsPossesed() const { return mbIsPossesed; }
+
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;

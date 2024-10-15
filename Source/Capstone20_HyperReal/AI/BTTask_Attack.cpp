@@ -19,11 +19,17 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	EBTNodeResult::Type result =  Super::ExecuteTask(OwnerComp, NodeMemory);
 
 	AMonster* Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
-	if (!Monster) return EBTNodeResult::Failed;
+	// if (!Monster)
+	// {
+	// 	return EBTNodeResult::Failed;
+	// }
 
 	AActor* Target = Cast<AActor>(OwnerComp.GetAIOwner()->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
 	if (!Target) {
-		Monster->SetAnimation(EMonsterAnim::Idle);
+		if(Monster->GetAnimInstances()[0]->GetAnimType() != EMonsterAnim::Hit)
+		{
+			Monster->SetAnimation(EMonsterAnim::Idle);
+		}
 		OwnerComp.GetAIOwner()->StopMovement();
 		return EBTNodeResult::Succeeded;
 	}
@@ -37,7 +43,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	Monster->SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
 
 	Monster->SetAnimation(EMonsterAnim::Attack);
-
+	UE_LOG(LogTemp, Display, TEXT("Attack Task Executed"));
 	return EBTNodeResult::InProgress;
 }
 
@@ -54,14 +60,13 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 {
 	Super::TickTask(OwnerComp, NodeMemory,DeltaSeconds);
 	AMonster* Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
-	if (!Monster) {
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		return;
-	}
 
 	AActor* Target = Cast<AActor>(OwnerComp.GetAIOwner()->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
 	if (!Target) {
-		Monster->SetAnimation(EMonsterAnim::Idle);
+		if(Monster->GetAnimInstances()[0]->GetAnimType() != EMonsterAnim::Hit)
+		{
+			Monster->SetAnimation(EMonsterAnim::Idle);
+		}
 		OwnerComp.GetAIOwner()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		return;
@@ -91,7 +96,10 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 			FVector Dir = TargetLoc - MonsterLoc;
 			Dir.Normalize();
 			Monster->SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
-			Monster->SetAnimation(EMonsterAnim::Idle);
+			if(Monster->GetAnimInstances()[0]->GetAnimType() != EMonsterAnim::Hit)
+			{
+				Monster->SetAnimation(EMonsterAnim::Idle);
+			}
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}

@@ -8,7 +8,7 @@
 
 UBTDecorator_CheckDistance::UBTDecorator_CheckDistance()
 {
-	mCheckType = ECheckDistanceType::Trace;
+	mCheckType = ECheckDistanceType::Attack;
 	NodeName = TEXT("CheckDistance");
 }
 

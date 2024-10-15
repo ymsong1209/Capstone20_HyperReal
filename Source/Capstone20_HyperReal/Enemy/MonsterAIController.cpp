@@ -24,12 +24,17 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	mbIsPossesed = true;
-	
 	//블랙보드지정
 	if (mAIBlackboard) {
 		UBlackboardComponent* BlackboardComp = Blackboard.Get();
 		UseBlackboard(mAIBlackboard, BlackboardComp);
+		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+		if (Player) {
+			BlackboardComp->SetValueAsObject(TEXT("Target"), Player);
+		}
+		else {
+			UE_LOG(LogTemp, Display, TEXT("no player"));
+		}
 	}
 	
 	//행동트리 동작
@@ -45,5 +50,4 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 void AMonsterAIController::OnUnPossess()
 {
 	Super::OnUnPossess();
-	mbIsPossesed = false;
 }

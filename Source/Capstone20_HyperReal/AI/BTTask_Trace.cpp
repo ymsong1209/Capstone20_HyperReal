@@ -20,7 +20,11 @@ EBTNodeResult::Type UBTTask_Trace::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 
 	AActor* Target = Cast<AActor>(OwnerComp.GetAIOwner()->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
 	if (!Target) {
-		Monster->SetAnimation(EMonsterAnim::Idle);
+		if(Monster->GetAnimInstances()[0]->GetAnimType() != EMonsterAnim::Hit)
+		{
+			Monster->SetAnimation(EMonsterAnim::Idle);
+		}
+		
 		OwnerComp.GetAIOwner()->StopMovement();
 		return EBTNodeResult::Failed;
 	}
@@ -28,7 +32,11 @@ EBTNodeResult::Type UBTTask_Trace::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	//타겟의 위치로 이동
 	UAIBlueprintHelperLibrary::SimpleMoveToActor(OwnerComp.GetAIOwner(), Target);
 
-	Monster->SetAnimation(EMonsterAnim::Run);
+	if(Monster->GetAnimInstances()[0]->GetAnimType() != EMonsterAnim::Hit)
+	{
+		Monster->SetAnimation(EMonsterAnim::Run);
+	}
+	
 	
 	
 	return EBTNodeResult::InProgress;
@@ -45,14 +53,14 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 	Super::TickTask(OwnerComp, NodeMemory,DeltaSeconds);
 
 	AMonster* Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
-	if (!Monster) {
-		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-		return;
-	}
-
+	// if (!Monster) {
+	// 	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+	// 	return;
+	// }
+	//
 	AActor* Target = Cast<AActor>(OwnerComp.GetAIOwner()->GetBlackboardComponent()->GetValueAsObject(TEXT("Target")));
 	if (!Target) {
-		Monster->SetAnimation(EMonsterAnim::Idle);
+		//Monster->SetAnimation(EMonsterAnim::Idle);
 		OwnerComp.GetAIOwner()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		return;

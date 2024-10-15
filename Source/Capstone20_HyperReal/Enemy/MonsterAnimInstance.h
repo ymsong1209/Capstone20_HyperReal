@@ -72,7 +72,8 @@ public:
 public:
 	EMonsterAnim GetAnimType() const{return mAnimType;}
 	UFUNCTION(BlueprintCallable)
-	void ChangeAnimType(EMonsterAnim _Type){mAnimType = _Type;}
+	void ChangeAnimType(EMonsterAnim _Type);
+	FString AnimTypeToString(EMonsterAnim _Type);
 
 
 };
