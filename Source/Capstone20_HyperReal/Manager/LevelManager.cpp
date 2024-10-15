@@ -4,6 +4,7 @@
 #include "LevelManager.h"
 #include "../CapStoneGameInstance.h"
 #include "../Building/Building.h"
+#include "../Save/LevelSaveGame.h"
 
 ULevelManager::ULevelManager()
 {
@@ -32,6 +33,37 @@ void ULevelManager::Deinitialize()
 void ULevelManager::Init()
 {
 }
+
+void ULevelManager::SaveLevelData(USaveGame* _pSaveGame)
+{
+	ULevelSaveGame* saveGame = Cast<ULevelSaveGame>(_pSaveGame);
+	if(!saveGame)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SaveGame is Null"));
+		return;
+	}
+	saveGame->curlevel = curlevel;
+	saveGame->mainBuildingCurHP = mainBuildingCurHP;
+	saveGame->mainBuildingMaxHP = mainBuildingMaxHP;
+}
+
+void ULevelManager::LoadLevelData(USaveGame* _pSaveGame)
+{
+	ULevelSaveGame* saveGame = Cast<ULevelSaveGame>(_pSaveGame);
+	if(!saveGame)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SaveGame is Null"));
+		return;
+	}
+	curlevel = saveGame->curlevel;
+	mainBuildingCurHP = saveGame->mainBuildingCurHP;
+	mainBuildingMaxHP = saveGame->mainBuildingMaxHP;
+	UE_LOG(LogTemp, Log, TEXT("curlevel : %d"), curlevel);
+	UE_LOG(LogTemp, Log, TEXT("mainBuildingCurHP : %d"), mainBuildingCurHP);
+	UE_LOG(LogTemp, Log, TEXT("mainBuildingMaxHP : %d"), mainBuildingMaxHP);
+	UE_LOG(LogTemp, Log, TEXT("LevelData Load Success"));
+}
+
 
 void ULevelManager::LoadInGameLevel()
 {

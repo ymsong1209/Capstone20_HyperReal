@@ -55,14 +55,14 @@ void ABaseLevelGameModeBase::BeginPlay()
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	if (PlayerController)
 	{
-		// ���콺 Ŀ�� ǥ��
+		// 마우스 커서 표시
 		PlayerController->bShowMouseCursor = true;
 
-		// ���콺 �Է� ��Ȱ��ȭ
+		// 마우스 입력 비활성화
 		PlayerController->SetIgnoreLookInput(true);
 		PlayerController->SetIgnoreMoveInput(true);
 
-		// �Է� ��带 UI �������� ����
+		// 입력 모드를 UI 전용으로 설정
 		FInputModeUIOnly InputMode;
 		PlayerController->SetInputMode(InputMode);
 	}

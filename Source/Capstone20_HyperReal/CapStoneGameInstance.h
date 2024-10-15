@@ -47,6 +47,12 @@ public:
 public:
 	void SaveGameData();
 	void LoadGameData();
+	
+	void SavePlayerData();
+	void LoadPlayerData();
+	
+	void SaveLevelData();
+	void LoadLevelData();
 
 public:
 	virtual void Init() override;

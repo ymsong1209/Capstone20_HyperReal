@@ -11,7 +11,7 @@
 #include "../UI/InGameUserWidget.h"
 #include "../CapStoneGameInstance.h"
 #include "../Manager/PlayerManager.h"
-#include "Capstone20_HyperReal/Manager/LevelManager.h"
+#include "../Manager/LevelManager.h"
 
 APortal::APortal()
 {
@@ -93,6 +93,13 @@ void APortal::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 
 void APortal::TransitionToNextLevel(AActor* OtherActor)
 {
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	if(GameInst)
+	{
+		GameInst->SavePlayerData();
+		GameInst->SaveLevelData();
+	}
+	
 	// Check if the OtherActor is a player character
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
