@@ -50,7 +50,38 @@ USTRUCT(BlueprintType)
 struct FPlayerDataTableInfo : public FTableRowBase
 {
 	GENERATED_BODY()
-
+public:
+	// Constructor to initialize all member variables with default values
+	FPlayerDataTableInfo()
+		: Job(EPlayerJob::End),
+		  Attack(0),
+		  Armor(0),
+		  HP(0),
+		  SP(0),
+		  TotalGold(0),
+		  LevelAccGold(0),
+		  ASkillRatio(0.0f),
+		  SSkillRatio(0.0f),
+		  DSkillRatio(0.0f),
+		  FSkillRatio(0.0f),
+		  ASkillMaxCooltime(0.0f),
+		  SSkillMaxCooltime(0.0f),
+		  DSkillMaxCooltime(0.0f),
+		  FSkillMaxCooltime(0.0f),
+		  AttackSpeed(0.0f),
+		  MoveSpeed(0.0f),
+		  CriticalRatio(0.0f),
+		  CriticalDamage(0.0f),
+		  DrainRatio(0.0f),
+		  CoolDownRatio(0.0f),
+		  AttackLevel(0),
+		  HealthLevel(0),
+		  SoulLevel(0),
+		  AttackProgress(0.0f),
+		  HealthProgress(0.0f),
+		  SoulProgress(0.0f)
+	{
+	}
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FString		Name;
@@ -150,7 +181,24 @@ USTRUCT(BlueprintType)
 struct FMonsterDataTableInfo : public FTableRowBase
 {
 	GENERATED_BODY()
-
+public:
+	// Constructor to initialize all member variables with default values
+	FMonsterDataTableInfo()
+		: Attack(0),
+		  Armor(0),
+		  HP(0),
+		  MP(0),
+		  AttackSpeed(0.0f),
+		  MoveSpeed(0.0f),
+		  CriticalRatio(0.0f),
+		  CriticalDamage(0.0f),
+		  TraceDistance(0.0f),
+		  AttackDistance(0.0f),
+		  Level(0),
+		  Exp(0),
+		  Gold(0)
+	{
+	}
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FString		Name;
@@ -198,7 +246,42 @@ USTRUCT(BlueprintType)
 struct FPlayerInfo
 {
 	GENERATED_BODY()
-
+public:
+	// Constructor to initialize all member variables with default values
+	FPlayerInfo()
+		: Job(EPlayerJob::End),
+		  Attack(0),
+		  Armor(0),
+		  HP(0),
+		  MaxHP(0),
+		  SP(0),
+		  MaxSP(0),
+		  AttackSpeed(0.0f),
+		  MoveSpeed(0.0f),
+		  CriticalRatio(0.0f),
+		  CriticalDamage(0.0f),
+		  ASkillRatio(0.0f),
+		  SSkillRatio(0.0f),
+		  DSkillRatio(0.0f),
+		  FSkillRatio(0.0f),
+		  ASkillmaxcooltime(0.0f),
+		  SSkillmaxcooltime(0.0f),
+		  DSkillmaxcooltime(0.0f),
+		  FSkillmaxcooltime(0.0f),
+		  Level(0),
+		  Exp(0),
+		  TotalGold(0),
+		  LevelAccGold(0),
+		  DrainRatio(0.0f),
+		  CoolDownRatio(0.0f),
+		  AttackLevel(0),
+		  HealthLevel(0),
+		  SoulLevel(0),
+		  AttackProgress(0.0f),
+		  HealthProgress(0.0f),
+		  SoulProgress(0.0f)
+	{
+	}
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FString		Name;
@@ -310,7 +393,26 @@ USTRUCT(BlueprintType)
 struct FMonsterInfo
 {
 	GENERATED_BODY()
-
+public:
+	// Constructor to initialize all member variables with default values
+	FMonsterInfo()
+		: Attack(0),
+		  Armor(0),
+		  HP(0),
+		  MaxHP(0),
+		  MP(0),
+		  MaxMP(0),
+		  AttackSpeed(0.0f),
+		  MoveSpeed(0.0f),
+		  CriticalRatio(0.0f),
+		  CriticalDamage(0.0f),
+		  TraceDistance(0.0f),
+		  AttackDistance(0.0f),
+		  Level(0),
+		  Exp(0),
+		  Gold(0)
+	{
+	}
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FString		Name;
@@ -365,7 +467,23 @@ USTRUCT(BlueprintType)
 struct FBuildingDataTableInfo : public FTableRowBase
 {
 	GENERATED_BODY()
-
+public:
+	// Constructor to initialize all member variables with default values
+	FBuildingDataTableInfo()
+		: Attack(0),
+		  Armor(0),
+		  HP(0),
+		  MP(0),
+		  AttackSpeed(0.0f),
+		  SpawnIntervalSeconds(0.0f),
+		  MonstersPerSpawn(0.0f),
+		  SpawnRadius(0.0f),
+		  Level(0),
+		  Exp(0),
+		  Gold(0)
+	{
+		PhaseTriggerHP.Empty();
+	}
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FString		Name;
@@ -411,7 +529,25 @@ USTRUCT(BlueprintType)
 struct FBuildingInfo
 {
 	GENERATED_BODY()
-
+public:
+	// Constructor to initialize all member variables with default values
+	FBuildingInfo()
+		: Attack(0),
+		  Armor(0),
+		  HP(0),
+		  MaxHP(0),
+		  MP(0),
+		  MaxMP(0),
+		  AttackSpeed(0.0f),
+		  SpawnIntervalSeconds(0.0f),
+		  MonstersPerSpawn(0.0f),
+		  SpawnRadius(0.0f),
+		  Level(0),
+		  Exp(0),
+		  Gold(0)
+	{
+		PhaseTriggerHP.Empty();
+	}
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FString		Name;
