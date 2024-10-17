@@ -20,11 +20,14 @@ class CAPSTONE20_HYPERREAL_API UMagicWidget : public UMyWidget
 private:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UButton* Magic_backButton;
-
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UTextBlock* Magic_MoneyText;
 	UPROPERTY()
 	TArray<UButton*> Magic_Button;
 	UPROPERTY()
 	TArray<UTextBlock*> Magic_LevelText;
+	UPROPERTY()
+	TArray<UTextBlock*> Magic_CostText;
 
 	UPROPERTY()
 	TArray<URune*> arrRune;

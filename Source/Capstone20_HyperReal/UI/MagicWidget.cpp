@@ -12,6 +12,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "../CapStoneGameInstance.h"
 #include "../Manager/RuneManager.h"
+#include "../Manager/PlayerManager.h"
 #include "../GameData.h"
 #include "../Item/Rune/Rune.h"
 void UMagicWidget::NativeOnInitialized()
@@ -26,6 +27,7 @@ void UMagicWidget::NativePreConstruct()
 	Magic_Name.Reserve(3);
 	MagicDesc.Reserve(3);
 	Magic_LevelText.Reserve(3);
+	Magic_CostText.Reserve(3);
 	arrRune.Reserve(3);
 	for (int32 i = 1; i <= 3; i++)
 	{
@@ -59,6 +61,13 @@ void UMagicWidget::NativePreConstruct()
 		{
 			MagicDesc.Add(textWidget);
 		}
+
+		WidgetName = FString::Printf(TEXT("Cost%d"), i);
+		textWidget = Cast<UTextBlock>(GetWidgetFromName(*WidgetName));
+		if (textWidget)
+		{
+			Magic_CostText.Add(textWidget);
+		}
 	}
 	Magic_backButton = Cast<UButton>(GetWidgetFromName(TEXT("MagicBackButton123")));
 	//Magic_Button[0] = Cast<UButton>(GetWidgetFromName(TEXT("MagicButton1")));
@@ -78,6 +87,10 @@ void UMagicWidget::NativePreConstruct()
 	Magic_Button[1]->OnClicked.AddDynamic(this, &UMagicWidget::Upgrade1);
 	Magic_Button[2]->OnClicked.AddDynamic(this, &UMagicWidget::Upgrade2);
 
+	Magic_MoneyText = Cast<UTextBlock>(GetWidgetFromName(TEXT("MoneyText")));
+	int gold = 10000;
+	FString gstr = FString::FromInt(gold);
+	Magic_MoneyText->SetText(FText::FromString(gstr));
 }
 
 void UMagicWidget::NativeConstruct()
@@ -126,6 +139,9 @@ void UMagicWidget::Upgrade0()
 		FString str = "Level " + FString::FromInt(magicLevel);
 		Magic_LevelText[0]->SetText(FText::FromString(str));
 		Magic_Button[0]->SetIsEnabled(false);
+		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+		FString gstr = FString::FromInt(gold);
+		Magic_MoneyText->SetText(FText::FromString(gstr));
 	}
 }
 
@@ -140,6 +156,9 @@ void UMagicWidget::Upgrade1()
 		FString str = "Level " + FString::FromInt(magicLevel);
 		Magic_LevelText[1]->SetText(FText::FromString(str));
 		Magic_Button[1]->SetIsEnabled(false);
+		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+		FString gstr = FString::FromInt(gold);
+		Magic_MoneyText->SetText(FText::FromString(gstr));
 	}
 }
 
@@ -154,6 +173,9 @@ void UMagicWidget::Upgrade2()
 		FString str = "Level " + FString::FromInt(magicLevel);
 		Magic_LevelText[2]->SetText(FText::FromString(str));
 		Magic_Button[2]->SetIsEnabled(false);
+		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+		FString gstr = FString::FromInt(gold);
+		Magic_MoneyText->SetText(FText::FromString(gstr));
 	}
 }
 
@@ -201,6 +223,10 @@ void UMagicWidget::Refresh()
 		int32 magicLevel = rune->GetLevel();
 		FString str = "Level " + FString::FromInt(magicLevel);
 		Magic_LevelText[i]->SetText(FText::FromString(str));
+
+		int32 cost = GameInst->GetRuneManager()->GetRuneCost(rune->GetRuneType());
+		str = FString::FromInt(cost);
+		Magic_CostText[i]->SetText(FText::FromString(str));
 	}
 }
 
