@@ -39,7 +39,8 @@ protected:
 	virtual void NativeDestruct();
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
-
+public:
+	UUpgradeWidget* GetUpgradeWidget() { return UpgradeWidget; }
 public:
 	UFUNCTION()
 	void UpgradeButtonClick();

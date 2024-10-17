@@ -40,5 +40,9 @@ public:
 	UMyWidget* TopWidget();
 	void CloseUI();
 	void OpenUI();
-
+public:
+	UBasecampWidget* GetBasecampWidget()
+	{
+		return mBasecampWidget;
+	}
 };

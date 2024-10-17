@@ -4,7 +4,10 @@
 #include "PlayerManager.h"
 #include "../CapStoneGameInstance.h"
 #include "../Save/PlayerUpgradeSaveGame.h"
-
+#include "../BaseLevelGameModeBase.h"
+#include "../UI/BaseLevelWidget.h"
+#include "../UI/BasecampWidget.h"
+#include "../UI/UpgradeWidget.h"
 UPlayerManager::UPlayerManager()
 {
 }
@@ -76,6 +79,7 @@ void UPlayerManager::UpgradePlayerStat(EPlayerUpgradeType _eType)
 	m_fPlayerInfo.TotalGold -= 100;
 
 	float fIncreaeMul = CalculateIncreaseRate();
+	
 
 	switch (_eType)
 	{
@@ -137,7 +141,8 @@ void UPlayerManager::UpgradeAttack(float _fValue)
 {
 	float fUpgradeValue = 20.f - (float)m_fPlayerInfo.AttackLevel;
 	fUpgradeValue *= _fValue;
-	
+	ABaseLevelGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ABaseLevelGameModeBase>();
+	GameMode->GetUBaseLevelWidget()->GetBasecampWidget()->GetUpgradeWidget()->StartComboTextEffect((int)fUpgradeValue);
 	if (0.f == _fValue)
 	{
 		m_fPlayerInfo.AttackProgress = 0.f;
@@ -172,7 +177,8 @@ void UPlayerManager::UpgradeHealth(float _fValue)
 {
 	float fUpgradeValue = 20.f - (float)m_fPlayerInfo.HealthLevel;
 	fUpgradeValue *= _fValue;
-
+	ABaseLevelGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ABaseLevelGameModeBase>();
+	GameMode->GetUBaseLevelWidget()->GetBasecampWidget()->GetUpgradeWidget()->StartComboTextEffect((int)fUpgradeValue);
 	if (0.f == _fValue)
 	{
 		m_fPlayerInfo.HealthProgress = 0.f;
@@ -207,7 +213,8 @@ void UPlayerManager::UpgradeSoul(float _fValue)
 {
 	float fUpgradeValue = 20.f - (float)m_fPlayerInfo.SoulLevel;
 	fUpgradeValue *= _fValue;
-
+	ABaseLevelGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ABaseLevelGameModeBase>();
+	GameMode->GetUBaseLevelWidget()->GetBasecampWidget()->GetUpgradeWidget()->StartComboTextEffect((int)fUpgradeValue);
 	if (0.f == _fValue)
 	{
 		m_fPlayerInfo.SoulProgress = 0.f;
