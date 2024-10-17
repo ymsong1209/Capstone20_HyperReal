@@ -36,7 +36,7 @@ APlayerCharacter::APlayerCharacter() :
 	m_iSP_SkillS(0),
 	m_iSP_SkillD(0),
 	m_iSP_SkillF(0),
-	m_fSPRegenerate(0.01),
+	m_fSPRegenerate(0.025f),
 	m_iAttackMontageIndex(0),
 	m_fAttackImpulse(0.f),
 	m_fDashImpulse(4500.f),
@@ -144,7 +144,10 @@ void APlayerCharacter::BeginPlay()
 	GetPlayerInfo().SP = GetSPMax();
 
 	if (m_pHUDWidget)
+	{
 		m_pHUDWidget->SetSP(GetPlayerInfo().SP, GetSPMax());
+		m_pHUDWidget->SetPrevGold(GetPlayerInfo().TotalGold);
+	}
 }
 
 // Called every frame
@@ -359,7 +362,7 @@ float APlayerCharacter::GiveDamage(AActor* _Target, float _fAttackRatio, EPlayer
 
 void APlayerCharacter::Attack()
 {
-	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None))
+	if (IsDead() || m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None))
 	{
 		if (!m_bComboDetected)
 			m_bComboDetected = true;
@@ -513,7 +516,7 @@ void APlayerCharacter::Ressurection(float fValue)
 
 void APlayerCharacter::Dash()
 {	
-	if (m_bOnAttack || m_eUsingSkill != EPlayerSkill::None)
+	if (IsDead() || m_bOnAttack || m_eUsingSkill != EPlayerSkill::None)
 		return;
 
 	m_eUsingSkill = EPlayerSkill::Dash;

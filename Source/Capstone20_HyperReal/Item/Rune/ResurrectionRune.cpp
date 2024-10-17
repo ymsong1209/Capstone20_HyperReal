@@ -23,6 +23,9 @@ void UResurrectionRune::SetRuneInfo()
 
 void UResurrectionRune::Activate(AActor* _pActor, float _fValue)
 {
+	if (m_iLevel <= 0)
+		return;
+
 	// 캐릭터 부활
 	int32 iCount = (int32)m_fEtc;
 

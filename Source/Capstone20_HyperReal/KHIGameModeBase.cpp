@@ -38,7 +38,16 @@ void AKHIGameModeBase::BeginPlay()
 
 		if (pGameInst)
 		{
-			pGameInst->LoadGameData();
+			if (pGameInst->LoadGameData())
+			{
+				// 저장 데이터 존재 - load game 버튼 활성화
+				UE_LOG(LogTemp, Warning, TEXT("Save Data exist"));
+			}
+			else
+			{
+				// 저장 데이터 없음 - load game 버튼 비활성화 
+				UE_LOG(LogTemp, Warning, TEXT("No Save Data"));
+			}
 		}
 		else
 		{

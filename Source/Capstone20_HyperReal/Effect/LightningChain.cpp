@@ -8,7 +8,7 @@
 // Sets default values
 ALightningChain::ALightningChain()	:
 	m_iChainCount(0),
-	m_fRange(1000.f),
+	m_fRange(500.f),
 	m_Target(nullptr),
 	m_fDamage(0.f),
 	m_pCurLightEffect(nullptr)

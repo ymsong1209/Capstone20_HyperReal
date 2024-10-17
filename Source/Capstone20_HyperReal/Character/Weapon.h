@@ -11,7 +11,7 @@ class CAPSTONE20_HYPERREAL_API AWeapon : public AActor
 {
 	GENERATED_BODY()
 	
-protected:
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* m_Capsule;
 

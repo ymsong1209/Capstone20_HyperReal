@@ -59,7 +59,7 @@ void UPlayerManager::Init(const FString& _fName)
 			m_fPlayerInfo.DSkillmaxcooltime = Info->DSkillMaxCooltime;
 			m_fPlayerInfo.FSkillmaxcooltime = Info->FSkillMaxCooltime;
 
-			m_fPlayerInfo.TotalGold = 10000;
+			m_fPlayerInfo.TotalGold = 1000;
 			m_fPlayerInfo.LevelAccGold = 0;
 
 			m_fPlayerInfo.AttackLevel = Info->AttackLevel;
@@ -160,7 +160,7 @@ void UPlayerManager::UpgradeAttack(float _fValue)
 			m_fPlayerInfo.AttackLevel++;
 			m_fPlayerInfo.AttackProgress -= 100.f;
 
-			m_fPlayerInfo.Attack += 2;
+			m_fPlayerInfo.Attack += 6;
 		}
 	}
 
@@ -221,7 +221,7 @@ void UPlayerManager::UpgradeSoul(float _fValue)
 		m_fPlayerInfo.SoulLevel++;
 
 		// 상승 수치 나중에 테이블에 가져오든 해서 변경
-		m_fPlayerInfo.MaxSP += 200;
+		m_fPlayerInfo.MaxSP += 20;
 	}
 	else
 	{

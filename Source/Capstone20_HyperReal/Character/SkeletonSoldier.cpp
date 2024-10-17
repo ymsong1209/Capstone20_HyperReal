@@ -40,7 +40,8 @@ ASkeletonSoldier::ASkeletonSoldier() :
 	m_fChargeStartTime(0.f),
 	m_iChargeAttackCount(0),
 	m_fTrailCount(0.f),
-	m_fTrailValue(1.f)
+	m_fTrailValue(1.f),
+	m_bOnChargeAttack(false)
 {
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(30.f, 86.0f);
@@ -338,6 +339,7 @@ void ASkeletonSoldier::SkillEnd()
 	{
 		if (++m_iAccChargeAttackCount >= m_iChargeAttackCount)
 		{
+			m_bOnChargeAttack = false;
 			m_pAnim->Montage_Stop(0.f);
 			m_iChargeAttackCount = 0;
 			m_iAccChargeAttackCount = 0;
@@ -403,16 +405,18 @@ void ASkeletonSoldier::SetDead(bool _bState)
 	m_bIsDead = _bState;
 
 	if (m_bIsDead)
-		DisableInput(Cast<ASkeletonSoldierController>(GetController()));
+		GetController()->SetIgnoreMoveInput(true);
 	else
-		EnableInput(Cast<ASkeletonSoldierController>(GetController()));
+		GetController()->ResetIgnoreMoveInput();
 }
 
 void ASkeletonSoldier::ChargeStart()
 {
-	if (m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) || 
-		(m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime * GetCoolDown()) || !UseSP(m_iSP_SkillD))
+	if (IsDead() || m_bOnAttack || (m_eUsingSkill != EPlayerSkill::None) ||
+		(m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime * GetCoolDown()) || m_bOnChargeAttack || !UseSP(m_iSP_SkillD))
 		return;
+
+	UE_LOG(LogTemp, Warning, TEXT("Charge Start"));
 
 	GetCharacterMovement()->StopMovementImmediately();
 
@@ -434,7 +438,7 @@ void ASkeletonSoldier::ChargeStart()
 
 void ASkeletonSoldier::Charging()
 {
-	if (m_eUsingSkill != EPlayerSkill::SkillD || m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime * GetCoolDown())
+	if (m_eUsingSkill != EPlayerSkill::SkillD || m_faccSkillDCool < GetPlayerInfo().DSkillmaxcooltime * GetCoolDown() || m_bOnChargeAttack)
 		return;
 
 	// 마우스 방향으로 차징중 회전
@@ -480,9 +484,10 @@ void ASkeletonSoldier::Charging()
 
 void ASkeletonSoldier::ChargeAttack()
 {
-	if (m_eUsingSkill != EPlayerSkill::SkillD)
+	if (m_eUsingSkill != EPlayerSkill::SkillD || m_bOnChargeAttack)
 		return;
 
+	m_bOnChargeAttack = true;
 	m_faccSkillDCool = 0.f;
 	float fElapsedTime = GetWorld()->GetTimeSeconds() - m_fChargeStartTime;
 
@@ -500,7 +505,7 @@ void ASkeletonSoldier::ChargeAttack()
 void ASkeletonSoldier::Whirlwind()
 {
 	// 아무 스킬도 안쓰고 있었으면 휠윈드 실행
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && 
+	if (!IsDead() && !m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) &&
 		(m_faccSkillACool >= GetPlayerInfo().ASkillmaxcooltime * GetCoolDown()) && UseSP(m_iSP_SkillA))
 	{
 		m_eUsingSkill = EPlayerSkill::SkillA;
@@ -573,10 +578,9 @@ void ASkeletonSoldier::AttackWhirlwind()
 
 void ASkeletonSoldier::LeapAttack()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && 
+	if (!IsDead() && !m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && 
 		(m_faccSkillSCool >= GetPlayerInfo().SSkillmaxcooltime * GetCoolDown()) && UseSP(m_iSP_SkillS))
 	{
-		GetPlayerInfo().SP -= m_iSP_SkillS;
 		m_eUsingSkill = EPlayerSkill::SkillS;
 
 		if (!m_pAnim->Montage_IsPlaying(m_LeapAttackMontage))
@@ -653,7 +657,7 @@ void ASkeletonSoldier::AttackLeapAttack()
 
 void ASkeletonSoldier::UndeadFury()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && 
+	if (!IsDead() && !m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && 
 		(m_faccSkillFCool >= GetPlayerInfo().FSkillmaxcooltime * GetCoolDown()) && UseSP(m_iSP_SkillF))
 	{
 		GetPlayerInfo().SP -= m_iSP_SkillF;

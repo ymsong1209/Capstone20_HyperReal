@@ -97,10 +97,14 @@ void UCapStoneGameInstance::SaveGameData()
 	SaveLevelData();
 }
 
-void UCapStoneGameInstance::LoadGameData()
+bool UCapStoneGameInstance::LoadGameData()
 {
-	LoadPlayerData();
+	if (!LoadPlayerData())
+		return false;
+
 	LoadLevelData();
+
+	return true;
 }
 
 void UCapStoneGameInstance::SavePlayerData()
@@ -123,7 +127,7 @@ void UCapStoneGameInstance::SavePlayerData()
 	UE_LOG(LogTemp, Log, TEXT("PlayerGameData Save Success"));
 }
 
-void UCapStoneGameInstance::LoadPlayerData()
+bool UCapStoneGameInstance::LoadPlayerData()
 {
 	UPlayerUpgradeSaveGame* pLoadInst = Cast<UPlayerUpgradeSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("PlayerGameData"), 0));
 
@@ -134,12 +138,16 @@ void UCapStoneGameInstance::LoadPlayerData()
 
 		if (m_RuneManager)
 			m_RuneManager->LoadRuneLevels(pLoadInst);
+
+		return true;
 	}	
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GameData Save Slot not exist"));
+		return false;
 	}
 }
+
 void UCapStoneGameInstance::SaveLevelData()
 {
 	ULevelSaveGame* pSaveInst = Cast<ULevelSaveGame>(UGameplayStatics::CreateSaveGameObject(ULevelSaveGame::StaticClass()));
@@ -170,7 +178,28 @@ void UCapStoneGameInstance::LoadLevelData()
 	}
 }
 
+void UCapStoneGameInstance::DeleteSaveData()
+{
+	if (UGameplayStatics::DoesSaveGameExist(TEXT("PlayerGameData"), 0))
+	{
+		UGameplayStatics::DeleteGameInSlot(TEXT("PlayerGameData"), 0);
+		UE_LOG(LogTemp, Log, TEXT("Delete Player Save Data Succeed"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Delete Player Save Data Failed : no Save Data"));
+	}
 
+	if (UGameplayStatics::DoesSaveGameExist(TEXT("LevelData"), 0))
+	{
+		UGameplayStatics::DeleteGameInSlot(TEXT("LevelData"), 0);
+		UE_LOG(LogTemp, Log, TEXT("Delete Level Save Data Succeed"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Delete Level Save Data Failed : no Save Data"));
+	}
+}
 
 void UCapStoneGameInstance::Init()
 {

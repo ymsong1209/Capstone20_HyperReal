@@ -18,7 +18,7 @@ ULightningRune::ULightningRune()	:
 	// 스태틱 데미지
 	m_fEtc = 10.f;
 	m_fCoolTime = 1.f;
-	m_iLevel = 1;
+	//m_iLevel = 1;
 
 	m_pLevelChangeData = &m_fEtc;
 }

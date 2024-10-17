@@ -81,6 +81,9 @@ private:
 	float m_fTrailCount;
 	float m_fTrailValue;
 
+
+	bool m_bOnChargeAttack;
+
 public:
 	int32 GetChargeAttackCount() { return m_iChargeAttackCount; }
 	AWeapon* GetRWeapon() { return m_pRWeapon; }

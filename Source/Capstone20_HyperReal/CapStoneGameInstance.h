@@ -46,13 +46,15 @@ public:
 
 public:
 	void SaveGameData();
-	void LoadGameData();
+	bool LoadGameData();
 	
 	void SavePlayerData();
-	void LoadPlayerData();
+	bool LoadPlayerData();
 	
 	void SaveLevelData();
 	void LoadLevelData();
+
+	void DeleteSaveData();
 
 public:
 	virtual void Init() override;
