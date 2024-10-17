@@ -43,7 +43,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	Monster->SetActorRotation(FRotator(0.f, Dir.Rotation().Yaw, 0.f));
 
 	Monster->SetAnimation(EMonsterAnim::Attack);
-	UE_LOG(LogTemp, Display, TEXT("Attack Task Executed"));
+	//UE_LOG(LogTemp, Display, TEXT("Attack Task Executed"));
 	return EBTNodeResult::InProgress;
 }
 
