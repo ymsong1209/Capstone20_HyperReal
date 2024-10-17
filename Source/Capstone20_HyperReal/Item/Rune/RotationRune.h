@@ -16,4 +16,7 @@ class CAPSTONE20_HYPERREAL_API URotationRune : public URune
 
 public:
 	URotationRune();
+
+public:
+	virtual void SetRuneInfo() override;
 };

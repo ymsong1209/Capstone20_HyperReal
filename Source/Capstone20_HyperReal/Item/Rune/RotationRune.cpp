@@ -12,4 +12,10 @@ URotationRune::URotationRune()
 
 	// 지속시간 증가률
 	m_fEtc = 2.f;
+	m_pLevelChangeData = &m_fEtc;
+}
+
+void URotationRune::SetRuneInfo()
+{
+	SetRuneInfoInner(TEXT("Rotation"));
 }

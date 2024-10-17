@@ -13,4 +13,11 @@ UExtremeRune::UExtremeRune()
 	m_strName = TEXT("극단");
 	m_strDesc = TEXT("최대 체력 감소, 공격력 증가");
 	m_eRuneType = ERuneType::Extreme;
+
+	m_pLevelChangeData = &m_fAttackRatio;
+}
+
+void UExtremeRune::SetRuneInfo()
+{
+	SetRuneInfoInner(TEXT("Extreme"));
 }

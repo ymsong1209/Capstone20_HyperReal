@@ -8,7 +8,7 @@
 
 class AEffectBase;
 /**
- * 
+ LightningChain 액터로 기능을 변경하였기 때문에 사용하지 않는 클래스임
  */
 UCLASS()
 class CAPSTONE20_HYPERREAL_API AChainLightning : public AProjectileBase

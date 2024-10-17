@@ -103,9 +103,9 @@ void ALightningChain::FindNewTarget()
 		if (m_arrTarget.Find(pMon) == INDEX_NONE)
 		{
 			float fDist = FVector::Distance(pMon->GetActorLocation(), m_vPrevLoc);
-			if (fDist <= fMin && fDist <= m_fRange)
+			if (fDist <= m_fRange && fDist <= fMin)
 			{
-				UE_LOG(LogTemp, Log, TEXT("Found New Target"));
+				fMin = fDist;
 				pNext = pMon;
 			}
 		}

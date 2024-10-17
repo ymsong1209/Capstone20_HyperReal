@@ -11,6 +11,13 @@ UThornRune::UThornRune()
 	m_strName = TEXT("가시");
 	m_strDesc = TEXT("피격 시 근접한 적에게 피해");
 	m_eRuneType = ERuneType::Thorn;
+
+	m_pLevelChangeData = &m_fEtc;
+}
+
+void UThornRune::SetRuneInfo()
+{
+	SetRuneInfoInner(TEXT("Thorn"));
 }
 
 void UThornRune::TakeDamageTrigger(AActor* _pActor, float _fValue)

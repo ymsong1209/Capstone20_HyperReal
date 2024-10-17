@@ -12,4 +12,10 @@ UDemolitionRune::UDemolitionRune()
 	m_eRuneType = ERuneType::Demolition;
 
 	m_fEtc = 1.1f;
+	m_pLevelChangeData = &m_fEtc;
+}
+
+void UDemolitionRune::SetRuneInfo()
+{
+	SetRuneInfoInner(TEXT("Demolition"));
 }

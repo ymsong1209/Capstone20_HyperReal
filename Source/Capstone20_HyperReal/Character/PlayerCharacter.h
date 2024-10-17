@@ -73,7 +73,7 @@ public:
 
 	// 초당 마나 재생량
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Skill)
-	int32 m_iSPRegenerate;
+	float m_fSPRegenerate;
 
 	// 재생 시킬 애니메이션 인덱스
 	int32 m_iAttackMontageIndex;

@@ -5,7 +5,6 @@
 #include "../../Character/PlayerCharacter.h"
 
 UDashRune::UDashRune()	:
-	m_fDashCool(1.f),
 	m_bDashAble(true)
 {
 	m_TexRune = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, TEXT("/Script/Engine.Texture2D'/Game/A_SJWContent/Rune/leap.leap'")));
@@ -15,6 +14,14 @@ UDashRune::UDashRune()	:
 	m_eRuneType = ERuneType::Dash;
 
 	m_iLevel = 1;
+	m_fEtc = 1.f;
+
+	m_pLevelChangeData = &m_fEtc;
+}
+
+void UDashRune::SetRuneInfo()
+{
+	SetRuneInfoInner(TEXT("Dash"));
 }
 
 void UDashRune::Activate(AActor* _pActor, float _fValue)
@@ -30,7 +37,7 @@ void UDashRune::Activate(AActor* _pActor, float _fValue)
 		pPlayer->Dash();
 		m_bDashAble = false;
 		// 타이머를 이용해서 쿨타임 계산
-		GetWorld()->GetTimerManager().SetTimer(m_hDashCoolHandle, this, &UDashRune::DashCoolEnd, m_fDashCool, false);
+		GetWorld()->GetTimerManager().SetTimer(m_hDashCoolHandle, this, &UDashRune::DashCoolEnd, m_fEtc, false);
 	}
 }
 

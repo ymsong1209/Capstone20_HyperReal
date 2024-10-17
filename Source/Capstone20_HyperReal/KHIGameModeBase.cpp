@@ -14,6 +14,8 @@ AKHIGameModeBase::AKHIGameModeBase()
 	}
 }
 
+#include "CapStoneGameInstance.h"
+#include "Manager/PlayerManager.h"
 void AKHIGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -28,4 +30,20 @@ void AKHIGameModeBase::BeginPlay()
 
 	FInputModeUIOnly mode;
 	controller->SetInputMode(mode);
+
+	{
+		// ========================================
+		// 플레이어 데이터 로드용 테스트 코드 - 서종원
+		UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
+
+		if (pGameInst)
+		{
+			pGameInst->LoadGameData();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Load Game Data Failed, no Game Instance"));
+		}
+		// =========================================
+	}
 }

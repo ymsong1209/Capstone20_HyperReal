@@ -19,6 +19,13 @@ ULightningRune::ULightningRune()	:
 	m_fEtc = 10.f;
 	m_fCoolTime = 1.f;
 	m_iLevel = 1;
+
+	m_pLevelChangeData = &m_fEtc;
+}
+
+void ULightningRune::SetRuneInfo()
+{
+	SetRuneInfoInner(TEXT("Lightning"));
 }
 
 void ULightningRune::NormalAttackTrigger(AActor* _pActor, float _fValue)
@@ -29,7 +36,7 @@ void ULightningRune::NormalAttackTrigger(AActor* _pActor, float _fValue)
 	m_bAble = false;
 	GetWorld()->GetTimerManager().SetTimer(m_hCoolHandle, this, &ULightningRune::CoolDown, m_fCoolTime, false);
 
-	// 체인 라이트닝 투사체 발사
+	// 체인 라이트닝
 	EjectLightning(_pActor);
 }
 
@@ -45,18 +52,9 @@ void ULightningRune::EjectLightning(AActor* _pActor)
 	if (!pMon)
 		return;
 
-	//FActorSpawnParameters param;
-	//param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
 	FTransform fTrans;
 	fTrans.SetLocation(_pActor->GetActorLocation());
 	fTrans.SetRotation(_pActor->GetActorRotation().Quaternion());
-
-	//AChainLightning* pLight = GetWorld()->SpawnActorDeferred<AChainLightning>(AChainLightning::StaticClass(), fTrans, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-	//pLight->SetDamage(m_fEtc);
-	//pLight->SetOwnerController(GetWorld()->GetFirstPlayerController());
-	//pLight->SetTarget(_pActor);
-	//UGameplayStatics::FinishSpawningActor(pLight, fTrans);
 
 	ALightningChain* pChain = GetWorld()->SpawnActorDeferred<ALightningChain>(ALightningChain::StaticClass(), fTrans, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	pChain->SetTarget(_pActor);

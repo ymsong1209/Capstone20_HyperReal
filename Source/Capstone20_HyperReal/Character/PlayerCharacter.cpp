@@ -36,7 +36,7 @@ APlayerCharacter::APlayerCharacter() :
 	m_iSP_SkillS(0),
 	m_iSP_SkillD(0),
 	m_iSP_SkillF(0),
-	m_iSPRegenerate(2),
+	m_fSPRegenerate(0.01),
 	m_iAttackMontageIndex(0),
 	m_fAttackImpulse(0.f),
 	m_fDashImpulse(4500.f),
@@ -139,6 +139,12 @@ void APlayerCharacter::BeginPlay()
 
 	// 플레이어 마나 재생 타이머 호출
 	GetWorld()->GetTimerManager().SetTimer(m_hSPRegenHandle, this, &APlayerCharacter::RegenerateSP, 1.f, true);
+
+	// 마나를 풀 마나로 설정
+	GetPlayerInfo().SP = GetSPMax();
+
+	if (m_pHUDWidget)
+		m_pHUDWidget->SetSP(GetPlayerInfo().SP, GetSPMax());
 }
 
 // Called every frame
@@ -699,9 +705,12 @@ void APlayerCharacter::ApplyDamageVingnette()
 void APlayerCharacter::RegenerateSP()
 {
 	if (GetPlayerInfo().SP >= GetSPMax())
+	{
+		GetPlayerInfo().SP = GetSPMax();
 		return;
+	}
 
-	GetPlayerInfo().SP += m_iSPRegenerate;
+	GetPlayerInfo().SP += (int32)((float)GetSPMax() * m_fSPRegenerate);
 
 	if (GetPlayerInfo().SP > GetSPMax())
 		GetPlayerInfo().SP = GetSPMax();

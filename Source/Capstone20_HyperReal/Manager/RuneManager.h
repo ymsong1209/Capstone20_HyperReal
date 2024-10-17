@@ -13,9 +13,15 @@ class CAPSTONE20_HYPERREAL_API URuneManager : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
-private:
+public:
 	UPROPERTY()
 	URune* m_arrRune[(int32)ERuneType::End];
+
+	UPROPERTY()
+	UDataTable* m_pRuneDataTable;
+
+private:
+	FRuneInfo m_fRuneCostInfo;
 
 public:
 	URuneManager();
@@ -44,6 +50,7 @@ public:
 	float GetCoolDownAdd();
 
 	void UpgradeRune(ERuneType _eType);
+	int32 GetRuneCost(ERuneType _eType);
 
 public:
 	void SaveRuneLevels(USaveGame* _pSaveGame);

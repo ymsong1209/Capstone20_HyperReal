@@ -18,5 +18,6 @@ public:
 	UThornRune();
 
 public:
+	virtual void SetRuneInfo() override;
 	virtual void TakeDamageTrigger(AActor* _pActor = nullptr, float _fValue = 0.f) override;
 };
