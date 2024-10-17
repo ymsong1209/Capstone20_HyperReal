@@ -64,6 +64,11 @@ private:
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UTextBlock* PhaseText;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UTextBlock* ProGA;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UTextBlock* ProGB;
 	/// <summary>
 	/// //////////////////
 	/// </summary>

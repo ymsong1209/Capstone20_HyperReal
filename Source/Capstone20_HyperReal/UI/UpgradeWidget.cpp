@@ -33,6 +33,8 @@ void UUpgradeWidget::NativePreConstruct()
 	progressBarBorder = Cast<UImage>(GetWidgetFromName(TEXT("ProgressBorder")));;
 	UpgradeCostText = Cast<UTextBlock>(GetWidgetFromName(TEXT("UpgradeCost")));;
 	PhaseText = Cast<UTextBlock>(GetWidgetFromName(TEXT("Phase")));;
+	ProGA = Cast<UTextBlock>(GetWidgetFromName(TEXT("ProgressA")));;
+	ProGB = Cast<UTextBlock>(GetWidgetFromName(TEXT("ProgressB")));;
 
 	frame1 = Cast<UImage>(GetWidgetFromName(TEXT("frame11")));;
 	frame2 = Cast<UImage>(GetWidgetFromName(TEXT("frame22")));;
@@ -106,6 +108,9 @@ void UUpgradeWidget::AttackIconButtonClick()
 	float rate = (GameInst->GetPlayerManager()->GetPlayerInfo().AttackProgress)/100.f;
 	progressBar->SetPercent(rate);
 	
+	int iRate = (GameInst->GetPlayerManager()->GetPlayerInfo().AttackProgress);
+	str = FString::FromInt(iRate);
+	ProGA->SetText(FText::FromString(str));
 }
 
 void UUpgradeWidget::HPIconButtonClick()
@@ -149,6 +154,10 @@ void UUpgradeWidget::HPIconButtonClick()
 	UpgradeCostText->SetText(FText::FromString(str));
 	float rate = (GameInst->GetPlayerManager()->GetPlayerInfo().HealthProgress) / 100.f;
 	progressBar->SetPercent(rate);
+
+	int iRate = (GameInst->GetPlayerManager()->GetPlayerInfo().HealthProgress);
+	str = FString::FromInt(iRate);
+	ProGA->SetText(FText::FromString(str));
 }
 
 void UUpgradeWidget::SoulIconButtonClick()
@@ -193,6 +202,10 @@ void UUpgradeWidget::SoulIconButtonClick()
 	UpgradeCostText->SetText(FText::FromString(str));
 	float rate = (GameInst->GetPlayerManager()->GetPlayerInfo().SoulProgress) / 100.f;
 	progressBar->SetPercent(rate);
+
+	int iRate = (GameInst->GetPlayerManager()->GetPlayerInfo().SoulProgress);
+	str = FString::FromInt(iRate);
+	ProGA->SetText(FText::FromString(str));
 }
 
 void UUpgradeWidget::CloseButtonUI()
@@ -240,6 +253,8 @@ void UUpgradeWidget::RestoreFisrtPhase()
 	frame2->SetVisibility(ESlateVisibility::Visible);
 	frame3->SetVisibility(ESlateVisibility::Visible);
 	PhaseText->SetVisibility(ESlateVisibility::Collapsed);
+	ProGB->SetVisibility(ESlateVisibility::Collapsed);
+	ProGA->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UUpgradeWidget::StartSecondPhase()
@@ -253,6 +268,8 @@ void UUpgradeWidget::StartSecondPhase()
 	progressBarBorder->SetVisibility(ESlateVisibility::Visible);
 	UpgradeCostText->SetVisibility(ESlateVisibility::Visible);
 	PhaseText->SetVisibility(ESlateVisibility::Visible);
+	ProGB->SetVisibility(ESlateVisibility::Visible);
+	ProGA->SetVisibility(ESlateVisibility::Visible);
 
 	AttackIconButton->SetVisibility(ESlateVisibility::Collapsed);
 	HPIconButton->SetVisibility(ESlateVisibility::Collapsed);
