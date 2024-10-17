@@ -10,6 +10,7 @@
 #include "../Character/PlayerCharacter.h"
 #include "../Manager/PlayerManager.h"
 #include "../GameData.h"
+#include "TimerManager.h"
 void UUpgradeWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -35,11 +36,13 @@ void UUpgradeWidget::NativePreConstruct()
 	PhaseText = Cast<UTextBlock>(GetWidgetFromName(TEXT("Phase")));;
 	ProGA = Cast<UTextBlock>(GetWidgetFromName(TEXT("ProgressA")));;
 	ProGB = Cast<UTextBlock>(GetWidgetFromName(TEXT("ProgressB")));;
+	EffText = Cast<UTextBlock>(GetWidgetFromName(TEXT("EffectText")));;
 
 	frame1 = Cast<UImage>(GetWidgetFromName(TEXT("frame11")));;
 	frame2 = Cast<UImage>(GetWidgetFromName(TEXT("frame22")));;
 	frame3 = Cast<UImage>(GetWidgetFromName(TEXT("frame33")));;
 
+	fadeDuration = 1.f;
 
 	backButton->OnClicked.AddDynamic(this, &UUpgradeWidget::CloseButtonUI);
 	AttackIconButton->OnClicked.AddDynamic(this, &UUpgradeWidget::AttackIconButtonClick);
@@ -62,6 +65,22 @@ void UUpgradeWidget::NativeDestruct()
 void UUpgradeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry,InDeltaTime);
+	if (bIsFading)
+	{
+		FLinearColor Color = EffText->ColorAndOpacity.GetSpecifiedColor();
+
+		// 투명도를 줄임
+		Color.A -= InDeltaTime / fadeDuration;
+		EffText->SetColorAndOpacity(Color);
+
+		// 투명도가 0 이하가 되면 텍스트를 숨김
+		if (Color.A <= 0.0f)
+		{
+			EffText->SetVisibility(ESlateVisibility::Collapsed);
+			bIsFading = false;
+		}
+	}
+	
 }
 
 void UUpgradeWidget::AttackIconButtonClick()
@@ -111,6 +130,7 @@ void UUpgradeWidget::AttackIconButtonClick()
 	int iRate = (GameInst->GetPlayerManager()->GetPlayerInfo().AttackProgress);
 	str = FString::FromInt(iRate);
 	ProGA->SetText(FText::FromString(str));
+
 }
 
 void UUpgradeWidget::HPIconButtonClick()
@@ -158,6 +178,7 @@ void UUpgradeWidget::HPIconButtonClick()
 	int iRate = (GameInst->GetPlayerManager()->GetPlayerInfo().HealthProgress);
 	str = FString::FromInt(iRate);
 	ProGA->SetText(FText::FromString(str));
+
 }
 
 void UUpgradeWidget::SoulIconButtonClick()
@@ -206,6 +227,7 @@ void UUpgradeWidget::SoulIconButtonClick()
 	int iRate = (GameInst->GetPlayerManager()->GetPlayerInfo().SoulProgress);
 	str = FString::FromInt(iRate);
 	ProGA->SetText(FText::FromString(str));
+
 }
 
 void UUpgradeWidget::CloseButtonUI()
@@ -329,4 +351,20 @@ int32 UUpgradeWidget::CheckStateLevel(EPlayerUpgradeType type)
 		curLevel = GameInst->GetPlayerManager()->GetPlayerInfo().SoulLevel;
 	}
 	return curLevel;
+}
+
+void UUpgradeWidget::StartComboTextEffect(int value)
+{
+
+	EffText->SetVisibility(ESlateVisibility::Visible);
+
+	FString str = "+"+FString::FromInt(value);
+	EffText->SetText(FText::FromString(str));
+
+	FLinearColor Color = EffText->ColorAndOpacity.GetSpecifiedColor();
+	Color.A = 1.0f;
+	EffText->SetColorAndOpacity(Color);
+
+	bIsFading = true;
+
 }

@@ -69,6 +69,8 @@ private:
 	UTextBlock* ProGA;
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UTextBlock* ProGB;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UTextBlock* EffText;
 	/// <summary>
 	/// //////////////////
 	/// </summary>
@@ -80,6 +82,8 @@ private:
 	UImage* frame3;
 
 	EPlayerUpgradeType state;
+	float fadeDuration;
+	bool bIsFading;
 
 protected:
 	virtual void NativeOnInitialized();
@@ -104,5 +108,8 @@ public:
 	UFUNCTION()
 	void Upgrade();
 	int32 CheckStateLevel(EPlayerUpgradeType type);
+
+	UFUNCTION()
+	void StartComboTextEffect(int value);
 	
 };
