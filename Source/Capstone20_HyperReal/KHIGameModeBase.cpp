@@ -47,6 +47,7 @@ void AKHIGameModeBase::BeginPlay()
 			{
 				// 저장 데이터 없음 - load game 버튼 비활성화 
 				UE_LOG(LogTemp, Warning, TEXT("No Save Data"));
+				mStartWidget->LoadBtnDisable();
 			}
 		}
 		else

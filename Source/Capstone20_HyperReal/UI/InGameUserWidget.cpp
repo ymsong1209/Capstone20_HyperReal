@@ -3,6 +3,7 @@
 
 #include "InGameUserWidget.h"
 #include "Components/Image.h"
+#include "Components/Button.h"
 #include "Materials/Material.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Engine/Texture.h"
@@ -24,6 +25,7 @@ void UInGameUserWidget::NativePreConstruct()
 	mDestoryRate = Cast<UTextBlock>(GetWidgetFromName(TEXT("DestroyRate")));
 	mYouWin = Cast<UTextBlock>(GetWidgetFromName(TEXT("YouWin")));
 	mYouDied = Cast<UTextBlock>(GetWidgetFromName(TEXT("YouDied")));
+	mCheck = Cast<UButton>(GetWidgetFromName(TEXT("CheckButton")));
 	
 	FString	t = "Testcode";
 	mPrevGold->SetText(FText::FromString(t));
@@ -77,6 +79,7 @@ void UInGameUserWidget::NativeConstruct()
 	mBasecampWidget->SetVisibility(ESlateVisibility::Collapsed);
 	mYouWin->SetVisibility(ESlateVisibility::Collapsed);
 	mYouDied->SetVisibility(ESlateVisibility::Collapsed);
+	mCheck->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UInGameUserWidget::NativeDestruct()
@@ -234,11 +237,18 @@ UMyWidget* UInGameUserWidget::TopWidget()
 void UInGameUserWidget::YouWin()
 {
 	mYouWin->SetVisibility(ESlateVisibility::Visible);
+	mCheck->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UInGameUserWidget::YouDied()
 {
 	mYouDied->SetVisibility(ESlateVisibility::Visible);
+	mCheck->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UInGameUserWidget::Restart()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), FName("KHIStartMap"));
 }
 
 

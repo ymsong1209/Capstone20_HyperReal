@@ -32,6 +32,7 @@ protected:
 	UTextBlock* mDestoryRate;
 	UTextBlock* mYouWin;
 	UTextBlock* mYouDied;
+	UButton* mCheck;
 protected:
 	virtual void NativeOnInitialized();
 	virtual void NativePreConstruct();
@@ -73,4 +74,5 @@ public:
 
 	void YouWin();
 	void YouDied();
+	void Restart();
 };
