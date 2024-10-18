@@ -17,6 +17,8 @@ class CAPSTONE20_HYPERREAL_API UStartWidget : public UUserWidget
 protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UButton* mStartButton;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UButton* mLoadButton;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UButton* mEndButton;
@@ -33,6 +35,9 @@ public:
 	void StartButtonClick();
 	UFUNCTION()
 	void EndButtonClick();
+	UFUNCTION()
+	void LoadButtonClick();
+	void LoadBtnDisable();
 
 	
 };
