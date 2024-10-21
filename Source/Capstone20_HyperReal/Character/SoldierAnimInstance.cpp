@@ -10,6 +10,14 @@
 USoldierAnimInstance::USoldierAnimInstance()	:
 	m_iChargeAttackCount(0)
 {
+	static ConstructorHelpers::FObjectFinder<USoundCue> NormalAttackSoundAsset(TEXT("/Script/Engine.SoundCue'/Game/A_SJWContent/Sound/SC_Skeleton_Normal_Attack.SC_Skeleton_Normal_Attack'"));
+	if (NormalAttackSoundAsset.Succeeded())
+	{
+		m_pSCNormalAttack = NormalAttackSoundAsset.Object;
+		UE_LOG(LogTemp, Log, TEXT("Sound Asset Load Succeed"));
+	}
+	else
+		UE_LOG(LogTemp, Log, TEXT("Sound Asset Load Succeed"));
 }
 
 void USoldierAnimInstance::NativeInitializeAnimation()
@@ -101,5 +109,15 @@ void USoldierAnimInstance::AnimNotify_SkillEnd()
 	if (IsValid(pPlayer))
 	{
 		pPlayer->SkillEnd();
+	}
+}
+
+void USoldierAnimInstance::AnimNotify_SoundNormalAttack()
+{
+	ASkeletonSoldier* pPlayer = Cast<ASkeletonSoldier>(TryGetPawnOwner());
+
+	if (IsValid(pPlayer))
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, m_pSCNormalAttack, pPlayer->GetActorLocation());
 	}
 }

@@ -5,7 +5,9 @@
 
 // Sets default values
 AWeapon::AWeapon()	:
-	m_ASWeapon(nullptr)
+	m_ASWeapon(nullptr),
+	m_pBlinkOverlayInterface(nullptr),
+	m_MIDBlinkOverlay(nullptr)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,7 +20,7 @@ AWeapon::AWeapon()	:
 	m_WeaponMesh->SetupAttachment(m_Capsule);
 	m_Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MT_BlinkFresnel_inst.MT_BlinkFresnel_inst'"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInstance> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MTI_BlinkFresnel.MTI_BlinkFresnel'"));
 	if (MIBlinkOverlay.Succeeded())
 	{
 		m_pBlinkOverlayInterface = MIBlinkOverlay.Object;
@@ -35,9 +37,12 @@ void AWeapon::BeginPlay()
 	m_WeaponMesh->SetRenderCustomDepth(true);
 	m_WeaponMesh->CustomDepthStencilValue = 100;
 
-	m_MIDBlinkOverlay = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), m_pBlinkOverlayInterface);
-	if (m_MIDBlinkOverlay)
-		UE_LOG(LogTemp, Log, TEXT("Make Blink Overlay Dynamic Material Succeed"));
+	if (m_pBlinkOverlayInterface)
+	{
+		m_MIDBlinkOverlay = UMaterialInstanceDynamic::Create(m_pBlinkOverlayInterface, nullptr);
+		if (m_MIDBlinkOverlay)
+			UE_LOG(LogTemp, Log, TEXT("Make Blink Overlay Dynamic Material Succeed"));
+	}
 }
 
 void AWeapon::SwitchBlinkOverlay(bool _bSwitch)

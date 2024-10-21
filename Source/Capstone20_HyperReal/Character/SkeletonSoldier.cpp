@@ -59,7 +59,14 @@ ASkeletonSoldier::ASkeletonSoldier() :
 	// 코드로 애니메이션 블루프린트 세팅
 	static ConstructorHelpers::FClassFinder<USoldierAnimInstance> AnimClass(TEXT("/Script/Engine.AnimBlueprint'/Game/A_SJWContent/Character/Animation/AB_Skeleton_Soldier.AB_Skeleton_Soldier_C'"));
 	if (AnimClass.Succeeded())
+	{
 		GetMesh()->SetAnimInstanceClass(AnimClass.Class);
+		UE_LOG(LogTemp, Log, TEXT("Skeleton Anim Blueprint load Succeed"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Skeleton Anim Blueprint load Failed"));
+	}
 
 	// 차징 애니메이션 수동 세팅
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> AnimCharing(TEXT("/Script/Engine.AnimMontage'/Game/A_SJWContent/Character/Animation/AM_SoldierCharging.AM_SoldierCharging'"));
@@ -432,8 +439,12 @@ void ASkeletonSoldier::ChargeStart()
 	}
 
 	m_pRWeapon->SwitchBlinkOverlay(true);
-	m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(1.f, 1.f, 1.f));
-	m_pRWeapon->GetMIDOverlay()->SetScalarParameterValue(TEXT("BlinkSpeed"), 2.f);
+
+	if (nullptr != m_pRWeapon->GetMIDOverlay())
+	{
+		m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(1.f, 1.f, 1.f));
+		m_pRWeapon->GetMIDOverlay()->SetScalarParameterValue(TEXT("BlinkSpeed"), 2.f);
+	}
 }
 
 void ASkeletonSoldier::Charging()
@@ -469,10 +480,12 @@ void ASkeletonSoldier::Charging()
 		switch (++m_iChargeAttackCount)
 		{
 		case 1:
-			m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(0.7f, 1.f, 0.f));
+			if (nullptr != m_pRWeapon->GetMIDOverlay())
+				m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(0.7f, 1.f, 0.f));
 			break;
 		case 2:
-			m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(0.f, 0.f, 1.f));
+			if (nullptr != m_pRWeapon->GetMIDOverlay())
+				m_pRWeapon->GetMIDOverlay()->SetVectorParameterValue(TEXT("Color"), FVector(0.f, 0.f, 1.f));
 			break;
 		}
 	}

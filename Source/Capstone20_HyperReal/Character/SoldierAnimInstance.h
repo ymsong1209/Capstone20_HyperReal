@@ -18,6 +18,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EPlayerSkill m_eUsingSkill;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
+	USoundCue* m_pSCNormalAttack;
+
 public:
 	virtual void NativeInitializeAnimation();
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
@@ -45,4 +48,7 @@ public:
 
 	UFUNCTION()
 	virtual void AnimNotify_SkillEnd();
+
+	UFUNCTION()
+	virtual void AnimNotify_SoundNormalAttack();
 };
