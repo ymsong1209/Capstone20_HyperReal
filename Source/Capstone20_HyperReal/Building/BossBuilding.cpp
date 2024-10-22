@@ -44,6 +44,15 @@ ABossBuilding::ABossBuilding()
 void ABossBuilding::BeginPlay()
 {
 	Super::BeginPlay();
+	while (mCurPhase < mInfo.PhaseTriggerHP.Num() && mInfo.HP <= mInfo.PhaseTriggerHP[mCurPhase])
+	{
+		++mCurPhase; // 다음 단계로 이동
+		if (mCurPhase < mMeshes.Num() && mMeshes[mCurPhase])
+		{
+			mMesh->SetStaticMesh(mMeshes[mCurPhase]);
+			mMesh->SetRelativeScale3D(FVector(0.7f, 0.7f, 0.7f));
+		}
+	}
 }
 
 float ABossBuilding::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,

@@ -12,6 +12,15 @@ ATowerA::ATowerA()
 void ATowerA::BeginPlay()
 {
 	Super::BeginPlay();
+	while (mCurPhase < mInfo.PhaseTriggerHP.Num() && mInfo.HP <= mInfo.PhaseTriggerHP[mCurPhase])
+	{
+		++mCurPhase; // 다음 단계로 이동
+		if (mCurPhase < mMeshes.Num() && mMeshes[mCurPhase])
+		{
+			mMesh->SetStaticMesh(mMeshes[mCurPhase]);
+			mMesh->SetRelativeScale3D(FVector(0.8f, 0.8f, 0.8f));
+		}
+	}
 }
 
 float ATowerA::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -29,7 +38,7 @@ float ATowerA::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 		if (mCurPhase < mMeshes.Num() && mMeshes[mCurPhase])
 		{
 			mMesh->SetStaticMesh(mMeshes[mCurPhase]);
-			mMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
+			mMesh->SetRelativeScale3D(FVector(0.8f, 0.8f, 0.8f));
 		}
 	}
 
