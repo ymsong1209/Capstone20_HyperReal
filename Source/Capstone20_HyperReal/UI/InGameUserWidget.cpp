@@ -249,6 +249,10 @@ void UInGameUserWidget::YouDied()
 
 void UInGameUserWidget::Restart()
 {
+	UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
+
+	if (pGameInst)
+		pGameInst->DeleteSaveData();
 	UGameplayStatics::OpenLevel(GetWorld(), FName("KHIStartMap"));
 }
 
