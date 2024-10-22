@@ -88,9 +88,6 @@ void UMagicWidget::NativePreConstruct()
 	Magic_Button[2]->OnClicked.AddDynamic(this, &UMagicWidget::Upgrade2);
 
 	Magic_MoneyText = Cast<UTextBlock>(GetWidgetFromName(TEXT("MoneyText")));
-	int gold = 10000;
-	FString gstr = FString::FromInt(gold);
-	Magic_MoneyText->SetText(FText::FromString(gstr));
 }
 
 void UMagicWidget::NativeConstruct()
@@ -98,6 +95,13 @@ void UMagicWidget::NativeConstruct()
 	Super::NativeConstruct();
 	//최초 이니셜라이즈 1번 진행해주기 
 	Refresh();
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInst)
+	{
+		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+		FString gstr = FString::FromInt(gold);
+		Magic_MoneyText->SetText(FText::FromString(gstr));
+	}
 }
 
 void UMagicWidget::NativeDestruct()

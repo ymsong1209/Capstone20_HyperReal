@@ -15,6 +15,7 @@
 
 class UImage;
 class UTexture;
+class UButton;
 /**
  * 
  */
@@ -24,6 +25,7 @@ class CAPSTONE20_HYPERREAL_API UBaseLevelWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	TArray<UMyWidget*> ActivateWidgets;
+	UButton* mCloseBtn;
 protected:
 	UBasecampWidget* mBasecampWidget;
 protected:
@@ -45,4 +47,6 @@ public:
 	{
 		return mBasecampWidget;
 	}
+	UFUNCTION()
+	void QuitGame();
 };

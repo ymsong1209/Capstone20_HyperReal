@@ -3,6 +3,7 @@
 
 #include "BaseLevelWidget.h"
 #include "Components/Image.h"
+#include "Components/Button.h"
 #include "Materials/Material.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Engine/Texture.h"
@@ -18,6 +19,8 @@ void UBaseLevelWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	mBasecampWidget = Cast<UBasecampWidget>(GetWidgetFromName(TEXT("Basecampwidget")));
+	mCloseBtn = Cast<UButton>(GetWidgetFromName(TEXT("GameCloseBtn")));
+	mCloseBtn->OnClicked.AddDynamic(this, &UBaseLevelWidget::QuitGame);
 }
 
 void UBaseLevelWidget::NativeConstruct()
@@ -86,4 +89,15 @@ void UBaseLevelWidget::CloseUI()
 void UBaseLevelWidget::OpenUI()
 {
 	//mBasecampWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UBaseLevelWidget::QuitGame()
+{
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInst)
+	{
+		GameInst->SavePlayerData();
+		GameInst->SaveLevelData();
+	}
+	UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
 }
