@@ -4,6 +4,8 @@
 #include "BossBuilding.h"
 #include "../Character/PlayerCharacter.h"
 #include "BossAttack.h"
+#include "../UI/InGameUserWidget.h"
+#include "../InGameModeBase.h"
 
 ABossBuilding::ABossBuilding()
 {
@@ -41,6 +43,21 @@ ABossBuilding::ABossBuilding()
 	mAttackWaitTime = -1.f;
 }
 
+void ABossBuilding::HandleDeath()
+{
+	mbIsInvincible = true;
+	if (m_pHUDWidget)
+		m_pHUDWidget->YouWin();
+	KillAllMonsters();
+	Destroy();
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	//이동은 안되는데 공격이나 스킬 사용은 됨..
+	if (Player)
+		Player->GetController()->SetIgnoreMoveInput(true);
+	
+	
+}
+
 void ABossBuilding::BeginPlay()
 {
 	Super::BeginPlay();
@@ -52,6 +69,13 @@ void ABossBuilding::BeginPlay()
 			mMesh->SetStaticMesh(mMeshes[mCurPhase]);
 			mMesh->SetRelativeScale3D(FVector(0.7f, 0.7f, 0.7f));
 		}
+	}
+	
+	AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+
+	if (GameMode)
+	{
+		m_pHUDWidget = GameMode->GetInGameWidget();
 	}
 }
 

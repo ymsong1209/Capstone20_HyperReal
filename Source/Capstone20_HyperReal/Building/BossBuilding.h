@@ -22,9 +22,13 @@ private:
 	float mDecalAdjustTime;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "Boss")
 	float mAttackWaitTime;
+
+	class UInGameUserWidget* m_pHUDWidget;
 public:
 	// Sets default values for this pawn's properties
 	ABossBuilding();
+public:
+	virtual void HandleDeath() override;
 
 protected:
 	// Called when the game starts or when spawned
