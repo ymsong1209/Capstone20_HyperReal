@@ -38,13 +38,15 @@ public:
 	const FPlayerDataTableInfo* FindPlayerInfo(const FString& _Name);
 	const FBuildingDataTableInfo* FindBuildingInfo(const FString& _Name);
 
-	void UpdatePlayerGold(const FString& PlayerName, int _gold);
+	void UpdatePlayerGold();
 
 	UPlayerManager* GetPlayerManager() { return m_PlayerManager; }
 	URuneManager* GetRuneManager() { return m_RuneManager; }
 	ULevelManager* GetLevelManager() const { return m_LevelManager; }
 
 public:
+	bool IsSaveDataExist();
+
 	void SaveGameData();
 	bool LoadGameData();
 	

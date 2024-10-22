@@ -74,21 +74,18 @@ const FBuildingDataTableInfo* UCapStoneGameInstance::FindBuildingInfo(const FStr
 	}
 }
 
-void UCapStoneGameInstance::UpdatePlayerGold(const FString& PlayerName, int _gold)
+void UCapStoneGameInstance::UpdatePlayerGold()
 {
-	if (mPlayerInfoTable) {
-		FPlayerDataTableInfo* table =  mPlayerInfoTable->FindRow<FPlayerDataTableInfo>(*PlayerName, TEXT(""));
-		if(!table)
-		{
-			UE_LOG(LogTemp, Error, TEXT("No PlayerInfoTable"));
-			return;
-		}
-		table->TotalGold += _gold;
-		UE_LOG(LogTemp, Log, TEXT("Player Gold : %d"), table->TotalGold);
+	if (m_PlayerManager)
+	{
+		m_PlayerManager->GetPlayerInfo().TotalGold += m_PlayerManager->GetPlayerInfo().LevelAccGold;
+		m_PlayerManager->GetPlayerInfo().LevelAccGold = 0;
 	}
-	else {
-		UE_LOG(LogTemp, Error, TEXT("No PlayerInfoTable"));
-	}
+}
+
+bool UCapStoneGameInstance::IsSaveDataExist()
+{
+	return UGameplayStatics::DoesSaveGameExist(TEXT("PlayerGameData"), 0);
 }
 
 void UCapStoneGameInstance::SaveGameData()

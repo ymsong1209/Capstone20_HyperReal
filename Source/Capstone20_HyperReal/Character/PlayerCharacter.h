@@ -130,6 +130,7 @@ protected:
 	float m_faccSkillFCool;
 
 	FTimerHandle m_hSPRegenHandle;
+	FTimerHandle m_hLoseUIHandle;
 
 private:
 	float m_fDefaultSpeed;
@@ -218,7 +219,7 @@ public:
 
 	void Heal(float fValue);
 	void Ressurection(float fValue);
-	virtual void SetDead(bool _bState) {};
+	void SetDead(bool _bState);
 	void Dash();
 
 	bool UseSP(int32 _iValue);

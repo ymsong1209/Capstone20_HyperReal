@@ -16,9 +16,9 @@ public:
 	AInGameModeBase();
 
 protected:
-	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage);
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason);
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
 	TSubclassOf<UInGameUserWidget>	mInGameWidgetClass;

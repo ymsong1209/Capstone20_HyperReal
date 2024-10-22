@@ -38,7 +38,7 @@ void AKHIGameModeBase::BeginPlay()
 
 		if (pGameInst)
 		{
-			if (pGameInst->LoadGameData())
+			if (pGameInst->IsSaveDataExist())
 			{
 				// 저장 데이터 존재 - load game 버튼 활성화
 				UE_LOG(LogTemp, Warning, TEXT("Save Data exist"));
@@ -56,4 +56,9 @@ void AKHIGameModeBase::BeginPlay()
 		}
 		// =========================================
 	}
+}
+
+void AKHIGameModeBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
 }

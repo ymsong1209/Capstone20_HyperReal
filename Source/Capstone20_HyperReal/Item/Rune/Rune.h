@@ -65,7 +65,7 @@ public:
 	ERuneType GetRuneType() { return m_eRuneType; }
 
 	int32 GetLevel() { return m_iLevel; }
-	void SetLevel(int32 _iLevel);
+	virtual void SetLevel(int32 _iLevel);
 	float GetHealthRatio() { return 1.f + m_fHealthRatio; }
 	float GetSoulRatio() { return 1.f + m_fSoulRatio; }
 	float GetAttackRatio() { return 1.f + m_fAttackRatio; }

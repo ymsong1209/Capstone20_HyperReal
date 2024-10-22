@@ -96,7 +96,7 @@ APlayerCharacter::APlayerCharacter() :
 	m_fDefaultAccel = GetCharacterMovement()->MaxAcceleration;
 
 	// 무적 판정, 차징 등등에 쓰일 깜빡이는 오버레이 머티리얼 로딩
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MT_BlinkFresnel_inst.MT_BlinkFresnel_inst'"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MTI_BlinkFresnel.MTI_BlinkFresnel'"));
 	if (MIBlinkOverlay.Succeeded())
 	{
 		m_pBlinkOverlayInterface = MIBlinkOverlay.Object;
@@ -309,7 +309,7 @@ float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 	GetRuneManager()->TakeDamageTrigger(DamageCauser, Damage);
 
 	//무적일 경우엔 -1.f반환
-	if(m_bInvincible) 
+	if(m_bInvincible || m_bIsDead) 
 		return -1.f;
 
 	if (GetPlayerInfo().HP > GetHPMax())
@@ -512,6 +512,33 @@ void APlayerCharacter::Ressurection(float fValue)
 	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(GetActorLocation(), GetActorRotation(), param);
 	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/A_SJWContent/Effect/Niagara/NS_Priest_Heal_Burst.NS_Priest_Heal_Burst'"));
+}
+
+void APlayerCharacter::SetDead(bool _bState)
+{
+	m_bIsDead = _bState;
+
+	if (m_bIsDead)
+	{
+		// 사망 ui 활성화 코드 단 몇초 후에 실행 되도록 타이머 설정 <- 부활이라는 경우가 존재하기 때문
+		GetWorld()->GetTimerManager().ClearTimer(m_hLoseUIHandle);
+		GetWorld()->GetTimerManager().SetTimer(m_hLoseUIHandle,
+			FTimerDelegate::CreateLambda([this]()
+				{
+					UE_LOG(LogTemp, Log, TEXT("Dead Lambda"));
+					if (m_pHUDWidget)
+						m_pHUDWidget->YouDied();
+				}), 2.f, false);
+
+		GetController()->SetIgnoreMoveInput(true);
+	}
+	else
+	{
+		GetController()->ResetIgnoreMoveInput();
+
+		// 부활했으면 타이머가 설정 되어 있었다면 없애야함
+		GetWorld()->GetTimerManager().ClearTimer(m_hLoseUIHandle);
+	}
 }
 
 void APlayerCharacter::Dash()

@@ -313,7 +313,7 @@ void ASkeletonSoldier::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void ASkeletonSoldier::Attack()
 {
-	if (!m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None))
+	if (!IsDead() && !m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None))
 	{
 		// 하고 공격 모션
 		if (m_arrAttackMontage.Num() == 0)
@@ -405,16 +405,6 @@ void ASkeletonSoldier::SpawnGhostTrail()
 void ASkeletonSoldier::EscapeFunction()
 {
 	Super::EscapeFunction();
-}
-
-void ASkeletonSoldier::SetDead(bool _bState)
-{
-	m_bIsDead = _bState;
-
-	if (m_bIsDead)
-		GetController()->SetIgnoreMoveInput(true);
-	else
-		GetController()->ResetIgnoreMoveInput();
 }
 
 void ASkeletonSoldier::ChargeStart()

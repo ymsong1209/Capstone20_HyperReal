@@ -165,7 +165,7 @@ void UInGameUserWidget::OpenRewardUI(int gold, int building, int enemy)
 	if (!PlayerCharacter)return;
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if(!GameInst)return;
-	GameInst->UpdatePlayerGold(PlayerCharacter->GetPlayerInfo().Name,PlayerCharacter->GetPlayerInfo().LevelAccGold);
+	GameInst->UpdatePlayerGold();
 }
 
 void UInGameUserWidget::CloseRewardUI()

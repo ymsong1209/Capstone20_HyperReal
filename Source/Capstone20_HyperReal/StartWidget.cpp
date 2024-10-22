@@ -41,21 +41,9 @@ void UStartWidget::StartButtonClick()
 {
 	UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
 
-	{
-		// ========================================
-		// 플레이어 데이터 로드용 테스트 코드 - 서종원
+	if(pGameInst)
+		pGameInst->DeleteSaveData();
 
-		if (pGameInst)
-		{
-			pGameInst->LoadGameData();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Load Game Data Failed, no Game Instance"));
-		}
-		// =========================================
-	}
-	pGameInst->DeleteSaveData();
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("BGBaseCampMap"));
 }
 
