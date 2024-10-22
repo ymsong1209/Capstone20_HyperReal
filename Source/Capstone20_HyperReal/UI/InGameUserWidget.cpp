@@ -65,6 +65,7 @@ void UInGameUserWidget::NativePreConstruct()
 			skillBackImages[i-1]->SetBrushFromTexture(NewTexture);
 		}
 	}
+	mCheck->OnClicked.AddDynamic(this, &UInGameUserWidget::Restart);
 }
 
 void UInGameUserWidget::NativeConstruct()
@@ -248,6 +249,10 @@ void UInGameUserWidget::YouDied()
 
 void UInGameUserWidget::Restart()
 {
+	UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
+
+	if (pGameInst)
+		pGameInst->DeleteSaveData();
 	UGameplayStatics::OpenLevel(GetWorld(), FName("KHIStartMap"));
 }
 
