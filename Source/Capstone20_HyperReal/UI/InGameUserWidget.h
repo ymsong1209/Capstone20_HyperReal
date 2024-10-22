@@ -74,5 +74,6 @@ public:
 
 	void YouWin();
 	void YouDied();
+	UFUNCTION()
 	void Restart();
 };
