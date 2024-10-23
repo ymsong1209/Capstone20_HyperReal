@@ -95,13 +95,6 @@ void UMagicWidget::NativeConstruct()
 	Super::NativeConstruct();
 	//최초 이니셜라이즈 1번 진행해주기 
 	Refresh();
-	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
-	if (GameInst)
-	{
-		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
-		FString gstr = FString::FromInt(gold);
-		Magic_MoneyText->SetText(FText::FromString(gstr));
-	}
 }
 
 void UMagicWidget::NativeDestruct()
@@ -205,7 +198,12 @@ void UMagicWidget::Refresh()
 	}
 	
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
-	
+	if (GameInst)
+	{
+		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+		FString gstr = FString::FromInt(gold);
+		Magic_MoneyText->SetText(FText::FromString(gstr));
+	}
 	
 	for (int32 i = 0; i < 3; i++)
 	{
