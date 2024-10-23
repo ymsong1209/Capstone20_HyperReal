@@ -23,7 +23,7 @@ void UMagicWidget::NativeOnInitialized()
 void UMagicWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	Magic_Button.Reserve(3);  
+	Magic_Button.Reserve(3);
 	Magic_Name.Reserve(3);
 	MagicDesc.Reserve(3);
 	Magic_LevelText.Reserve(3);
