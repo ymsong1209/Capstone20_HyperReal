@@ -97,6 +97,7 @@ void UBasecampWidget::MagicButtonClick()
 			if (widget && widget->IsVisible())
 			{
 				widget->PushWidget(MagicWidget);
+				MagicWidget->Refresh();
 			}
 		}
 	}
