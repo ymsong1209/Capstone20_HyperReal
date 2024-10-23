@@ -93,7 +93,7 @@ void UUpgradeWidget::AttackIconButtonClick()
 	
 	
 	state = EPlayerUpgradeType::Attack;
-	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Basecamp/UpgradeUI/AttackIcon.AttackIcon'"));
+	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_SYMContent/UI/image/AttackIcon.AttackIcon'"));
 	UTexture2D* NewTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *imageName));
 	if (NewTexture)
 	{
@@ -141,7 +141,7 @@ void UUpgradeWidget::HPIconButtonClick()
 		StartSecondPhase();
 	}
 	state = EPlayerUpgradeType::Health;
-	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Basecamp/UpgradeUI/HPIcon.HPIcon'"));
+	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_SYMContent/UI/image/HealthIcon.HealthIcon'"));
 	UTexture2D* NewTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *imageName));
 	if (NewTexture)
 	{
@@ -189,7 +189,7 @@ void UUpgradeWidget::SoulIconButtonClick()
 		StartSecondPhase();
 	}
 	state = EPlayerUpgradeType::Soul;
-	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_KHIContent/UI/Basecamp/UpgradeUI/SoulIcon.SoulIcon'"));
+	FString imageName = FString::Printf(TEXT("/Script/Engine.Texture2D'/Game/A_SYMContent/UI/image/SoulIcon.SoulIcon'"));
 	UTexture2D* NewTexture = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *imageName));
 	if (NewTexture)
 	{
