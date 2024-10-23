@@ -74,7 +74,6 @@ void UInGameUserWidget::NativeConstruct()
 	//TODO : datatable에서 세팅해와야함.
 	SetPrevGold(0);
 	SetEarnGold(0);
-	mRewardWidget->setDestroyBuildingCount(10);
 	mRewardWidget->setRewardMoney(400);
 	mRewardWidget->SetVisibility(ESlateVisibility::Collapsed);
 	mBasecampWidget->SetVisibility(ESlateVisibility::Collapsed);
@@ -156,11 +155,11 @@ void UInGameUserWidget::SetDestroyRate(float fRate)
 	mDestoryRate->SetText(FText::FromString(str));
 }
 
-void UInGameUserWidget::OpenRewardUI(int gold, int building, int enemy)
+void UInGameUserWidget::OpenRewardUI(int gold, int enemy)
 {
 	mRewardWidget->SetVisibility(ESlateVisibility::Visible);
 	mRewardWidget->setRewardMoney(gold);
-	mRewardWidget->setDestroyBuildingCount(building);
+	//mRewardWidget->setDestroyBuildingCount(building);
 	mRewardWidget->setKillEnemyCount(enemy);
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (!PlayerCharacter)return;
@@ -173,7 +172,6 @@ void UInGameUserWidget::CloseRewardUI()
 {
 	mRewardWidget->SetVisibility(ESlateVisibility::Collapsed);
 	mRewardWidget->setRewardMoney(0);
-	mRewardWidget->setDestroyBuildingCount(0);
 	mRewardWidget->setKillEnemyCount(0);
 	//basecamp 위젯 활성화하기
 	//mBasecampWidget->SetVisibility(ESlateVisibility::Visible);

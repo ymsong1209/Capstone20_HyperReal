@@ -82,11 +82,10 @@ void APortal::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 	if (!widget) return;
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if (!GameInst) return;
-	
+	ULevelManager* LevelManager = GameInst->GetLevelManager();
 	int gold = GameInst->GetPlayerManager()->GetPlayerInfo().LevelAccGold;
-	int building = 0;
-	int enemy = 0;
-	widget->OpenRewardUI(gold, building, enemy);
+	int enemy = LevelManager->GetMonsterDeathCount();
+	widget->OpenRewardUI(gold, enemy);
 	GameInst->GetLevelManager()->SetBuildingHP();
 	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }

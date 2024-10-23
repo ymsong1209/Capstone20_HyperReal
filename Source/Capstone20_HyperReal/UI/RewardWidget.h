@@ -17,7 +17,6 @@ class CAPSTONE20_HYPERREAL_API URewardWidget : public UUserWidget
 	GENERATED_BODY()
 private:
 	UTextBlock* RewardMoney;
-	UTextBlock* DestroyBuildingCount;
 	UTextBlock* KillEnemyCount;
 protected:
 	virtual void NativeOnInitialized();
@@ -28,6 +27,5 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 public:
 	void setRewardMoney(int gold);
-	void setDestroyBuildingCount(int count);
 	void setKillEnemyCount(int count);
 };

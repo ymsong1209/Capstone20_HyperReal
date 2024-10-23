@@ -63,7 +63,7 @@ public:
 	void SetEarnGold(int gold);
 	void SetDestroyRate(float fRate);
 
-	void OpenRewardUI(int gold,int building,int enemy);
+	void OpenRewardUI(int gold, int enemy);
 	void CloseRewardUI();
 	void CloseUI();
 	void TestOpenTrigger();

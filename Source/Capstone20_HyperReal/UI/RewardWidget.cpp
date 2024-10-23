@@ -12,7 +12,6 @@ void URewardWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 	RewardMoney = Cast<UTextBlock>(GetWidgetFromName(TEXT("RewardMoneyText")));
-	DestroyBuildingCount = Cast<UTextBlock>(GetWidgetFromName(TEXT("DestroyBuildingText")));
 	KillEnemyCount = Cast<UTextBlock>(GetWidgetFromName(TEXT("KillEnemyCountText")));
 }
 
@@ -38,10 +37,6 @@ void URewardWidget::setRewardMoney(int gold)
 	RewardMoney->SetText(FText::FromString(str));
 }
 
-void URewardWidget::setDestroyBuildingCount(int count)
-{
-	DestroyBuildingCount->SetText(FText::FromString(FString::FromInt(count)));
-}
 
 void URewardWidget::setKillEnemyCount(int count)
 {
