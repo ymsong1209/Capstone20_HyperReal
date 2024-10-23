@@ -17,7 +17,8 @@ ABuilding::ABuilding() :
 	mTotalTime(0.f),
 	mbIsActivated(false),
 	mbIsInvincible(false),
-	mbIsShaking(false)
+	mbIsShaking(false),
+	mDebugAccTime(0.f)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -72,7 +73,8 @@ void ABuilding::BeginPlay()
 			mInfo.AttackSpeed = Info->AttackSpeed;
 			mInfo.SpawnIntervalSeconds = Info->SpawnIntervalSeconds;
 			mInfo.MonstersPerSpawn = Info->MonstersPerSpawn;
-			mInfo.SpawnRadius = Info->SpawnRadius;
+			mInfo.MinSpawnRadius = Info->MinSpawnRadius;
+			mInfo.MaxSpawnRadius = Info->MaxSpawnRadius;
 			mInfo.Level = Info->Level;
 			mInfo.Exp = Info->Exp;
 			mInfo.Gold = Info->Gold;
@@ -86,12 +88,23 @@ void ABuilding::BeginPlay()
 		mInfo.MaxHP = GameInst->GetLevelManager()->GetBuildingMaxHP();
 	}
 	SetDestroyRateText(static_cast<int32>(static_cast<float>(mInfo.HP) / static_cast<float>(mInfo.MaxHP) * 100));
+
+	
 }
 
 // Called every frame
 void ABuilding::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	// mDebugAccTime += DeltaTime;
+	//
+	// // 디버그 스피어로 최소 및 최대 소환 범위 시각화 (0.5초마다 업데이트)
+	// if (mDebugAccTime >= 0.5f)
+	// {
+	// 	DrawDebugSphere(GetWorld(), GetActorLocation(), mInfo.MinSpawnRadius, 32, FColor::Blue, false, 0.5f, 0, 2.0f);
+	// 	DrawDebugSphere(GetWorld(), GetActorLocation(), mInfo.MaxSpawnRadius, 32, FColor::Red, false, 0.5f, 0, 2.0f);
+	// 	mDebugAccTime = 0.f;
+	// }
 	if(mbIsActivated == false) return;
 	
 	mAccTime += DeltaTime;
@@ -102,6 +115,9 @@ void ABuilding::Tick(float DeltaTime)
 		mAccTime = 0.f;
 		SpawnMonster();
 	}
+
+	
+
 
 }
 
@@ -116,7 +132,8 @@ void ABuilding::SpawnMonster()
 {
 	for(int i = 0;i<mInfo.MonstersPerSpawn;++i)
 	{
-		FVector2D RandCircle = FMath::RandPointInCircle(mInfo.SpawnRadius);
+		float Radius = FMath::RandRange(mInfo.MinSpawnRadius, mInfo.MaxSpawnRadius);
+		FVector2D RandCircle = FMath::RandPointInCircle(Radius);
 		FVector SpawnLocation = GetActorLocation() + FVector(RandCircle.X, RandCircle.Y, 0); // 2D 포인트를 3D 벡터로 변환
 		FRotator SpawnRotation = GetActorRotation();
 

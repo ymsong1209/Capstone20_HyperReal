@@ -41,6 +41,7 @@ protected:
 	bool	mbIsActivated;//공격받기 전엔 비활성화
 	bool	mbIsInvincible;
 	bool	mbIsShaking;
+	float	mDebugAccTime;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	UWidgetComponent* WidgetComponent;
