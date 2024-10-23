@@ -9,7 +9,8 @@
 #include "GameFramework/PlayerController.h"
 ABaseLevelGameModeBase::ABaseLevelGameModeBase()
 {
-	static ConstructorHelpers::FClassFinder<UBaseLevelWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_KHIContent/UI/UI_BaseLevel.UI_BaseLevel_C'"));
+	//static ConstructorHelpers::FClassFinder<UBaseLevelWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_KHIContent/UI/UI_BaseLevel.UI_BaseLevel_C'"));
+	static ConstructorHelpers::FClassFinder<UBaseLevelWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_SYMContent/UI/UI_BaseLevel_SYM.UI_BaseLevel_SYM_C'"));
 	if (WidgetClass.Succeeded())
 	{
 		mBaseLevelWidgetClass = WidgetClass.Class;
