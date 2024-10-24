@@ -33,6 +33,12 @@ void ULevelManager::Deinitialize()
 
 void ULevelManager::Init()
 {
+	curlevel = 1;
+	mainBuilding = nullptr;
+	mainBuildingCurHP = -1;
+	mainBuildingMaxHP = -1;
+	isLevelClear = false;
+	monsterDeathCount = 0;
 }
 
 void ULevelManager::SaveLevelData(USaveGame* _pSaveGame)

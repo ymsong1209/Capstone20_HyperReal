@@ -36,7 +36,7 @@ void UPlayerManager::Init(const FString& _fName)
 
 		if (Info) 
 		{
-			UE_LOG(LogTemp, Log, TEXT("PlayerManager Init"));
+			UE_LOG(LogTemp, Warning, TEXT("PlayerManager Init"));
 			m_fPlayerInfo.Name = Info->Name;
 			m_fPlayerInfo.Job = Info->Job;
 			m_fPlayerInfo.Attack = Info->Attack;

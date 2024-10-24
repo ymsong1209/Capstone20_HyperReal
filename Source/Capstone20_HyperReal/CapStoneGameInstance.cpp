@@ -198,6 +198,17 @@ void UCapStoneGameInstance::DeleteSaveData()
 	}
 }
 
+void UCapStoneGameInstance::RestartGame()
+{
+	DeleteSaveData();
+
+	if (m_PlayerManager)
+		m_PlayerManager->Init(TEXT("Soldier"));
+
+	if (m_LevelManager)
+		m_LevelManager->Init();
+}
+
 void UCapStoneGameInstance::Init()
 {
 	Super::Init();

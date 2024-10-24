@@ -9,6 +9,7 @@
 #include "Engine/Texture.h"
 #include "../CapStoneGameInstance.h"
 #include "../Character/PlayerCharacter.h"
+
 void UInGameUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -250,8 +251,12 @@ void UInGameUserWidget::Restart()
 	UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
 
 	if (pGameInst)
-		pGameInst->DeleteSaveData();
+	{
+		pGameInst->RestartGame();
+	}
 	UGameplayStatics::OpenLevel(GetWorld(), FName("KHIStartMap"));
+
+
 }
 
 

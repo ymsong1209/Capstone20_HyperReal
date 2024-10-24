@@ -58,6 +58,8 @@ public:
 
 	void DeleteSaveData();
 
+	void RestartGame();
+
 public:
 	virtual void Init() override;
 
