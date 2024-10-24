@@ -89,7 +89,6 @@ void UBodyStoreWidget::Upgrade()
 		return;
 	if (GameInst)
 	{
-		//나중에 수치별 예외처리
 		GameInst->UpgradeHealth();
 		Refresh();
 	}
