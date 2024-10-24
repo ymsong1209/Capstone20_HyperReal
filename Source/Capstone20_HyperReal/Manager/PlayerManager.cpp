@@ -132,7 +132,7 @@ void UPlayerManager::RestoreHealth()
 	// 일단 고정수치 100 감소
 	m_fPlayerInfo.TotalGold -= 100;
 
-	int32 iRand = FMath::RandRange(15, 30);
+	int32 iRand = FMath::RandRange(10, 25);
 	
 	m_fPlayerInfo.HP += (int)((float)iRand / 100 * m_fPlayerInfo.MaxHP);
 
