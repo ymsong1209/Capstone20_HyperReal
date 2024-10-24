@@ -19,8 +19,13 @@ private:
 
 	FPlayerInfo m_fPlayerInfo;
 
+	UPROPERTY()
+	TArray<int32> m_arrUpgradeCost;
+
 public:
 	FPlayerInfo& GetPlayerInfo() { return m_fPlayerInfo; }
+	int32 GetUpgradeCost(EPlayerUpgradeType _eType);
+	bool IsUpgradeAvail(EPlayerUpgradeType _eType);
 
 public:
 	UPlayerManager();

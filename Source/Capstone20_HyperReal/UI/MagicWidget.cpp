@@ -130,13 +130,16 @@ void UMagicWidget::Upgrade0()
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if (GameInst)
 	{
+		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+		if (GameInst->GetRuneManager()->GetRuneCost(arrRune[0]->GetRuneType()) > gold)
+			return;
+
 		GameInst->UpgradeRune(arrRune[0]->GetRuneType());
 		int32 magicLevel;
 		magicLevel = arrRune[0]->GetLevel();
 		FString str = "Level " + FString::FromInt(magicLevel);
 		Magic_LevelText[0]->SetText(FText::FromString(str));
 		Magic_Button[0]->SetIsEnabled(false);
-		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
 		FString gstr = FString::FromInt(gold);
 		Magic_MoneyText->SetText(FText::FromString(gstr));
 	}
@@ -147,13 +150,16 @@ void UMagicWidget::Upgrade1()
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if (GameInst)
 	{
+		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+		if (GameInst->GetRuneManager()->GetRuneCost(arrRune[1]->GetRuneType()) > gold)
+			return;
+
 		GameInst->UpgradeRune(arrRune[1]->GetRuneType());
 		int32 magicLevel;
 		magicLevel = arrRune[1]->GetLevel();
 		FString str = "Level " + FString::FromInt(magicLevel);
 		Magic_LevelText[1]->SetText(FText::FromString(str));
 		Magic_Button[1]->SetIsEnabled(false);
-		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
 		FString gstr = FString::FromInt(gold);
 		Magic_MoneyText->SetText(FText::FromString(gstr));
 	}
@@ -164,13 +170,16 @@ void UMagicWidget::Upgrade2()
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if (GameInst)
 	{
+		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
+		if (GameInst->GetRuneManager()->GetRuneCost(arrRune[2]->GetRuneType()) > gold)
+			return;
+
 		GameInst->UpgradeRune(arrRune[2]->GetRuneType());
 		int32 magicLevel;
 		magicLevel = arrRune[2]->GetLevel();
 		FString str = "Level " + FString::FromInt(magicLevel);
 		Magic_LevelText[2]->SetText(FText::FromString(str));
 		Magic_Button[2]->SetIsEnabled(false);
-		int gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
 		FString gstr = FString::FromInt(gold);
 		Magic_MoneyText->SetText(FText::FromString(gstr));
 	}

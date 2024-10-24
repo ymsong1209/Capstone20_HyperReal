@@ -121,7 +121,7 @@ void UUpgradeWidget::AttackIconButtonClick()
 	FString EnumString = EnumToString(eut)+TEXT("단계");
 	PhaseText->SetText(FText::FromString(EnumString));
 	//임시코드
-	int cost = 100;
+	int cost = GameInst->GetPlayerManager()->GetUpgradeCost(EPlayerUpgradeType::Attack);
 	FString str = FString::FromInt(cost);
 	UpgradeCostText->SetText(FText::FromString(str));
 	float rate = (GameInst->GetPlayerManager()->GetPlayerInfo().AttackProgress)/100.f;
@@ -169,7 +169,7 @@ void UUpgradeWidget::HPIconButtonClick()
 	FString EnumString = EnumToString(eut) + TEXT("단계");
 	PhaseText->SetText(FText::FromString(EnumString));
 	//프로그레스 바 및 강화비용 설정
-	int cost = 100;
+	int cost = GameInst->GetPlayerManager()->GetUpgradeCost(EPlayerUpgradeType::Health);;
 	FString str = FString::FromInt(cost);
 	UpgradeCostText->SetText(FText::FromString(str));
 	float rate = (GameInst->GetPlayerManager()->GetPlayerInfo().HealthProgress) / 100.f;
@@ -218,7 +218,7 @@ void UUpgradeWidget::SoulIconButtonClick()
 	FString EnumString = EnumToString(eut) + TEXT("단계");
 	PhaseText->SetText(FText::FromString(EnumString));
 
-	int cost = 100;
+	int cost = GameInst->GetPlayerManager()->GetUpgradeCost(EPlayerUpgradeType::Soul);
 	FString str = FString::FromInt(cost);
 	UpgradeCostText->SetText(FText::FromString(str));
 	float rate = (GameInst->GetPlayerManager()->GetPlayerInfo().SoulProgress) / 100.f;
@@ -310,7 +310,7 @@ void UUpgradeWidget::Upgrade()
 		//UE_LOG(LogTemp, Log, TEXT("goldbefore : %d"), GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold);
 		//UE_LOG(LogTemp, Log, TEXT("goldafter : %d"), GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold);
 		int curStateLevel=CheckStateLevel(state);
-		if (curStateLevel == 5|| GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold<100)
+		if (curStateLevel == 5|| GameInst->GetPlayerManager()->IsUpgradeAvail(state))
 			return;
 		GameInst->UpgradePlayerStat(state);
 		switch (state)

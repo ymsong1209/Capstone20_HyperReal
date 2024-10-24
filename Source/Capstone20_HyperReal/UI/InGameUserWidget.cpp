@@ -254,7 +254,7 @@ void UInGameUserWidget::Restart()
 	{
 		pGameInst->RestartGame();
 	}
-	UGameplayStatics::OpenLevel(GetWorld(), FName("KHIStartMap"));
+	UGameplayStatics::OpenLevel(GetWorld(), FName("StartMap"));
 
 
 }

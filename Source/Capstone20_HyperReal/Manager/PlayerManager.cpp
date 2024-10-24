@@ -8,8 +8,16 @@
 #include "../UI/BaseLevelWidget.h"
 #include "../UI/BasecampWidget.h"
 #include "../UI/UpgradeWidget.h"
-UPlayerManager::UPlayerManager()
+
+UPlayerManager::UPlayerManager()	:
+	m_PlayerInfoTable(nullptr)
 {
+	m_arrUpgradeCost.Reserve(STAT_MAX_LEVEL);
+	m_arrUpgradeCost.Add(100);
+	m_arrUpgradeCost.Add(150);
+	m_arrUpgradeCost.Add(200);
+	m_arrUpgradeCost.Add(250);
+	m_arrUpgradeCost.Add(300);
 }
 
 UPlayerManager::~UPlayerManager()
@@ -59,7 +67,7 @@ void UPlayerManager::Init(const FString& _fName)
 			m_fPlayerInfo.DSkillmaxcooltime = Info->DSkillMaxCooltime;
 			m_fPlayerInfo.FSkillmaxcooltime = Info->FSkillMaxCooltime;
 
-			m_fPlayerInfo.TotalGold = 1000;
+			m_fPlayerInfo.TotalGold = Info->TotalGold;
 			m_fPlayerInfo.LevelAccGold = 0;
 
 			m_fPlayerInfo.AttackLevel = Info->AttackLevel;
@@ -75,11 +83,8 @@ void UPlayerManager::Init(const FString& _fName)
 
 void UPlayerManager::UpgradePlayerStat(EPlayerUpgradeType _eType)
 {
-	// 일단 고정수치 100 감소
-	m_fPlayerInfo.TotalGold -= 100;
-
-	float fIncreaeMul = CalculateIncreaseRate();
-	
+	m_fPlayerInfo.TotalGold -= GetUpgradeCost(_eType);
+	float fIncreaeMul = CalculateIncreaseRate();	
 
 	switch (_eType)
 	{
@@ -95,14 +100,41 @@ void UPlayerManager::UpgradePlayerStat(EPlayerUpgradeType _eType)
 	}
 }
 
+int32 UPlayerManager::GetUpgradeCost(EPlayerUpgradeType _eType)
+{
+	int iLevel = 0;
+	switch (_eType)
+	{
+	case EPlayerUpgradeType::Attack:
+		iLevel = GetPlayerInfo().AttackLevel;
+		break;
+	case EPlayerUpgradeType::Health:
+		iLevel = GetPlayerInfo().HealthLevel;
+		break;
+	case EPlayerUpgradeType::Soul:
+		iLevel = GetPlayerInfo().SoulLevel;
+		break;
+	}
+
+	return m_arrUpgradeCost[iLevel - 1];
+}
+
+bool UPlayerManager::IsUpgradeAvail(EPlayerUpgradeType _eType)
+{
+	if (GetUpgradeCost(_eType) >= GetPlayerInfo().TotalGold)
+		return true;
+	else
+		return false;
+}
+
 void UPlayerManager::RestoreHealth()
 {
 	// 일단 고정수치 100 감소
 	m_fPlayerInfo.TotalGold -= 100;
 
-	int32 iRand = FMath::RandRange(20, 80);
+	int32 iRand = FMath::RandRange(15, 30);
 	
-	m_fPlayerInfo.HP += iRand;
+	m_fPlayerInfo.HP += (int)((float)iRand / 100 * m_fPlayerInfo.MaxHP);
 
 	if (m_fPlayerInfo.MaxHP <= m_fPlayerInfo.HP)
 		m_fPlayerInfo.HP = m_fPlayerInfo.MaxHP;
