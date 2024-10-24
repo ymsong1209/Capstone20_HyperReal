@@ -75,6 +75,7 @@ void ABuilding::BeginPlay()
 			mInfo.MonstersPerSpawn = Info->MonstersPerSpawn;
 			mInfo.MinSpawnRadius = Info->MinSpawnRadius;
 			mInfo.MaxSpawnRadius = Info->MaxSpawnRadius;
+			mInfo.MaxSpawnMonsterCount = Info->MaxSpawnMonsterCount;
 			mInfo.Level = Info->Level;
 			mInfo.Exp = Info->Exp;
 			mInfo.Gold = Info->Gold;
@@ -132,6 +133,10 @@ void ABuilding::SpawnMonster()
 {
 	for(int i = 0;i<mInfo.MonstersPerSpawn;++i)
 	{
+		if (mMonsterVector.Num() >= mInfo.MaxSpawnMonsterCount) {
+			return; //몬스터 일정 수 이상 제한
+		}
+		
 		float Radius = FMath::RandRange(mInfo.MinSpawnRadius, mInfo.MaxSpawnRadius);
 		FVector2D RandCircle = FMath::RandPointInCircle(Radius);
 		FVector SpawnLocation = GetActorLocation() + FVector(RandCircle.X, RandCircle.Y, 0); // 2D 포인트를 3D 벡터로 변환
