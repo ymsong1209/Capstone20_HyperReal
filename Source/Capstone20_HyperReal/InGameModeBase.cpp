@@ -28,10 +28,12 @@ AInGameModeBase::AInGameModeBase()
 		PlayerControllerClass = PlayerControllerBPClass.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<UInGameUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_KHIContent/UI/UI_InGame.UI_InGame_C'"));
+	//static ConstructorHelpers::FClassFinder<UInGameUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_KHIContent/UI/UI_InGame.UI_InGame_C'"));
+	static ConstructorHelpers::FClassFinder<UInGameUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_SJWContent/UI/UI_InGame.UI_InGame_C'"));
 	if (WidgetClass.Succeeded())
 	{
 		mInGameWidgetClass = WidgetClass.Class;
+		UE_LOG(LogTemp, Log, TEXT("HUD Load Succeed"));
 	}
 }
 

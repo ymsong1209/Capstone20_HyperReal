@@ -12,6 +12,7 @@
 #include "Components/PrimitiveComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Components/DecalComponent.h"
+#include "NavigationSystem.h"
 
 #include "SoldierAnimInstance.h"
 #include "SkeletonSoldierController.h"
@@ -258,18 +259,24 @@ void ASkeletonSoldier::Tick(float DeltaTime)
 					vMousePos = Hit.Location;
 			}
 
+			FVector vPosTemp;
 			// 최대 거리 밖으로 이동 안하도록 설정
 			if (FVector::DistXY(vMousePos, GetActorLocation()) > m_fLeapMaxDistance)
 			{
 				FVector vDir = (vMousePos - GetActorLocation()).GetSafeNormal2D();
-				m_vLeapAttackPos = (GetActorLocation() + vDir * m_fLeapMaxDistance);
-				m_vLeapAttackPos.Z = vMousePos.Z;
+				vPosTemp = (GetActorLocation() + vDir * m_fLeapMaxDistance);
+				vPosTemp.Z = vMousePos.Z;
 			}
 			else
-				m_vLeapAttackPos = vMousePos;
+				vPosTemp = vMousePos;
 
+			vPosTemp.Z = GetActorLocation().Z;
+
+			m_vLeapAttackPos = vPosTemp;
+			FVector vDecalPos = m_vLeapAttackPos;
+			vDecalPos.Z = vMousePos.Z;
 			if (IsValid(m_pLeapAttackDecal))
-				m_pLeapAttackDecal->SetWorldLocation(m_vLeapAttackPos);
+				m_pLeapAttackDecal->SetWorldLocation(vDecalPos);
 		}
 	}
 		break;
@@ -338,6 +345,7 @@ void ASkeletonSoldier::SkillEnd()
 	switch (m_eUsingSkill)
 	{
 	case EPlayerSkill::SkillA:
+		WhirlwindEnd();
 		break;
 	case EPlayerSkill::SkillS:
 		m_eUsingSkill = EPlayerSkill::None;
@@ -594,6 +602,8 @@ void ASkeletonSoldier::LeapAttack()
 			m_bOnLeapAttackCharge = true;
 			m_pLeapAttackRangeDecal->SetHiddenInGame(false);
 
+			m_vLeapAttackPos = GetActorLocation();
+
 			// 낙하할 위치 알려주는 데칼 생성
 			if(m_pLeapAttackDecalInterface)
 				m_pLeapAttackDecal = UGameplayStatics::SpawnDecalAtLocation(this, m_pLeapAttackDecalInterface, FVector(64.f, 300.f, 300.f), 
@@ -612,6 +622,7 @@ void ASkeletonSoldier::AttackLeapAttack()
 {
 	//SetActorEnableCollision(true);
 	m_faccSkillSCool = 0.f;
+	ChangeWalkSpeed(1.f);
 
 	// Camera shake
 	GetController<AClickMoveController>()->ClientStartCameraShake(USmashCameraShake::StaticClass());
@@ -667,6 +678,8 @@ void ASkeletonSoldier::UndeadFury()
 		m_eUsingSkill = EPlayerSkill::SkillF;
 		m_faccSkillFCool = 0.f;
 
+		SetInvincible(true);
+
 		if (!m_pAnim->Montage_IsPlaying(m_UndeadFuryMontage))
 		{
 			m_pAnim->Montage_SetPosition(m_UndeadFuryMontage, 0.f);
@@ -699,6 +712,7 @@ void ASkeletonSoldier::UndeadFuryBuffEnd()
 	SetAnimPlaySpeed(1.f);
 	ChangeWalkSpeed(1.f);
 
+	SetInvincible(false);
 	if(GetMesh()->GetOverlayMaterial())
 		GetMesh()->SetOverlayMaterial(nullptr);
 
@@ -736,11 +750,7 @@ void ASkeletonSoldier::LeapAttackMove()
 		m_pLeapAttackDecal = nullptr;
 	}
 
-	FVector vDir = (m_vLeapAttackPos - GetActorLocation()).GetSafeNormal();
-	SetActorRotation(vDir.Rotation());
-	SetActorLocation(m_vLeapAttackPos);
-	m_vLeapAttackPos = FVector::ZeroVector;
-	m_bOnLeapAttackCharge = false;
+	UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), m_vLeapAttackPos);
 
 	// Camera shake
 	GetController<AClickMoveController>()->ClientStartCameraShake(USmashCameraShake::StaticClass());

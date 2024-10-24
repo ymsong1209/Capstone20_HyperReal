@@ -50,10 +50,10 @@ void ABossBuilding::HandleDeath()
 		m_pHUDWidget->YouWin();
 	KillAllMonsters();
 	Destroy();
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	//이동은 안되는데 공격이나 스킬 사용은 됨..
 	if (Player)
-		Player->GetController()->SetIgnoreMoveInput(true);
+		Player->LimitCharacterControll(true);
 	
 	
 }

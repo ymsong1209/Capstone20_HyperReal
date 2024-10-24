@@ -530,14 +530,19 @@ void APlayerCharacter::SetDead(bool _bState)
 						m_pHUDWidget->YouDied();
 				}), 2.f, false);
 
-		GetController()->SetIgnoreMoveInput(true);
+		//GetController()->SetIgnoreMoveInput(true);
+
+		LimitCharacterControll(true);
+		SkillEnd();
 	}
 	else
 	{
-		GetController()->ResetIgnoreMoveInput();
+		//GetController()->ResetIgnoreMoveInput();
 
 		// 부활했으면 타이머가 설정 되어 있었다면 없애야함
 		GetWorld()->GetTimerManager().ClearTimer(m_hLoseUIHandle);
+
+		LimitCharacterControll(false);
 	}
 }
 
@@ -610,6 +615,29 @@ bool APlayerCharacter::UseSP(int32 _iValue)
 		m_pHUDWidget->SetSP(GetPlayerInfo().SP, GetSPMax());
 
 	return true;
+}
+
+void APlayerCharacter::LimitCharacterControll(bool _bSet)
+{
+	APlayerController* pController = Cast<APlayerController>(GetController());
+	if (_bSet)
+	{
+		FInputModeUIOnly mode;
+
+		if(pController)
+			pController->SetInputMode(mode);
+
+		GetController()->SetIgnoreMoveInput(_bSet);
+	}
+	else
+	{
+		FInputModeGameAndUI mode;
+
+		if (pController)
+			pController->SetInputMode(mode);
+
+		GetController()->SetIgnoreMoveInput(_bSet);
+	}
 }
 
 void APlayerCharacter::InitPlayerData()
