@@ -13,6 +13,9 @@ UCLASS()
 class CAPSTONE20_HYPERREAL_API ABossAttackProjectile : public AProjectileBase
 {
 	GENERATED_BODY()
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
+	USoundCue* mHitSound;
 public:
 	ABossAttackProjectile();
 protected:

@@ -44,6 +44,15 @@ ABossAttackProjectile::ABossAttackProjectile()
 
 	m_fMaxDistance = 2000.f;
 
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> HitSoundAsset(TEXT("/Script/Engine.SoundCue'/Game/A_SJWContent/Sound/SC_Explosion.SC_Explosion'"));
+	if (HitSoundAsset.Succeeded())
+	{
+		mHitSound = HitSoundAsset.Object;
+	}
+	else
+		UE_LOG(LogTemp, Error, TEXT("BossAttack Hit Sound Asset Load Failed"));
+	
 }
 
 void ABossAttackProjectile::BeginPlay()
@@ -70,6 +79,18 @@ void ABossAttackProjectile::ProjectileStop(const FHitResult& ImpactResult)
 		effect->SetParticle(TEXT("/Script/Engine.ParticleSystem'/Game/Assets/ToonTankEffects/P_DeathEffect.P_DeathEffect'"));
 		//effect->SetSound(TEXT("/Script/Engine.SoundWave'/Game/Assets/ToonTankEffects/Sounds/Explosion_Cue.Explosion_Cue'"))
 	}
+	if(IsValid(mHitSound))
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), mHitSound, GetActorLocation());
+	}
+
+	// 보스 터지는 이펙트 호출
+	FActorSpawnParameters param;
+	param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	FRotator rot = FRotator::ZeroRotator;
+	AEffectBase* Effect = GetWorld()->SpawnActor<AEffectBase>(GetActorLocation(), rot, param);
+	Effect->SetNiagara(TEXT("/Script/Niagara.NiagaraSystem'/Game/A_SYMContent/Building/NS_DrirectionSpark_Hit.NS_DrirectionSpark_Hit'"));
+	
 	Destroy();
 }
 
