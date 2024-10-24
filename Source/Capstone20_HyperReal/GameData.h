@@ -261,6 +261,7 @@ public:
 		  MonstersPerSpawn(0.0f),
 		  MinSpawnRadius(0.0f),
 		  MaxSpawnRadius(0.0f),
+		  MaxSpawnMonsterCount(0),
 		  Level(0),
 		  Exp(0),
 		  Gold(0)
@@ -297,6 +298,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float		MaxSpawnRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		MaxSpawnMonsterCount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<float> PhaseTriggerHP;
@@ -595,6 +599,7 @@ public:
 		  MonstersPerSpawn(0.0f),
 		  MinSpawnRadius(0.0f),
 		  MaxSpawnRadius(0.0f),
+		  MaxSpawnMonsterCount(0),
 		  Level(0),
 		  Exp(0),
 		  Gold(0)
@@ -640,6 +645,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float		MaxSpawnRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32		MaxSpawnMonsterCount;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32		Level;
