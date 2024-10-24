@@ -41,7 +41,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	float fPlayRate;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
+	USoundCue* mHitSound;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Animation")

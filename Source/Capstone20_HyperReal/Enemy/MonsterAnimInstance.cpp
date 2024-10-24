@@ -11,6 +11,13 @@ UMonsterAnimInstance::UMonsterAnimInstance()
 	mGround(true),
 	fPlayRate(1.f)
 {
+	static ConstructorHelpers::FObjectFinder<USoundCue> HitSoundAsset(TEXT("/Script/Engine.SoundCue'/Game/A_SJWContent/Sound/SC_Hit.SC_Hit'"));
+	if (HitSoundAsset.Succeeded())
+	{
+		mHitSound = HitSoundAsset.Object;
+	}
+	else
+		UE_LOG(LogTemp, Error, TEXT("Monster Hit Sound Asset Load Failed"));
 }
 
 
@@ -73,6 +80,10 @@ void UMonsterAnimInstance::AnimNotify_HitStart()
 {
 	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
 	Monster->GetAIController()->GetBlackboardComponent()->SetValueAsObject(("Target"), nullptr);
+	if(IsValid(mHitSound))
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), mHitSound, Monster->GetActorLocation());
+	}
 	//UE_LOG(LogTemp, Warning, TEXT("HitStart"))
 }
 
