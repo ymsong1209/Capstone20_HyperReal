@@ -20,7 +20,7 @@ AWeapon::AWeapon()	:
 	m_WeaponMesh->SetupAttachment(m_Capsule);
 	m_Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	static ConstructorHelpers::FObjectFinder<UMaterialInstance> MIBlinkOverlay(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/A_SJWContent/Effect/Material/MTI_BlinkFresnel.MTI_BlinkFresnel'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> MIBlinkOverlay(TEXT("/Script/Engine.Material'/Game/A_SJWContent/Effect/Material/MT_BlinkFresnel.MT_BlinkFresnel'"));
 	if (MIBlinkOverlay.Succeeded())
 	{
 		m_pBlinkOverlayInterface = MIBlinkOverlay.Object;

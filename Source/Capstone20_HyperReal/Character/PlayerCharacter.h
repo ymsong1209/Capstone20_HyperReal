@@ -223,6 +223,7 @@ public:
 	void Dash();
 
 	bool UseSP(int32 _iValue);
+	void LimitCharacterControll(bool _bSet);
 
 private:
 	void InitPlayerData();
