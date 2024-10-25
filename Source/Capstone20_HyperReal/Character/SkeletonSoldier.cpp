@@ -674,7 +674,6 @@ void ASkeletonSoldier::UndeadFury()
 	if (!IsDead() && !m_bOnAttack && (m_eUsingSkill == EPlayerSkill::None) && 
 		(m_faccSkillFCool >= GetPlayerInfo().FSkillmaxcooltime * GetCoolDown()) && UseSP(m_iSP_SkillF))
 	{
-		GetPlayerInfo().SP -= m_iSP_SkillF;
 		m_eUsingSkill = EPlayerSkill::SkillF;
 		m_faccSkillFCool = 0.f;
 
