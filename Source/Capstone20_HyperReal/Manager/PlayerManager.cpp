@@ -121,7 +121,7 @@ int32 UPlayerManager::GetUpgradeCost(EPlayerUpgradeType _eType)
 
 bool UPlayerManager::IsUpgradeAvail(EPlayerUpgradeType _eType)
 {
-	if (GetUpgradeCost(_eType) >= GetPlayerInfo().TotalGold)
+	if (GetUpgradeCost(_eType) <= GetPlayerInfo().TotalGold)
 		return true;
 	else
 		return false;

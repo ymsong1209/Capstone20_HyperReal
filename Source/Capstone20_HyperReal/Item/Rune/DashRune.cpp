@@ -13,7 +13,6 @@ UDashRune::UDashRune()	:
 	m_strDesc = TEXT("대쉬 기술을 습득");
 	m_eRuneType = ERuneType::Dash;
 
-	m_iLevel = 1;
 	m_fEtc = 1.f;
 
 	m_pLevelChangeData = &m_fEtc;

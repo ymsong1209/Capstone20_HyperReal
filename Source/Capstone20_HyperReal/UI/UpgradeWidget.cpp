@@ -310,7 +310,7 @@ void UUpgradeWidget::Upgrade()
 		//UE_LOG(LogTemp, Log, TEXT("goldbefore : %d"), GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold);
 		//UE_LOG(LogTemp, Log, TEXT("goldafter : %d"), GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold);
 		int curStateLevel=CheckStateLevel(state);
-		if (curStateLevel == 5|| GameInst->GetPlayerManager()->IsUpgradeAvail(state))
+		if (curStateLevel == 5|| !GameInst->GetPlayerManager()->IsUpgradeAvail(state))
 			return;
 		GameInst->UpgradePlayerStat(state);
 		switch (state)

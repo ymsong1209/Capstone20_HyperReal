@@ -79,6 +79,13 @@ void URuneManager::Init()
 	}
 	else 
 		UE_LOG(LogTemp, Error, TEXT("No Rune Data Table"));
+
+	// 초기 세팅을 전부 1로 초기화
+	for (int i = 0; i < (int)ERuneType::End; i++)
+	{
+		if (m_arrRune[i])
+			m_arrRune[i]->SetLevel(0);
+	}
 }
 
 void URuneManager::GiveDamageTrigger(AActor* _pActor, float _fValue)
