@@ -54,11 +54,9 @@ AMonster::AMonster()
 	fMaxAirborneTime = 1.0f;
 	fInitialZ = 0.0f;
 }
-// Called when the game starts or when spawned
-void AMonster::BeginPlay()
-{
-	Super::BeginPlay();
 
+void AMonster::SetMonsterInfo()
+{
 	mAIController = Cast<AMonsterAIController>(GetController());
 
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
@@ -88,7 +86,13 @@ void AMonster::BeginPlay()
 			UE_LOG(LogTemp, Error, TEXT("No Info"));
 		}
 	}
-	
+}
+
+// Called when the game starts or when spawned
+void AMonster::BeginPlay()
+{
+	Super::BeginPlay();
+	SetMonsterInfo();
 }
 
 // Called every frame

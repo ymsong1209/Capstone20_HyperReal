@@ -63,7 +63,8 @@ public:
 	void SetHPBar(float fRate);
 
 	AMonsterAIController* GetAIController() const {return mAIController;}
-	
+
+	void SetMonsterInfo();
 
 protected:
 	// Called when the game starts or when spawned

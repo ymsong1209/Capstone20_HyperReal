@@ -136,9 +136,17 @@ void ABuilding::SpawnMonster()
 		if (mMonsterVector.Num() >= mInfo.MaxSpawnMonsterCount) {
 			return; //몬스터 일정 수 이상 제한
 		}
+		// 배열에서 랜덤하게 몬스터 클래스 선택
+		if(mMonsterClasses.Num()< 1) return;
+		TSubclassOf<AMonster> ChosenMonsterClass = mMonsterClasses[FMath::RandRange(0, mMonsterClasses.Num() - 1)];
 		
+		// minspawnradius와 maxspawnradius 사이의 반지름 값을 가지는 원 내에서 랜덤한 위치 생성
 		float Radius = FMath::RandRange(mInfo.MinSpawnRadius, mInfo.MaxSpawnRadius);
-		FVector2D RandCircle = FMath::RandPointInCircle(Radius);
+		float Angle = FMath::RandRange(0.0f, 2 * PI);  // 0부터 360도(라디안 단위) 사이의 랜덤 각도 생성
+
+		// minspawnradius 이상에서 maxspawnradius 이하의 거리만큼 떨어진 점 계산
+		FVector2D RandCircle = FVector2D(FMath::Cos(Angle), FMath::Sin(Angle)) * Radius;
+		
 		FVector SpawnLocation = GetActorLocation() + FVector(RandCircle.X, RandCircle.Y, 0); // 2D 포인트를 3D 벡터로 변환
 		FRotator SpawnRotation = GetActorRotation();
 
@@ -151,26 +159,41 @@ void ABuilding::SpawnMonster()
 		Params.AddIgnoredActor(this);  // 건물은 무시
 		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
 
-		if (bHit)
-		{
-			// 레이캐스트에 성공하면 지면에 스폰
-			SpawnLocation = HitResult.Location;
-		}
+		if(!bHit) continue;
+		
+		// 레이캐스트에 성공하면 지면에 스폰
+		SpawnLocation = HitResult.Location;
 
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-		// 배열에서 랜덤하게 몬스터 클래스 선택
-		if(mMonsterClasses.Num()< 1) return;
-		TSubclassOf<AMonster> ChosenMonsterClass = mMonsterClasses[FMath::RandRange(0, mMonsterClasses.Num() - 1)];
-		AMonster* SpawnedMonster = GetWorld()->SpawnActor<AMonster>(ChosenMonsterClass, SpawnLocation, SpawnRotation, SpawnParams);
 		
-		if (IsValid(SpawnedMonster))
-		{
-			//생성된 몬스터에게 building알려줌
-			SpawnedMonster->SetOwnerBuilding(this);
-			mMonsterVector.Add(SpawnedMonster);
-		}
+		// AMonster* SpawnedMonster = GetWorld()->SpawnActor<AMonster>(ChosenMonsterClass, SpawnLocation, SpawnRotation, SpawnParams);
+		//
+		// if (IsValid(SpawnedMonster))
+		// {
+		// 	//생성된 몬스터에게 building알려줌
+		// 	SpawnedMonster->SetOwnerBuilding(this);
+		// 	mMonsterVector.Add(SpawnedMonster);
+		// }
+		// `SpawnActorDeferred`로 몬스터 생성
+        AMonster* SpawnedMonster = GetWorld()->SpawnActorDeferred<AMonster>(ChosenMonsterClass, FTransform(SpawnRotation, SpawnLocation));
+        if (IsValid(SpawnedMonster))
+        {
+        	// 캡슐 컴포넌트의 절반 높이만큼 Z 값을 올려서 위치 조정
+        	float CapsuleHalfHeight = SpawnedMonster->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+        	SpawnLocation.Z += CapsuleHalfHeight;
+        	
+	        // 몬스터 초기화
+        	SpawnedMonster->SetMonsterInfo();
+        	
+            // 초기화 완료
+            UGameplayStatics::FinishSpawningActor(SpawnedMonster, FTransform(SpawnRotation, SpawnLocation));
+
+            // 생성된 몬스터를 배열에 추가
+            SpawnedMonster->SetOwnerBuilding(this);
+            mMonsterVector.Add(SpawnedMonster);
+        }
 	}
 }
 
