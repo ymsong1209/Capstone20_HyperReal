@@ -108,10 +108,12 @@ void UInGameUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 void UInGameUserWidget::SetHP(int32 HP, int32 HPMax)
 {
 	mCharacterHUD->SetHPPercent(HP / (float)HPMax);
+	mCharacterHUD->SetHPText(HP, HPMax);
 }
 void UInGameUserWidget::SetSP(int32 SP, int32 SPMax)
 {
 	mCharacterHUD->SetSPPercent(SP / (float)SPMax);
+	mCharacterHUD->SetSPText(SP, SPMax);
 }
 void UInGameUserWidget::CalSkillCoolTime(int idx, float fRate)
 {

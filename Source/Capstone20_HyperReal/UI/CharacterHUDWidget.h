@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 #include "Blueprint/UserWidget.h"
 #include "CharacterHUDWidget.generated.h"
 
@@ -17,6 +18,9 @@ class CAPSTONE20_HYPERREAL_API UCharacterHUDWidget : public UUserWidget
 protected:
 	UProgressBar* mHPBar;
 	UProgressBar* mSPBar;
+	UTextBlock* mHPText;
+	UTextBlock* mMPText;
+	
 protected:
 	virtual void NativeOnInitialized();
 	virtual void NativePreConstruct();
@@ -35,6 +39,10 @@ public:
 
 		mHPBar->SetPercent(Percent);
 	}
+	void SetHPText(int HP, int HPMax)
+	{
+		mHPText->SetText(FText::FromString(FString::Printf(TEXT("%d / %d"), HP, HPMax)));
+	}
 	void SetSPPercent(float Percent)
 	{
 		if (Percent < 0.f)
@@ -44,5 +52,9 @@ public:
 			Percent = 1.f;
 
 		mSPBar->SetPercent(Percent);
+	}
+	void SetSPText(int SP, int SPMax)
+	{
+		mMPText->SetText(FText::FromString(FString::Printf(TEXT("%d / %d"), SP, SPMax)));
 	}
 };
