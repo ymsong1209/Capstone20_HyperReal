@@ -84,7 +84,7 @@ void UBasecampWidget::MagicButtonClick()
 			if (widget && widget->IsVisible())
 			{
 				widget->PushWidget(MagicWidget);
-				MagicWidget->Refresh();
+				//MagicWidget->Refresh();
 			}
 		}
 	}
@@ -137,4 +137,12 @@ void UBasecampWidget::CloseUI()
 {
 	SetVisibility(ESlateVisibility::Collapsed);
 	//pause풀고 다음씬 이동
+}
+
+void UBasecampWidget::RefreshMagicWidget()
+{
+	if (MagicWidget)
+	{
+		MagicWidget->Refresh();
+	}
 }

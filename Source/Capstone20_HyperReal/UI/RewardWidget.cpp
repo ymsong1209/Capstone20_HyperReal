@@ -2,6 +2,8 @@
 
 
 #include "RewardWidget.h"
+#include "../CapStoneGameInstance.h"
+#include "../Character/PlayerCharacter.h"
 
 void URewardWidget::NativeOnInitialized()
 {
@@ -13,6 +15,9 @@ void URewardWidget::NativePreConstruct()
 	Super::NativePreConstruct();
 	RewardMoney = Cast<UTextBlock>(GetWidgetFromName(TEXT("RewardMoneyText")));
 	KillEnemyCount = Cast<UTextBlock>(GetWidgetFromName(TEXT("KillEnemyCountText")));
+	m_RecallButton = Cast<UButton>(GetWidgetFromName(TEXT("RecallButton")));
+
+	m_RecallButton->OnClicked.AddDynamic(this, &URewardWidget::ReturnToBaseCampLevel);
 }
 
 void URewardWidget::NativeConstruct()
@@ -41,5 +46,16 @@ void URewardWidget::setRewardMoney(int gold)
 void URewardWidget::setKillEnemyCount(int count)
 {
 	KillEnemyCount->SetText(FText::FromString(FString::FromInt(count)));
+}
+
+void URewardWidget::ReturnToBaseCampLevel()
+{
+	UCapStoneGameInstance* gameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
+	if (gameInst)
+		gameInst->SaveGameData();
+
+	APlayerCharacter* pChar = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (pChar)
+		pChar->EscapeFunction();
 }
 

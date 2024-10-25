@@ -18,7 +18,8 @@
 #include "PlayerManager.h"
 #include "../Save/PlayerUpgradeSaveGame.h"
 
-URuneManager::URuneManager()
+URuneManager::URuneManager()	:
+	m_pRuneDataTable(nullptr)
 {
 	static ConstructorHelpers::FObjectFinder<UDataTable> RuneDataTableAsset(TEXT("/Script/Engine.DataTable'/Game/A_SJWContent/Rune/RuneDT.RuneDT'"));
 	if (RuneDataTableAsset.Succeeded()) {
@@ -229,7 +230,9 @@ void URuneManager::UpgradeRune(ERuneType _eType)
 	if (gameInst)
 	{
 		gameInst->GetPlayerManager()->GetPlayerInfo().TotalGold -= GetRuneCost(_eType);
-		UE_LOG(LogTemp, Log, TEXT("Upgrade Rune, Cost : %d"), GetRuneCost(_eType));
+
+		FString fRuneName = m_arrRune[(int)_eType]->GetName();
+		UE_LOG(LogTemp, Log, TEXT("Upgrade %s Rune, Cost : %d"), *fRuneName, GetRuneCost(_eType));
 	}
 
 	pRune->Updgrade();

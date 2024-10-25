@@ -73,8 +73,8 @@ void UBodyStoreWidget::Refresh()
 	FString gstr = FString::FromInt(gold);
 	HP_MyMoneyText->SetText(FText::FromString(gstr));
 
+	int maxHP = GameInst->GetPlayerManager()->GetHPMax();
 	int curHP = GameInst->GetPlayerManager()->GetPlayerInfo().HP;
-	int maxHP = GameInst->GetPlayerManager()->GetPlayerInfo().MaxHP;
 	FString hstr = FString::FromInt(curHP);
 	UpgradeCostCurText->SetText(FText::FromString(hstr));
 	hstr = FString::FromInt(maxHP);
@@ -85,7 +85,8 @@ void UBodyStoreWidget::Refresh()
 void UBodyStoreWidget::Upgrade()
 {
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
-	if (GameInst->GetPlayerManager()->GetPlayerInfo().HP == GameInst->GetPlayerManager()->GetPlayerInfo().MaxHP)
+	if (GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold < 100 ||
+		GameInst->GetPlayerManager()->GetPlayerInfo().HP == GameInst->GetPlayerManager()->GetHPMax())
 		return;
 	if (GameInst)
 	{

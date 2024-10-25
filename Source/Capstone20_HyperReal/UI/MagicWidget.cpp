@@ -94,7 +94,7 @@ void UMagicWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	//최초 이니셜라이즈 1번 진행해주기 
-	Refresh();
+	//Refresh();
 }
 
 void UMagicWidget::NativeDestruct()
@@ -135,6 +135,7 @@ void UMagicWidget::Upgrade0()
 			return;
 
 		GameInst->UpgradeRune(arrRune[0]->GetRuneType());
+		gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
 		int32 magicLevel;
 		magicLevel = arrRune[0]->GetLevel();
 		FString str = "Level " + FString::FromInt(magicLevel);
@@ -155,6 +156,7 @@ void UMagicWidget::Upgrade1()
 			return;
 
 		GameInst->UpgradeRune(arrRune[1]->GetRuneType());
+		gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
 		int32 magicLevel;
 		magicLevel = arrRune[1]->GetLevel();
 		FString str = "Level " + FString::FromInt(magicLevel);
@@ -175,6 +177,7 @@ void UMagicWidget::Upgrade2()
 			return;
 
 		GameInst->UpgradeRune(arrRune[2]->GetRuneType());
+		gold = GameInst->GetPlayerManager()->GetPlayerInfo().TotalGold;
 		int32 magicLevel;
 		magicLevel = arrRune[2]->GetLevel();
 		FString str = "Level " + FString::FromInt(magicLevel);
@@ -189,9 +192,11 @@ void UMagicWidget::Upgrade2()
 
 void UMagicWidget::Refresh()
 {
+	UE_LOG(LogTemp, Log, TEXT("Rune Upgrade Widget refresh"));
+
 	TArray<int32> Numbers;
 	TArray<int32> Result;
-	
+	arrRune.Empty();
 	// 1부터 10까지의 숫자를 배열에 추가
 	for (int32 i = 0; i <= 9; ++i)
 	{

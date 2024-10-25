@@ -51,5 +51,8 @@ public:
 	UFUNCTION()
 	void NextStageButtonClick();
 	virtual void CloseUI() override;
+
+public:
+	void RefreshMagicWidget();
 	
 };

@@ -51,7 +51,10 @@ void ABaseLevelGameModeBase::BeginPlay()
 		mBaseLevelWidget = CreateWidget<UBaseLevelWidget>(GetWorld(), mBaseLevelWidgetClass);
 
 		if (mBaseLevelWidget)
+		{
 			mBaseLevelWidget->AddToViewport();
+			mBaseLevelWidget->RefreshBaseCampMagicWidget();
+		}
 	}
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	if (PlayerController)
