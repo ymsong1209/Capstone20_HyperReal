@@ -145,6 +145,7 @@ void APlayerCharacter::BeginPlay()
 
 	if (m_pHUDWidget)
 	{
+		m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetHPMax());
 		m_pHUDWidget->SetSP(GetPlayerInfo().SP, GetSPMax());
 		m_pHUDWidget->SetPrevGold(GetPlayerInfo().TotalGold);
 	}

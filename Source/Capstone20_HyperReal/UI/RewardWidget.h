@@ -6,6 +6,7 @@
 #include "MyWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
+#include "Components/Button.h"
 #include "RewardWidget.generated.h"
 
 /**
@@ -18,6 +19,13 @@ class CAPSTONE20_HYPERREAL_API URewardWidget : public UUserWidget
 private:
 	UTextBlock* RewardMoney;
 	UTextBlock* KillEnemyCount;
+
+	FTimerHandle m_hLevelMoveHandle;
+	
+public:
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UButton* m_RecallButton;
+
 protected:
 	virtual void NativeOnInitialized();
 	virtual void NativePreConstruct();
@@ -25,7 +33,11 @@ protected:
 	virtual void NativeDestruct();
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
+
 public:
 	void setRewardMoney(int gold);
 	void setKillEnemyCount(int count);
+
+	UFUNCTION()
+	void ReturnToBaseCampLevel();
 };

@@ -101,3 +101,11 @@ void UBaseLevelWidget::QuitGame()
 	}
 	UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
 }
+
+void UBaseLevelWidget::RefreshBaseCampMagicWidget()
+{
+	if (mBasecampWidget)
+	{
+		mBasecampWidget->RefreshMagicWidget();
+	}
+}

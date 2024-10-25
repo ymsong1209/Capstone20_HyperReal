@@ -8,6 +8,7 @@
 #include "../UI/BaseLevelWidget.h"
 #include "../UI/BasecampWidget.h"
 #include "../UI/UpgradeWidget.h"
+#include "RuneManager.h"
 
 UPlayerManager::UPlayerManager()	:
 	m_PlayerInfoTable(nullptr)
@@ -127,17 +128,41 @@ bool UPlayerManager::IsUpgradeAvail(EPlayerUpgradeType _eType)
 		return false;
 }
 
+int32 UPlayerManager::GetHPMax()
+{
+	UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+
+	int32 iMaxHP = m_fPlayerInfo.MaxHP;
+
+	if (!pGameInst)
+		return iMaxHP;
+
+	URuneManager* pRuneManager = pGameInst->GetRuneManager();
+	if (!pRuneManager)
+		return iMaxHP;
+
+	float fValue = pRuneManager->GetHealthAdd();
+	iMaxHP *= fValue;
+
+	if (iMaxHP <= m_fPlayerInfo.HP)
+		m_fPlayerInfo.HP = iMaxHP;
+
+	UE_LOG(LogTemp, Log, TEXT("Get HP Max: %d"), iMaxHP);
+
+	return iMaxHP;
+}
+
 void UPlayerManager::RestoreHealth()
 {
-	// 일단 고정수치 100 감소
+	// 고정수치 100 감소
 	m_fPlayerInfo.TotalGold -= 100;
 
 	int32 iRand = FMath::RandRange(10, 25);
 	
-	m_fPlayerInfo.HP += (int)((float)iRand / 100 * m_fPlayerInfo.MaxHP);
+	m_fPlayerInfo.HP += (int)((float)iRand / 100 * GetHPMax());
 
-	if (m_fPlayerInfo.MaxHP <= m_fPlayerInfo.HP)
-		m_fPlayerInfo.HP = m_fPlayerInfo.MaxHP;
+	if (GetHPMax() <= m_fPlayerInfo.HP)
+		m_fPlayerInfo.HP = GetHPMax();
 }
 
 void UPlayerManager::SavePlayerInfo(USaveGame* _pSaveGame)

@@ -49,4 +49,7 @@ public:
 	}
 	UFUNCTION()
 	void QuitGame();
+
+public:
+	void RefreshBaseCampMagicWidget();
 };

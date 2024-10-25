@@ -27,6 +27,9 @@ public:
 	int32 GetUpgradeCost(EPlayerUpgradeType _eType);
 	bool IsUpgradeAvail(EPlayerUpgradeType _eType);
 
+	// 룬이 최대 체력을 변경하는 경우가 있기 때문에 필요해짐
+	int32 GetHPMax();
+
 public:
 	UPlayerManager();
 	~UPlayerManager();
