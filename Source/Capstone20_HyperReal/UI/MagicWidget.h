@@ -56,6 +56,7 @@ private:
 	//UTextBlock* MagicDesc2;
 	//UPROPERTY(EditAnyWhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	//UTextBlock* MagicDesc3;
+
 protected:
 	virtual void NativeOnInitialized();
 	virtual void NativePreConstruct();
@@ -77,7 +78,4 @@ public:
 	UFUNCTION()
 	void Upgrade2();
 	void Refresh();
-
-
-	
 };

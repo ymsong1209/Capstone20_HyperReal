@@ -49,7 +49,7 @@ public:
 	UFUNCTION()
 	void MaintainButtonClick();
 	UFUNCTION()
-	void NextStageButtonClick();
+	void MoveTitleLevel();
 	virtual void CloseUI() override;
 
 public:

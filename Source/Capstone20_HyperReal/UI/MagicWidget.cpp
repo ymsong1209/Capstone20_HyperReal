@@ -15,6 +15,7 @@
 #include "../Manager/PlayerManager.h"
 #include "../GameData.h"
 #include "../Item/Rune/Rune.h"
+
 void UMagicWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -245,4 +246,3 @@ void UMagicWidget::Refresh()
 		Magic_CostText[i]->SetText(FText::FromString(str));
 	}
 }
-

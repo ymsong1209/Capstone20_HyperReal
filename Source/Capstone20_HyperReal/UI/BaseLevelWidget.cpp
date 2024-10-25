@@ -9,6 +9,7 @@
 #include "Engine/Texture.h"
 #include "../CapStoneGameInstance.h"
 #include "../Character/PlayerCharacter.h"
+#include "../Manager/LevelManager.h"
 
 void UBaseLevelWidget::NativeOnInitialized()
 {
@@ -20,7 +21,7 @@ void UBaseLevelWidget::NativePreConstruct()
 	Super::NativePreConstruct();
 	mBasecampWidget = Cast<UBasecampWidget>(GetWidgetFromName(TEXT("Basecampwidget")));
 	mCloseBtn = Cast<UButton>(GetWidgetFromName(TEXT("GameCloseBtn")));
-	mCloseBtn->OnClicked.AddDynamic(this, &UBaseLevelWidget::QuitGame);
+	mCloseBtn->OnClicked.AddDynamic(this, &UBaseLevelWidget::MoveIngameLevel);
 }
 
 void UBaseLevelWidget::NativeConstruct()
@@ -91,7 +92,7 @@ void UBaseLevelWidget::OpenUI()
 	//mBasecampWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UBaseLevelWidget::QuitGame()
+void UBaseLevelWidget::MoveIngameLevel()
 {
 	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
 	if (GameInst)
@@ -99,7 +100,8 @@ void UBaseLevelWidget::QuitGame()
 		GameInst->SavePlayerData();
 		GameInst->SaveLevelData();
 	}
-	UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
+
+	GameInst->GetLevelManager()->LoadInGameLevel();
 }
 
 void UBaseLevelWidget::RefreshBaseCampMagicWidget()

@@ -48,7 +48,7 @@ public:
 		return mBasecampWidget;
 	}
 	UFUNCTION()
-	void QuitGame();
+	void MoveIngameLevel();
 
 public:
 	void RefreshBaseCampMagicWidget();

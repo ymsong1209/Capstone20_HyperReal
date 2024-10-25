@@ -17,7 +17,8 @@ void URewardWidget::NativePreConstruct()
 	KillEnemyCount = Cast<UTextBlock>(GetWidgetFromName(TEXT("KillEnemyCountText")));
 	m_RecallButton = Cast<UButton>(GetWidgetFromName(TEXT("RecallButton")));
 
-	m_RecallButton->OnClicked.AddDynamic(this, &URewardWidget::ReturnToBaseCampLevel);
+	if(m_RecallButton)
+		m_RecallButton->OnClicked.AddDynamic(this, &URewardWidget::ReturnToBaseCampLevel);
 }
 
 void URewardWidget::NativeConstruct()

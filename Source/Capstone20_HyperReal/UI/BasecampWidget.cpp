@@ -7,7 +7,6 @@
 #include "../BaseLevelGameModeBase.h"
 #include "BaseLevelWidget.h"
 #include "../CapStoneGameInstance.h"
-#include "../Manager/LevelManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 void UBasecampWidget::NativeOnInitialized()
@@ -32,7 +31,7 @@ void UBasecampWidget::NativePreConstruct()
 	mUpgradeButton->OnClicked.AddDynamic(this, &UBasecampWidget::UpgradeButtonClick);
 	mMagicButton->OnClicked.AddDynamic(this, &UBasecampWidget::MagicButtonClick);
 	mMaintainButton->OnClicked.AddDynamic(this, &UBasecampWidget::MaintainButtonClick);
-	mNextStageButton->OnClicked.AddDynamic(this, &UBasecampWidget::NextStageButtonClick);
+	mNextStageButton->OnClicked.AddDynamic(this, &UBasecampWidget::MoveTitleLevel);
 
 }
 
@@ -110,27 +109,16 @@ void UBasecampWidget::MaintainButtonClick()
 
 #include "../Manager/PlayerManager.h"
 
-void UBasecampWidget::NextStageButtonClick()
+void UBasecampWidget::MoveTitleLevel()
 {
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInst)
 	{
-		// ==============================
-		// 세이브 기능 확인용 코드 - 서종원
-		UCapStoneGameInstance* pGameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
-
-		if (pGameInst)
-		{
-			pGameInst->SaveGameData();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Save Game Data Failed, no Game Instance"));
-		}
-		// ==============================
+		GameInst->SavePlayerData();
+		GameInst->SaveLevelData();
 	}
 
-	//여기서 다음 레벨로 이동;
-	UCapStoneGameInstance* gameInst = Cast<UCapStoneGameInstance>(GetGameInstance());
-	gameInst->GetLevelManager()->LoadInGameLevel();
+	UGameplayStatics::OpenLevel(GetWorld(), FName("StartMap"));
 }
 
 void UBasecampWidget::CloseUI()
