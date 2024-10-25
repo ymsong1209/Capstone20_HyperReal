@@ -102,6 +102,13 @@ APlayerCharacter::APlayerCharacter() :
 		m_pBlinkOverlayInterface = MIBlinkOverlay.Object;
 		m_MIDBlinkOverlay = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), m_pBlinkOverlayInterface);
 	}
+
+	//데미지 표시용 위젯 로딩
+	static ConstructorHelpers::FClassFinder<UDamageHUDWidget> DamageWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_SYMContent/UI/DamageHUDWidget.DamageHUDWidget_C'"));
+	if (DamageWidgetClass.Succeeded())
+	{
+		mDamageWidgetClass = DamageWidgetClass.Class;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -323,6 +330,20 @@ float APlayerCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 	
 	if (m_pHUDWidget)
 		m_pHUDWidget->SetHP(GetPlayerInfo().HP, GetHPMax());
+
+	// 데미지 위젯 생성 및 초기화
+	if (mDamageWidgetClass)
+	{
+		UDamageHUDWidget* DamageWidget = CreateWidget<UDamageHUDWidget>(GetWorld(), mDamageWidgetClass);
+		if (DamageWidget)
+		{
+			// 대미지와 위치 초기화
+			FVector2D ScreenPosition;
+			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), GetActorLocation(), ScreenPosition);
+			DamageWidget->AddToViewport();
+			DamageWidget->Init((int32)Damage, this,true);
+		}
+	}
 
 	if (GetPlayerInfo().HP <= 0) 
 	{

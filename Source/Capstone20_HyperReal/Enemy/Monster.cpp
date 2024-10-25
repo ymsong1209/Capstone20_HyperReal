@@ -14,6 +14,7 @@
 #include "../UI/InGameUserWidget.h"
 #include "../DamageType/AirborneDamageType.h"
 #include "../Manager/LevelManager.h"
+#include "../UI/DamageHUDWidget.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -40,6 +41,12 @@ AMonster::AMonster()
 	WidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 80.0f));
 	WidgetComponent->SetRelativeScale3D(FVector(0.1f, 0.4f, 0.5f));
 	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+
+	static ConstructorHelpers::FClassFinder<UDamageHUDWidget> DamageWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_SYMContent/UI/DamageHUDWidget.DamageHUDWidget_C'"));
+	if (DamageWidgetClass.Succeeded())
+	{
+		mDamageWidgetClass = DamageWidgetClass.Class;
+	}
 	
 	mSpawnPoint = nullptr;
 
@@ -150,6 +157,20 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 	Damage = Damage < 1.f ? 1.f : Damage;
 
 	mInfo.HP -= (int32)Damage;
+	// 데미지 위젯 생성 및 초기화
+	if (mDamageWidgetClass)
+	{
+		UDamageHUDWidget* DamageWidget = CreateWidget<UDamageHUDWidget>(GetWorld(), mDamageWidgetClass);
+		if (DamageWidget)
+		{
+			// 대미지와 위치 초기화
+			FVector2D ScreenPosition;
+			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), GetActorLocation() + FVector(0, 0, 100), ScreenPosition);
+			DamageWidget->AddToViewport();
+			DamageWidget->Init((int32)Damage, this);
+		}
+	}
+	
 	HandleHitAnimation(DamageEvent);
 
 	if (mInfo.HP <= 0) {

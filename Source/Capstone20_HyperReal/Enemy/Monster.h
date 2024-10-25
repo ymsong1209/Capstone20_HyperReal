@@ -5,6 +5,7 @@
 #include "../GameInfo.h"
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
+#include "../UI/DamageHUDWidget.h"
 #include "Monster.generated.h"
 
 enum class EMonsterAnim : uint8;
@@ -22,6 +23,9 @@ protected:
 	FMonsterInfo mInfo;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	UWidgetComponent* WidgetComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UDamageHUDWidget> mDamageWidgetClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<class UMonsterAnimInstance*> AnimInstances;

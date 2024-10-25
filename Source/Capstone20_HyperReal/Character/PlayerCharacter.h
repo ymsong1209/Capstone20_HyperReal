@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../GameInfo.h"
+#include "../UI/DamageHUDWidget.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
@@ -123,6 +124,9 @@ protected:
 	UMaterialInstanceDynamic* m_MIDBlinkOverlay;
 
 	UInGameUserWidget* m_pHUDWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UDamageHUDWidget> mDamageWidgetClass;
 
 	float m_faccSkillACool;
 	float m_faccSkillSCool;
