@@ -34,6 +34,8 @@ ASoldierChargeSlash::ASoldierChargeSlash()
 void ASoldierChargeSlash::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetLifeSpan(5.f);
 }
 
 void ASoldierChargeSlash::Tick(float DeltaTime)
