@@ -8,6 +8,8 @@
 #include "UObject/ConstructorHelpers.h"
 #include "UI/InGameUserWidget.h"
 #include "CapStoneGameInstance.h"
+#include "Manager/MonsterPoolManager.h"
+#include "Enemy/Monster.h"
 
 AInGameModeBase::AInGameModeBase()
 {
@@ -58,6 +60,17 @@ void AInGameModeBase::BeginPlay()
 
 	//FInputModeGameAndUI mode;
 	//controller->SetInputMode(mode);
+
+	mMonsterPoolManager = NewObject<UMonsterPoolManager>();
+	if (mMonsterPoolManager)
+	{
+		mMonsterPoolManager->Initialize(GetWorld());
+        
+		for (TSubclassOf<AMonster> MonsterClass : MonsterClasses)
+		{
+			mMonsterPoolManager->AddPool(MonsterClass, mInitialMonsterPoolSize);
+		}
+	}
 }
 
 void AInGameModeBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -68,4 +81,18 @@ void AInGameModeBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AInGameModeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+AMonster* AInGameModeBase::GetPooledMonster(TSubclassOf<AMonster> MonsterClass, FVector SpawnLocation,
+	FRotator SpawnRotation)
+{
+	return mMonsterPoolManager ? mMonsterPoolManager->GetPooledMonster(MonsterClass, SpawnLocation, SpawnRotation) : nullptr;
+}
+
+void AInGameModeBase::ReturnMonsterToPool(AMonster* Monster)
+{
+	if (mMonsterPoolManager)
+	{
+		mMonsterPoolManager->ReturnMonsterToPool(Monster);
+	}
 }

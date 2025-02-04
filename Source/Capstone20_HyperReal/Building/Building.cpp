@@ -9,6 +9,7 @@
 #include "../Manager/RuneManager.h"
 #include "../Item/Rune/DemolitionRune.h"
 #include "../Manager/LevelManager.h"
+#include "Capstone20_HyperReal/InGameModeBase.h"
 
 // Sets default values
 ABuilding::ABuilding() :
@@ -165,35 +166,18 @@ void ABuilding::SpawnMonster()
 		// 레이캐스트에 성공하면 지면에 스폰
 		SpawnLocation = HitResult.Location;
 
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
+		AInGameModeBase* gamemode = Cast<AInGameModeBase>(GetWorld()->GetAuthGameMode());
 		
-		// AMonster* SpawnedMonster = GetWorld()->SpawnActor<AMonster>(ChosenMonsterClass, SpawnLocation, SpawnRotation, SpawnParams);
-		//
-		// if (IsValid(SpawnedMonster))
-		// {
-		// 	//생성된 몬스터에게 building알려줌
-		// 	SpawnedMonster->SetOwnerBuilding(this);
-		// 	mMonsterVector.Add(SpawnedMonster);
-		// }
-		// `SpawnActorDeferred`로 몬스터 생성
-        AMonster* SpawnedMonster = GetWorld()->SpawnActorDeferred<AMonster>(ChosenMonsterClass, FTransform(SpawnRotation, SpawnLocation));
+        AMonster* SpawnedMonster = Cast<AMonster>(gamemode->GetPooledMonster(ChosenMonsterClass, SpawnLocation, SpawnRotation));		
         if (IsValid(SpawnedMonster))
         {
         	// 캡슐 컴포넌트의 절반 높이만큼 Z 값을 올려서 위치 조정
         	float CapsuleHalfHeight = SpawnedMonster->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
         	SpawnLocation.Z += CapsuleHalfHeight;
-        	
-	        // 몬스터 초기화
-        	SpawnedMonster->SetMonsterInfo();
-        	
-            // 초기화 완료
-            UGameplayStatics::FinishSpawningActor(SpawnedMonster, FTransform(SpawnRotation, SpawnLocation));
 
-            // 생성된 몬스터를 배열에 추가
-            SpawnedMonster->SetOwnerBuilding(this);
-            mMonsterVector.Add(SpawnedMonster);
+        	// 생성된 몬스터를 배열에 추가
+        	SpawnedMonster->SetOwnerBuilding(this);
+        	mMonsterVector.Add(SpawnedMonster);
         }
 	}
 }

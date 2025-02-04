@@ -79,7 +79,11 @@ void UMonsterAnimInstance::AnimNotify_Attack()
 void UMonsterAnimInstance::AnimNotify_HitStart()
 {
 	AMonster* Monster = Cast<AMonster>(TryGetPawnOwner());
-	Monster->GetAIController()->GetBlackboardComponent()->SetValueAsObject(("Target"), nullptr);
+	AMonsterAIController* AIController = Monster->GetAIController();
+	if (IsValid(AIController))
+	{
+		AIController->GetBlackboardComponent()->SetValueAsObject(("Target"), nullptr);
+	}
 	if(IsValid(mHitSound))
 	{
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), mHitSound, Monster->GetActorLocation());

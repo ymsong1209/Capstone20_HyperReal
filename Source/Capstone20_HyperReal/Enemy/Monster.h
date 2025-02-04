@@ -61,10 +61,10 @@ public:
 	void SetCanAttack(bool _attack){bCanAttack = _attack;}
 	bool GetCanAttack(){return bCanAttack;}
 	void SetHPBar(float fRate);
-
 	AMonsterAIController* GetAIController() const {return mAIController;}
 
 	void SetMonsterInfo();
+	
 
 protected:
 	// Called when the game starts or when spawned
@@ -78,6 +78,9 @@ public:
 public:
 	void HandleDeath();
 	void DeathEnd();
+	virtual void OnPoolMonsterSpawned();
+
+	virtual void Destroyed() override;
 	
 private:
 	void HandleHitAnimation(FDamageEvent const& DamageEvent);

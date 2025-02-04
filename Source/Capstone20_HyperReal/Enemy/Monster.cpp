@@ -44,7 +44,7 @@ AMonster::AMonster()
 	mSpawnPoint = nullptr;
 
 	AIControllerClass = AMonsterAIController::StaticClass();
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AutoPossessAI = EAutoPossessAI::Disabled;
 	
 	bIsInvincible = false;
 	bCanAttack = true;
@@ -244,8 +244,52 @@ void AMonster::HandleDeath()
 //죽는 모션 끝난 후 notify로 호출
 void AMonster::DeathEnd()
 {
-	//mSpawnPoint->MonsterDeath();
-	Destroy();
+	AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
+	if(GameMode)
+	{
+		GameMode->ReturnMonsterToPool(this);
+	}
+}
+
+void AMonster::OnPoolMonsterSpawned()
+{
+	SetMonsterInfo();
+	SetHPBar(1.f);
+	bIsInvincible = false;
+	bCanAttack = true;
+	bIsAirborne = false;
+	fAirborneTime = 0.0f;
+	fInitialZ = 0.0f;
+	SetActorTickInterval(0.5f);
+	for(UMonsterAnimInstance* AnimInstance : AnimInstances)
+	{
+		if(AnimInstance)
+		{
+			AnimInstance->ChangeAnimType(EMonsterAnim::Idle);
+		}
+	}
+	
+	if (!mAIController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No AIController found. Spawning a new one for %s"), *GetName());
+        
+		mAIController = GetWorld()->SpawnActor<AMonsterAIController>(AMonsterAIController::StaticClass());
+		if (mAIController)
+		{
+			mAIController->Possess(this);
+			UE_LOG(LogTemp, Warning, TEXT("AIController successfully possessed: %s"), *GetName());
+		}
+	}
+	else
+	{
+		mAIController->Possess(this);
+	}
+}
+
+void AMonster::Destroyed()
+{
+	Super::Destroyed();
+	UE_LOG(LogTemp, Error, TEXT("Monster %s was destroyed!"), *GetName());
 }
 
 void AMonster::StartAirborne()

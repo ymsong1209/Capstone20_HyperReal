@@ -7,6 +7,8 @@
 #include "InGameModeBase.generated.h"
 
 class UInGameUserWidget;
+class AMonster;
+
 UCLASS()
 class CAPSTONE20_HYPERREAL_API AInGameModeBase : public AGameModeBase
 {
@@ -24,9 +26,24 @@ private:
 	TSubclassOf<UInGameUserWidget>	mInGameWidgetClass;
 	UInGameUserWidget* mInGameWidget;
 
+	UPROPERTY()
+	class UMonsterPoolManager* mMonsterPoolManager;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster")
+	int32 mInitialMonsterPoolSize = 30;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster")
+	TArray<TSubclassOf<AMonster>> MonsterClasses;
+
+	
+	
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 public:
-	UInGameUserWidget* GetInGameWidget() { return mInGameWidget; }
+	UInGameUserWidget* GetInGameWidget() { return mInGameWidget;}
+	AMonster* GetPooledMonster(TSubclassOf<AMonster> MonsterClass, FVector SpawnLocation, FRotator SpawnRotation);
+	void ReturnMonsterToPool(AMonster* Monster);
 };
