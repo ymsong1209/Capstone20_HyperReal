@@ -3,8 +3,10 @@
 
 #include "Infantry.h"
 #include "MonsterAnimInstance.h"
+#include "Capstone20_HyperReal/InGameModeBase.h"
 #include "Engine/AssetManager.h"
 #include "Engine/StreamableManager.h"
+#include "InfantryShell.h"
 
 AInfantry::AInfantry()
 {
@@ -49,124 +51,56 @@ AInfantry::AInfantry()
 void AInfantry::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
-
-    // Body Mesh 비동기 로드
-    if (mBodyMeshes.Num() > 0)
-    {
-        int32 RandomIndex = FMath::RandRange(0, mBodyMeshes.Num() - 1);
-        TSoftObjectPtr<USkeletalMesh> SelectedMesh = mBodyMeshes[RandomIndex];
-
-        if (SelectedMesh.IsValid())
-        {
-            GetMesh()->SetSkeletalMesh(SelectedMesh.Get());
-        }
-        else
-        {
-            Streamable.RequestAsyncLoad(SelectedMesh.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([this, SelectedMesh]()
-            {
-                if (SelectedMesh.IsValid())
-                {
-                    GetMesh()->SetSkeletalMesh(SelectedMesh.Get());
-                }
-            }));
-        }
-    }
-
-    // Weapon R 비동기 로드
-    if (mWeaponRMeshes.Num() > 0)
-    {
-        int32 RandomIndex = FMath::RandRange(0, mWeaponRMeshes.Num() - 1);
-        TSoftObjectPtr<UStaticMesh> SelectedMesh = mWeaponRMeshes[RandomIndex];
-
-        if (SelectedMesh.IsValid())
-        {
-            mWeaponR->SetStaticMesh(SelectedMesh.Get());
-        }
-        else
-        {
-            Streamable.RequestAsyncLoad(SelectedMesh.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([this, SelectedMesh]()
-            {
-                if (SelectedMesh.IsValid())
-                {
-                    mWeaponR->SetStaticMesh(SelectedMesh.Get());
-                }
-            }));
-        }
-    }
-
-    // Weapon L 비동기 로드
-    if (mWeaponLMeshes.Num() > 0)
-    {
-        int32 RandomIndex = FMath::RandRange(0, mWeaponLMeshes.Num() - 1);
-        TSoftObjectPtr<UStaticMesh> SelectedMesh = mWeaponLMeshes[RandomIndex];
-
-        if (SelectedMesh.IsValid())
-        {
-            mWeaponL->SetStaticMesh(SelectedMesh.Get());
-        }
-        else
-        {
-            Streamable.RequestAsyncLoad(SelectedMesh.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([this, SelectedMesh]()
-            {
-                if (SelectedMesh.IsValid())
-                {
-                    mWeaponL->SetStaticMesh(SelectedMesh.Get());
-                }
-            }));
-        }
-    }
-
-    // Backpack 비동기 로드
-    if (mBackpackMeshes.Num() > 0)
-    {
-        int32 RandomIndex = FMath::RandRange(0, mBackpackMeshes.Num() - 1);
-        TSoftObjectPtr<UStaticMesh> SelectedMesh = mBackpackMeshes[RandomIndex];
-
-        if (SelectedMesh.IsValid())
-        {
-            mBackpack->SetStaticMesh(SelectedMesh.Get());
-        }
-        else
-        {
-            Streamable.RequestAsyncLoad(SelectedMesh.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([this, SelectedMesh]()
-            {
-                if (SelectedMesh.IsValid())
-                {
-                    mBackpack->SetStaticMesh(SelectedMesh.Get());
-                }
-            }));
-        }
-    }
-
-    // Head Mesh 비동기 로드
-    if (mHeadMeshes.Num() > 0)
-    {
-        int32 RandomIndex = FMath::RandRange(0, mHeadMeshes.Num() - 1);
-        TSoftObjectPtr<USkeletalMesh> SelectedMesh = mHeadMeshes[RandomIndex];
-
-        if (SelectedMesh.IsValid())
-        {
-            mHead->SetSkeletalMesh(SelectedMesh.Get());
-        }
-        else
-        {
-            Streamable.RequestAsyncLoad(SelectedMesh.ToSoftObjectPath(), FStreamableDelegate::CreateLambda([this, SelectedMesh]()
-            {
-                if (SelectedMesh.IsValid())
-                {
-                    mHead->SetSkeletalMesh(SelectedMesh.Get());
-                }
-            }));
-        }
-    }
 
 	UMonsterAnimInstance* bodyAnim = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
 	UMonsterAnimInstance* headAnim = Cast<UMonsterAnimInstance>(mHead->GetAnimInstance());
 	
 	AnimInstances.Add(bodyAnim);
 	AnimInstances.Add(headAnim);
+	
+	if (!IsValid(mInfantryShell))
+	{
+		UE_LOG(LogTemp, Error, TEXT("No InfantryShell"));
+		return;
+	}
+	FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
+
+	// Body Mesh 랜덤 적용
+	if (mInfantryShell->mBodyMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mInfantryShell->mBodyMeshes.Num() - 1);
+		GetMesh()->SetSkeletalMesh(mInfantryShell->mBodyMeshes[RandomIndex]);
+	}
+
+	// Weapon R
+	if (mInfantryShell->mWeaponRMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mInfantryShell->mWeaponRMeshes.Num() - 1);
+		mWeaponR->SetStaticMesh(mInfantryShell->mWeaponRMeshes[RandomIndex]);
+	}
+
+	// Weapon L
+	if (mInfantryShell->mWeaponLMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mInfantryShell->mWeaponLMeshes.Num() - 1);
+		mWeaponL->SetStaticMesh(mInfantryShell->mWeaponLMeshes[RandomIndex]);
+	}
+
+	// Backpack
+	if (mInfantryShell->mBackpackMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mInfantryShell->mBackpackMeshes.Num() - 1);
+		mBackpack->SetStaticMesh(mInfantryShell->mBackpackMeshes[RandomIndex]);
+	}
+
+	// Head
+	if (mInfantryShell->mHeadMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mInfantryShell->mHeadMeshes.Num() - 1);
+		mHead->SetSkeletalMesh(mInfantryShell->mHeadMeshes[RandomIndex]);
+	}
+
+	
 }
 
 void AInfantry::Tick(float DeltaTime)

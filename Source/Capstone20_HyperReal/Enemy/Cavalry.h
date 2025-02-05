@@ -24,22 +24,9 @@ protected:
 	USkeletalMeshComponent* mHead;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,  meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* mBody;
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<UStaticMesh*>	mWeaponRMeshes;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<UStaticMesh*>	mWeaponLMeshes;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<UStaticMesh*>	mQuiverMeshes;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<UStaticMesh*>	mShieldMeshes;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<USkeletalMesh*>	mHorseMeshes;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<USkeletalMesh*>	mHeadMeshes;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<USkeletalMesh*>	mBodyMeshes;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cavalry")
+	class UCavalryShell* mCavalryShell;
 public:
 	// Sets default values for this character's properties
 	ACavalry();

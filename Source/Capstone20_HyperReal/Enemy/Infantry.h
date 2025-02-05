@@ -11,6 +11,9 @@ UCLASS()
 class CAPSTONE20_HYPERREAL_API AInfantry : public AMonster
 {
 	GENERATED_BODY()
+private:
+	
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent*	mWeaponR;
@@ -23,17 +26,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,  meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* mHead;
 	
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<USkeletalMesh*>	mBodyMeshes;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<UStaticMesh*>	mWeaponRMeshes;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<UStaticMesh*>	mWeaponLMeshes;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<UStaticMesh*>	mBackpackMeshes;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	TArray<USkeletalMesh*>	mHeadMeshes;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Infantry")
+	class UInfantryShell* mInfantryShell;
 	
 	
 public:

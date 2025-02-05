@@ -3,6 +3,9 @@
 
 #include "Cavalry.h"
 #include "MonsterAnimInstance.h"
+#include "Engine/AssetManager.h"
+#include "Engine/StreamableManager.h"
+#include "CavalryShell.h"
 
 ACavalry::ACavalry()
 {
@@ -57,46 +60,6 @@ void ACavalry::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (mWeaponRMeshes.Num() > 0)
-	{
-		int32 RandomIndex = FMath::RandRange(0, mWeaponRMeshes.Num() - 1);
-		mWeaponR->SetStaticMesh(mWeaponRMeshes[RandomIndex]);
-	}
-
-	if (mWeaponLMeshes.Num() > 0)
-	{
-		int32 RandomIndex = FMath::RandRange(0, mWeaponLMeshes.Num() - 1);
-		mWeaponL->SetStaticMesh(mWeaponLMeshes[RandomIndex]);
-	}
-
-	if (mQuiverMeshes.Num() > 0)
-	{
-		int32 RandomIndex = FMath::RandRange(0, mQuiverMeshes.Num() - 1);
-		mQuiver->SetStaticMesh(mQuiverMeshes[RandomIndex]);
-	}
-
-	if (mShieldMeshes.Num() > 0)
-	{
-		int32 RandomIndex = FMath::RandRange(0, mShieldMeshes.Num() - 1);
-		mShield->SetStaticMesh(mShieldMeshes[RandomIndex]);
-	}
-	
-	if (mHorseMeshes.Num() > 0)
-	{
-		int32 RandomIndex = FMath::RandRange(0, mHorseMeshes.Num() - 1);
-		GetMesh()->SetSkeletalMesh(mHorseMeshes[RandomIndex]);
-	}
-	if (mHeadMeshes.Num() > 0)
-	{
-		int32 RandomIndex = FMath::RandRange(0, mHeadMeshes.Num() - 1);
-		mHead->SetSkeletalMesh(mHeadMeshes[RandomIndex]);
-	}
-	if (mBodyMeshes.Num() > 0)
-	{
-		int32 RandomIndex = FMath::RandRange(0, mBodyMeshes.Num() - 1);
-		mBody->SetSkeletalMesh(mBodyMeshes[RandomIndex]);
-	}
-
 	UMonsterAnimInstance* horseAnim = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
 	UMonsterAnimInstance* bodyAnim = Cast<UMonsterAnimInstance>(mBody->GetAnimInstance());
 	UMonsterAnimInstance* headAnim = Cast<UMonsterAnimInstance>(mHead->GetAnimInstance());
@@ -116,6 +79,56 @@ void ACavalry::BeginPlay()
 	AnimInstances.Add(horseAnim);
 	AnimInstances.Add(bodyAnim);
 	AnimInstances.Add(headAnim);
+
+
+	if (!IsValid(mCavalryShell))
+	{
+		UE_LOG(LogTemp, Error, TEXT("No CavalryShell"));
+		return;
+	}
+	FStreamableManager& Streamable = UAssetManager::GetStreamableManager();
+	
+	if (mCavalryShell->mWeaponRMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mCavalryShell->mWeaponRMeshes.Num() - 1);
+		mWeaponR->SetStaticMesh(mCavalryShell->mWeaponRMeshes[RandomIndex]);
+	}
+
+	if (mCavalryShell->mWeaponLMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mCavalryShell->mWeaponLMeshes.Num() - 1);
+		mWeaponL->SetStaticMesh(mCavalryShell->mWeaponLMeshes[RandomIndex]);
+	}
+
+	if (mCavalryShell->mQuiverMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mCavalryShell->mQuiverMeshes.Num() - 1);
+		mQuiver->SetStaticMesh(mCavalryShell->mQuiverMeshes[RandomIndex]);
+	}
+
+	if (mCavalryShell->mShieldMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mCavalryShell->mShieldMeshes.Num() - 1);
+		mShield->SetStaticMesh(mCavalryShell->mShieldMeshes[RandomIndex]);
+	}
+	
+	if (mCavalryShell->mHorseMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mCavalryShell->mHorseMeshes.Num() - 1);
+		GetMesh()->SetSkeletalMesh(mCavalryShell->mHorseMeshes[RandomIndex]);
+	}
+	if (mCavalryShell->mHeadMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mCavalryShell->mHeadMeshes.Num() - 1);
+		mHead->SetSkeletalMesh(mCavalryShell->mHeadMeshes[RandomIndex]);
+	}
+	if (mCavalryShell->mBodyMeshes.Num() > 0)
+	{
+		int32 RandomIndex = FMath::RandRange(0, mCavalryShell->mBodyMeshes.Num() - 1);
+		mBody->SetSkeletalMesh(mCavalryShell->mBodyMeshes[RandomIndex]);
+	}
+
+	
 	
 }
 

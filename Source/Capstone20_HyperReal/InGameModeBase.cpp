@@ -10,6 +10,7 @@
 #include "CapStoneGameInstance.h"
 #include "Manager/MonsterPoolManager.h"
 #include "Enemy/Monster.h"
+#include "Enemy/InfantryShell.h"
 
 AInGameModeBase::AInGameModeBase()
 {
@@ -37,6 +38,8 @@ AInGameModeBase::AInGameModeBase()
 		mInGameWidgetClass = WidgetClass.Class;
 		UE_LOG(LogTemp, Log, TEXT("HUD Load Succeed"));
 	}
+
+	
 }
 
 void AInGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
@@ -71,6 +74,7 @@ void AInGameModeBase::BeginPlay()
 			mMonsterPoolManager->AddPool(MonsterClass, mInitialMonsterPoolSize);
 		}
 	}
+	
 }
 
 void AInGameModeBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
