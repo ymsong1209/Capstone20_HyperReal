@@ -8,44 +8,40 @@
 
 class UInGameUserWidget;
 class AMonster;
+class UMonsterPoolManager;
 
 UCLASS()
 class CAPSTONE20_HYPERREAL_API AInGameModeBase : public AGameModeBase
 {
-	GENERATED_BODY()
-private:
-	TSubclassOf<UInGameUserWidget>	mInGameWidgetClass;
-	UInGameUserWidget* mInGameWidget;
-
-	UPROPERTY()
-	class UMonsterPoolManager* mMonsterPoolManager;
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster")
-	int32 mInitialMonsterPoolSize = 30;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster")
-	TArray<TSubclassOf<AMonster>> MonsterClasses;
-
-
-	
-
-public:
-	UInGameUserWidget* GetInGameWidget() { return mInGameWidget;}
-	
-	AMonster* GetPooledMonster(TSubclassOf<AMonster> MonsterClass, FVector SpawnLocation, FRotator SpawnRotation);
-	void ReturnMonsterToPool(AMonster* Monster);
-	
+	GENERATED_BODY()	
 public:
 	AInGameModeBase();
+	virtual void Tick(float DeltaTime) override;
+	AMonster* GetPooledMonster(TSubclassOf<AMonster> MonsterClass, const FVector& SpawnLocation, const FRotator& SpawnRotation);
+	void ReturnMonsterToPool(AMonster* Monster);
 
 protected:
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+private:
+	TSubclassOf<UInGameUserWidget>	mInGameWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UInGameUserWidget> mInGameWidget;
+
+	UPROPERTY()
+	TObjectPtr<UMonsterPoolManager> mMonsterPoolManager;
+
+	UPROPERTY(EditAnywhere, Category = "Monster", meta = (AllowPrivateAccess = "true"))
+	int32 mInitialMonsterPoolSize = 30;
+
+	UPROPERTY(EditAnywhere, Category = "Monster", meta = (AllowPrivateAccess = "true"))
+	TArray<TSubclassOf<AMonster>> MonsterClasses;
+
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	FORCEINLINE UInGameUserWidget* GetInGameWidget() const { return mInGameWidget; }
+	
 
 };

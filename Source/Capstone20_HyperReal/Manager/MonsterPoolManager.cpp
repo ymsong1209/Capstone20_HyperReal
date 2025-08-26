@@ -10,7 +10,7 @@ void UMonsterPoolManager::Initialize(UWorld* World)
 	WorldContext = World;
 }
 
-void UMonsterPoolManager::AddPool(TSubclassOf<AMonster> MonsterClass, int32 PoolSize)
+void UMonsterPoolManager::AddPool(const TSubclassOf<AMonster> MonsterClass, const int32 PoolSize)
 {
 	if (!WorldContext || !MonsterClass || PoolMap.Contains(MonsterClass)) return;
 
@@ -22,8 +22,8 @@ void UMonsterPoolManager::AddPool(TSubclassOf<AMonster> MonsterClass, int32 Pool
 	}
 }
 
-AMonster* UMonsterPoolManager::GetPooledMonster(TSubclassOf<AMonster> MonsterClass, FVector SpawnLocation,
-	FRotator SpawnRotation)
+AMonster* UMonsterPoolManager::GetPooledMonster(const TSubclassOf<AMonster> MonsterClass, const FVector& SpawnLocation,
+	const FRotator& SpawnRotation) 
 {
 	if (PoolMap.Contains(MonsterClass))
 	{

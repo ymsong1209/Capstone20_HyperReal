@@ -87,10 +87,14 @@ void AInGameModeBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-AMonster* AInGameModeBase::GetPooledMonster(TSubclassOf<AMonster> MonsterClass, FVector SpawnLocation,
-	FRotator SpawnRotation)
+AMonster* AInGameModeBase::GetPooledMonster(TSubclassOf<AMonster> MonsterClass, const FVector& SpawnLocation,
+	const FRotator& SpawnRotation)
 {
-	return mMonsterPoolManager ? mMonsterPoolManager->GetPooledMonster(MonsterClass, SpawnLocation, SpawnRotation) : nullptr;
+	if (mMonsterPoolManager)
+	{
+		mMonsterPoolManager->GetPooledMonster(MonsterClass, SpawnLocation, SpawnRotation);
+	}
+	return nullptr;
 }
 
 void AInGameModeBase::ReturnMonsterToPool(AMonster* Monster)
