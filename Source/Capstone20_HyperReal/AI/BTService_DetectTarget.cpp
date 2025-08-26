@@ -52,7 +52,7 @@ void UBTService_DetectTarget::TracePlayer(UBehaviorTreeComponent& OwnerComp)
 	}
 	
 	AActor* TargetActor = Cast<AActor>(Player);
-	bool canattack = Monster->GetCanAttack();
+	bool canattack = Monster->CanAttack();
 	if(canattack)
 	{
 		Controller->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), TargetActor);

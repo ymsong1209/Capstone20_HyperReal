@@ -9,18 +9,25 @@
 #include "MonsterAIController.h"
 #include "Camera/PlayerCameraManager.h"
 #include "../Building/Building.h"
-#include "Capstone20_HyperReal/Character/PlayerCharacter.h"
 #include "../InGameModeBase.h"
 #include "../UI/InGameUserWidget.h"
 #include "../DamageType/AirborneDamageType.h"
 #include "../Manager/LevelManager.h"
 
-// Sets default values
 AMonster::AMonster()
+	: mSpawnPoint(nullptr)
+	, mBuilding(nullptr)
+	, bCanAttack(true)
+	, fAirborneStartZ(0.f)
+	, mAttackEnd(true)
+	, bIsInvincible(false)
+	, bCanAirborne(true)
+	, bIsAirborne(false)
+	, fAirborneTime(0.f)
+	, fMaxAirborneTime(1.f)	
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.TickInterval = 0.5f;//기본적으로 tick은 0.5초에 한번씩 호출된다.
+	PrimaryActorTick.TickInterval = 0.5f;
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Monster"));
@@ -29,6 +36,9 @@ AMonster::AMonster()
 
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBar"));
 	WidgetComponent->SetupAttachment(RootComponent);
+	WidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 80.0f));
+	WidgetComponent->SetRelativeScale3D(FVector(0.1f, 0.4f, 0.5f));
+	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 
 	// 위젯 클래스 설정
 	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/A_KHIContent/UI/MonsterHPBar.MonsterHPBar_C'"));
@@ -37,115 +47,25 @@ AMonster::AMonster()
 		WidgetComponent->SetWidgetClass(WidgetClass.Class);
 	}
 
-	WidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 80.0f));
-	WidgetComponent->SetRelativeScale3D(FVector(0.1f, 0.4f, 0.5f));
-	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	
-	mSpawnPoint = nullptr;
-
 	AIControllerClass = AMonsterAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::Disabled;
-	
-	bIsInvincible = false;
-	bCanAttack = true;
-
-	bIsAirborne = false;
-	fAirborneTime = 0.0f;
-	fMaxAirborneTime = 1.0f;
-	fInitialZ = 0.0f;
 }
 
-void AMonster::SetMonsterInfo()
-{
-	mAIController = Cast<AMonsterAIController>(GetController());
-
-	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
-	if (GameInst) {
-		const FMonsterDataTableInfo* Info = GameInst->FindMonsterInfo(mDataTableKey);
-		if (Info) {
-			mInfo.Name = Info->Name;
-			mInfo.Attack = Info->Attack;
-			mInfo.Armor = Info->Armor;
-			mInfo.HP = Info->HP;
-			mInfo.MaxHP = Info->HP;
-			mInfo.MP = Info->MP;
-			mInfo.MaxMP = Info->MP;
-			mInfo.AttackSpeed = Info->AttackSpeed;
-			mInfo.MoveSpeed = Info->MoveSpeed;
-			mInfo.CriticalRatio = Info->CriticalRatio;
-			mInfo.CriticalDamage = Info->CriticalDamage;
-			mInfo.TraceDistance = Info->TraceDistance;
-			mInfo.AttackDistance = Info->AttackDistance;
-			mInfo.Level = Info->Level;
-			mInfo.Exp = Info->Exp;
-			mInfo.Gold = Info->Gold;
-			
-			GetCharacterMovement()->MaxWalkSpeed = Info->MoveSpeed;
-		}
-		else {
-			UE_LOG(LogTemp, Error, TEXT("No Info"));
-		}
-	}
-}
-
-// Called when the game starts or when spawned
-void AMonster::BeginPlay()
-{
-	Super::BeginPlay();
-	SetMonsterInfo();
-}
-
-// Called every frame
 void AMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (bIsAirborne)
-	{
-		fAirborneTime += DeltaTime;
-		float HalfMaxTime = fMaxAirborneTime / 2.0f;
-
-		if (fAirborneTime <= HalfMaxTime)
-		{
-			// 상승
-			float Alpha = fAirborneTime / HalfMaxTime;
-			FVector NewLocation = GetMesh()->GetRelativeLocation();
-			NewLocation.Z = fInitialZ + FMath::Lerp(0.0f, 200.0f, Alpha);  // 200.0f는 상승 높이
-			GetMesh()->SetRelativeLocation(NewLocation);
-		}
-		else if (fAirborneTime <= fMaxAirborneTime)
-		{
-			// 하강
-			float Alpha = (fAirborneTime - HalfMaxTime) / HalfMaxTime;
-			FVector NewLocation = GetMesh()->GetRelativeLocation();
-			NewLocation.Z = fAirborneTime + FMath::Lerp(200.0f, 0.0f, Alpha);  // 200.0f는 상승 높이
-			GetMesh()->SetRelativeLocation(NewLocation);
-		}
-		else
-		{
-			// 에어본 상태 종료
-			bIsAirborne = false;
-			fAirborneTime = 0.0f;
-			FVector NewLocation = GetMesh()->GetRelativeLocation();
-			NewLocation.Z = fInitialZ;
-			GetMesh()->SetRelativeLocation(NewLocation);
-			if (mAIController)
-			{
-				ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-				mAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Player"), Player);
-			}
-		}
-	}
+	HandleAirborne(DeltaTime);
 }
 
 //-1.f return시 몬스터 사망
 float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-		
+
 	//무적 상태인 경우
 	if (bIsInvincible || Damage == -1.f)
 		return Damage;
-		
+
 	Damage = DamageAmount - mInfo.Armor;
 	Damage = Damage < 1.f ? 1.f : Damage;
 
@@ -154,23 +74,13 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 
 	if (mInfo.HP <= 0) {
 		//player에게 몬스터의 돈을 줌
-		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
-		GameInst->GetPlayerManager()->GetPlayerInfo().LevelAccGold += mInfo.Gold;
-		
-		//돈 UI 업데이트
-		AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
-		if(GameMode)
-		{
-			UInGameUserWidget* widget = GameMode->GetInGameWidget();
-			if (widget)
-			{
-				widget->SetEarnGold(GameInst->GetPlayerManager()->GetPlayerInfo().LevelAccGold);
-			}
-		}
-		
+		UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());;
+		AddGoldToPlayer(GameInst);
+		AddGoldToUI(GameInst);
+
 		ULevelManager* LevelManager = GameInst->GetLevelManager();
 		LevelManager->AddMonsterDeathCount();
-		
+
 		HandleDeath();
 		//죽었을 경우 -1.f반환
 		Damage = 0.f;
@@ -189,63 +99,36 @@ float AMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, 
 	return Damage;
 }
 
-void AMonster::HandleHitAnimation(FDamageEvent const& DamageEvent)
-{
-	//에어본으로 변경할 수 있으면 에어본 상태로 변경
-	if(bCanAirborne && !bIsAirborne && !bIsInvincible && DamageEvent.DamageTypeClass == UAirborneDamageType::StaticClass())
-	{
-		for(UMonsterAnimInstance* AnimInstance : AnimInstances)
-		{
-			if(AnimInstance)
-			{
-				AnimInstance->ChangeAnimType(EMonsterAnim::Airborne);
-			}
-		}
-		StartAirborne();
-	}
-	else
-	{
-		for(UMonsterAnimInstance* AnimInstance : AnimInstances)
-		{
-			if(AnimInstance)
-			{
-				AnimInstance->ChangeAnimType(EMonsterAnim::Hit);
-			}
-		}
-	}
-}
-
 void AMonster::HandleDeath()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Monster Death"));
-	for(UMonsterAnimInstance* AnimInstance : AnimInstances)
+	for (UMonsterAnimInstance* AnimInstance : AnimInstances)
 	{
-		if(AnimInstance)
+		if (AnimInstance)
 		{
 			AnimInstance->ChangeAnimType(EMonsterAnim::Death);
 		}
 	}
-	
+
 	//monster랑 연결된 Ai를 끊음
 	if (AAIController* AIController = Cast<AAIController>(GetController()))
 	{
 		AIController->UnPossess(); // 몬스터 컨트롤 해제
 	}
-	if(mBuilding)
+	if (mBuilding)
 	{
 		mBuilding->RemoveMonster(this);
 	}
-	
+
 	//무적 상태로 만들어서 대미지 더이상 안들어오게 함
 	bIsInvincible = true;
 }
 
 
-//죽는 모션 끝난 후 notify로 호출
 void AMonster::DeathEnd()
 {
 	AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>();
-	if(GameMode)
+	if (GameMode)
 	{
 		GameMode->ReturnMonsterToPool(this);
 	}
@@ -259,7 +142,7 @@ void AMonster::OnPoolMonsterSpawned()
 	bCanAttack = true;
 	bIsAirborne = false;
 	fAirborneTime = 0.0f;
-	fInitialZ = 0.0f;
+	fAirborneStartZ = 0.0f;
 	SetActorTickInterval(0.5f);
 	for(UMonsterAnimInstance* AnimInstance : AnimInstances)
 	{
@@ -286,28 +169,83 @@ void AMonster::OnPoolMonsterSpawned()
 	}
 }
 
-void AMonster::Destroyed()
+void AMonster::BeginPlay()
 {
-	Super::Destroyed();
-	UE_LOG(LogTemp, Error, TEXT("Monster %s was destroyed!"), *GetName());
+	Super::BeginPlay();
+	SetMonsterInfo();
+}
+
+
+void AMonster::SetMonsterInfo()
+{
+	mAIController = Cast<AMonsterAIController>(GetController());
+
+	UCapStoneGameInstance* GameInst = Cast<UCapStoneGameInstance>(GetWorld()->GetGameInstance());
+	if (GameInst) {
+		const FMonsterDataTableInfo* Info = GameInst->FindMonsterInfo(mDataTableKey);
+		if (Info) {
+			mInfo.Name = Info->Name;
+			mInfo.Attack = Info->Attack;
+			mInfo.Armor = Info->Armor;
+			mInfo.HP = Info->HP;
+			mInfo.MaxHP = Info->HP;
+			mInfo.MP = Info->MP;
+			mInfo.MaxMP = Info->MP;
+			mInfo.AttackSpeed = Info->AttackSpeed;
+			mInfo.MoveSpeed = Info->MoveSpeed;
+			mInfo.CriticalRatio = Info->CriticalRatio;
+			mInfo.CriticalDamage = Info->CriticalDamage;
+			mInfo.TraceDistance = Info->TraceDistance;
+			mInfo.AttackDistance = Info->AttackDistance;
+			mInfo.Level = Info->Level;
+			mInfo.Exp = Info->Exp;
+			mInfo.Gold = Info->Gold;
+
+			GetCharacterMovement()->MaxWalkSpeed = Info->MoveSpeed;
+		}
+		else {
+			UE_LOG(LogTemp, Error, TEXT("No Info"));
+		}
+	}
+}
+
+void AMonster::HandleHitAnimation(FDamageEvent const& DamageEvent)
+{
+	//에어본으로 변경할 수 있으면 에어본 상태로 변경
+	if (bCanAirborne && !bIsAirborne && !bIsInvincible && DamageEvent.DamageTypeClass == UAirborneDamageType::StaticClass())
+	{
+		for (UMonsterAnimInstance* AnimInstance : AnimInstances)
+		{
+			if (AnimInstance)
+			{
+				AnimInstance->ChangeAnimType(EMonsterAnim::Airborne);
+			}
+		}
+		StartAirborne();
+	}
+	else
+	{
+		for (UMonsterAnimInstance* AnimInstance : AnimInstances)
+		{
+			if (AnimInstance)
+			{
+				AnimInstance->ChangeAnimType(EMonsterAnim::Hit);
+			}
+		}
+	}
 }
 
 void AMonster::StartAirborne()
 {
 	bIsAirborne = true;
 	fAirborneTime = 0.0f;
-	fInitialZ = GetMesh()->GetRelativeLocation().Z;
+	fAirborneStartZ = GetMesh()->GetRelativeLocation().Z;
 	if (mAIController)
 	{
 		mAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), nullptr);
 	}
 }
 
-
-
-void AMonster::Attack()
-{
-}
 
 void AMonster::SetAnimation(EMonsterAnim AnimType)
 {
@@ -320,7 +258,7 @@ void AMonster::SetAnimation(EMonsterAnim AnimType)
 	}
 }
 
-void AMonster::SetHPBar(float fRate)
+void AMonster::SetHPBar(const float fRate)
 {
 
 	UUserWidget* UserWidget = Cast<UUserWidget>(WidgetComponent->GetUserWidgetObject());
@@ -337,3 +275,58 @@ void AMonster::SetHPBar(float fRate)
 	}
 }
 
+void AMonster::HandleAirborne(float DeltaTime)
+{
+	if (bIsAirborne)
+	{
+		fAirborneTime += DeltaTime;
+		float HalfMaxTime = fMaxAirborneTime / 2.0f;
+
+		if (fAirborneTime <= HalfMaxTime)
+		{
+			// 상승
+			float Alpha = fAirborneTime / HalfMaxTime;
+			FVector NewLocation = GetMesh()->GetRelativeLocation();
+			NewLocation.Z = fAirborneStartZ + FMath::Lerp(0.0f, 200.0f, Alpha);  // 200.0f는 상승 높이
+			GetMesh()->SetRelativeLocation(NewLocation);
+		}
+		else if (fAirborneTime <= fMaxAirborneTime)
+		{
+			// 하강
+			float Alpha = (fAirborneTime - HalfMaxTime) / HalfMaxTime;
+			FVector NewLocation = GetMesh()->GetRelativeLocation();
+			NewLocation.Z = fAirborneTime + FMath::Lerp(200.0f, 0.0f, Alpha);  // 200.0f는 상승 높이
+			GetMesh()->SetRelativeLocation(NewLocation);
+		}
+		else
+		{
+			// 에어본 상태 종료
+			bIsAirborne = false;
+			fAirborneTime = 0.0f;
+			FVector NewLocation = GetMesh()->GetRelativeLocation();
+			NewLocation.Z = fAirborneStartZ;
+			GetMesh()->SetRelativeLocation(NewLocation);
+			if (mAIController)
+			{
+				ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+				mAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Player"), Player);
+			}
+		}
+	}
+}
+
+void AMonster::AddGoldToPlayer(UCapStoneGameInstance* GameInst) const
+{
+	GameInst->GetPlayerManager()->GetPlayerInfo().LevelAccGold += mInfo.Gold;
+}
+
+void AMonster::AddGoldToUI(UCapStoneGameInstance* GameInst) const
+{
+	if (const AInGameModeBase* GameMode = GetWorld()->GetAuthGameMode<AInGameModeBase>())
+	{
+		if (UInGameUserWidget* Widget = GameMode->GetInGameWidget())
+		{
+			Widget->SetEarnGold(GameInst->GetPlayerManager()->GetPlayerInfo().LevelAccGold);
+		}
+	}
+}

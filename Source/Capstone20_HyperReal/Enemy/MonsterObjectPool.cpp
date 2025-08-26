@@ -20,7 +20,6 @@ void UMonsterObjectPool::InitializePool(UWorld* World, TSubclassOf<AMonster> InC
 		if (NewMonster)
 		{
 			DisableMonster(NewMonster);
-			NewMonster->SetMonsterInfo();
 			AvailableMonsters.Enqueue(NewMonster);
 			AllMonsters.Add(NewMonster);
 		}
